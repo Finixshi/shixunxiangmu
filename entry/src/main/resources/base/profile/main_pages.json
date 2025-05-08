@@ -1,5 +1,9 @@
 {
   "src": [
+<<<<<<< HEAD
     "pages/Index"
+=======
+    "pages/login"
+>>>>>>> 6b11ddb (test)
   ]
 }
