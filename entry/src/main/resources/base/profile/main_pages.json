@@ -1,5 +1,7 @@
 {
   "src": [
     "pages/login"
+    "pages/Calendar",
+    "pages/SampleForm"
   ]
 }
