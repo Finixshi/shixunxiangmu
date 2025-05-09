@@ -5,6 +5,10 @@
     "pages/StaffList",
     "pages/StaffForm",
     "pages/Calendar",
-    "pages/SampleForm"
+    "pages/SampleForm",
+    "pages/ruku",
+    "pages/chuku",
+    "pages/chukudan",
+    "pages/jiacaidan"
   ]
 }

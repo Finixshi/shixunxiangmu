@@ -34,7 +34,7 @@ struct Index1 {
     { url: 'app.media.peicanjilu', count: 0, text: '陪餐记录' ,route:'pages/addStaff_test'},
   ];
   @State image1:cuku[]=[
-    {url1:'app.media.gongyingchuku',count1:0,text1:'供应出库',route1:'pages/addStaff_test' },
+    {url1:'app.media.gongyingchuku',count1:0,text1:'供应出库',route1:'pages/chuku' },
     {url1:'app.media.caigouruku',count1:0,text1:'采购入库',route1:'pages/addStaff_test'},
   ]
 
