@@ -59,6 +59,66 @@
     {
       "name": "cancel",
       "value": "取消"
+    },
+    {
+      "name": "module_desc",
+      "value": "模块描述"
+    },
+    {
+      "name": "kitchen_staff_management",
+      "value": "后厨人员管理"
+    },
+    {
+      "name": "kitchen_staff_add",
+      "value": "添加后厨人员"
+    },
+    {
+      "name": "kitchen_staff_edit",
+      "value": "编辑人员信息"
+    },
+    {
+      "name": "kitchen_staff_delete",
+      "value": "删除人员信息"
+    },
+    {
+      "name": "kitchen_staff_save",
+      "value": "保存人员信息"
+    },
+    {
+      "name": "kitchen_staff_name",
+      "value": "姓名"
+    },
+    {
+      "name": "kitchen_staff_position",
+      "value": "职位"
+    },
+    {
+      "name": "kitchen_staff_phone",
+      "value": "联系电话"
+    },
+    {
+      "name": "kitchen_staff_certificate",
+      "value": "健康证号"
+    },
+    {
+      "name": "kitchen_staff_cert_expiry",
+      "value": "健康证有效期"
+    },
+    {
+      "name": "kitchen_staff_join_date",
+      "value": "入职日期"
+    },
+    {
+      "name": "kitchen_staff_status",
+      "value": "状态"
+    },
+    {
+      "name": "kitchen_staff_status_active",
+      "value": "在职"
+    },
+    {
+      "name": "kitchen_staff_status_inactive",
+      "value": "离职"
     }
   ]
 } 
