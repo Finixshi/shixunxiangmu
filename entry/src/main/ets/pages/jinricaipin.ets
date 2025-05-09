@@ -73,14 +73,21 @@ struct JinriCaipin {
   build() {
     Stack({ alignContent: Alignment.Bottom }) {
       Column() {
-        // 顶部标题
-        Text('今日菜品')
-          .fontWeight(FontWeight.Bold)
-          .fontSize(20)
-          .textAlign(TextAlign.Center)
-          .margin({ top: 18, bottom: 8 })
-          .width('100%')
-
+        Row(){
+          Text('←')
+            .fontSize(24)
+            .fontColor('#000')
+            .margin({ left: 16 })
+            .onClick(() => {
+              router.back()
+            })
+          Text('今日菜品')
+            .fontWeight(FontWeight.Bold)
+            .fontSize(20)
+            .textAlign(TextAlign.Center)
+            .margin({ top: 18, bottom: 8 })
+            .width('100%')
+        }
         // 筛选栏
         Row() {
           Select(this.options)
