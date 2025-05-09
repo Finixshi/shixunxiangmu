@@ -1,8 +1,10 @@
 {
   "app": {
-
+<<<<<<< HEAD
     "bundleName": "com.example.dengluyemian",
-
+=======
+    "bundleName": "com.example.dro",
+>>>>>>> ee2705e (testMovoest)
     "vendor": "example",
     "versionCode": 1000000,
     "versionName": "1.0.0",
