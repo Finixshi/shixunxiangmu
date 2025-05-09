@@ -1,3 +1,5 @@
+import router from '@ohos.router';
+
 @Entry
 @Component
 struct NewOutboundOrder {
@@ -42,7 +44,10 @@ struct NewOutboundOrder {
         .width('50%')
         .margin({ top: 24, bottom: 8 })
         .onClick(() => {
-          // TODO: 添加食材逻辑
+          // 跳转到 chukudan 页面
+          router.pushUrl({
+            url: 'pages/jiacaidan'
+          });
         });
 
       // 已选食材提示

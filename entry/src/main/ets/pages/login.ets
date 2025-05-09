@@ -65,7 +65,7 @@ struct LoginPage {
             .borderRadius(8)
             .onClick(() => {
               if (this.account.trim() !== '' && this.password.trim() !== '') {
-                router.pushUrl({ url: '/entry/pages/shouye' })
+                router.pushUrl({ url: 'pages/shouye' })
               }
             })
         }
