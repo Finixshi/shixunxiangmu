@@ -1,5 +1,11 @@
 {
   "src": [
+    "pages/Index",
+    "pages/StaffList",
+    "pages/StaffForm"
+  ]
+}
+
     "pages/login"
     "pages/Calendar",
     "pages/SampleForm"
