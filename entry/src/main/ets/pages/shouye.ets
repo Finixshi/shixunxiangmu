@@ -27,15 +27,15 @@ interface cuku{
 struct Index1 {
   @State image: ImageCount[] = [
     { url: 'app.media.shangbaojihua', count: 0, text: '上报计划' ,route:'pages/addStaff_test'},
-    { url: 'app.media.jinricaipin', count: 0, text: '今日菜品' ,route:'pages/addStaff_test'},
-    { url: 'app.media.houchurenyuan', count: 0, text: '后厨人员',route:'pages/addStaff_test' },
+    { url: 'app.media.jinricaipin', count: 0, text: '今日菜品' ,route:'pages/jinricaipin'},
+    { url: 'app.media.houchurenyuan', count: 0, text: '后厨人员',route:'pages/StaffForm' },
     { url: 'app.media.meiriliuyang', count: 0, text: '每日留样' ,route:'pages/Calendar'},
     { url: 'app.media.chenjianjilu', count: 0, text: '晨检记录' ,route:'pages/addStaff_test'},
     { url: 'app.media.peicanjilu', count: 0, text: '陪餐记录' ,route:'pages/addStaff_test'},
   ];
   @State image1:cuku[]=[
     {url1:'app.media.gongyingchuku',count1:0,text1:'供应出库',route1:'pages/chuku' },
-    {url1:'app.media.caigouruku',count1:0,text1:'采购入库',route1:'pages/addStaff_test'},
+    {url1:'app.media.caigouruku',count1:0,text1:'采购入库',route1:'pages/ruku'},
   ]
 
 
