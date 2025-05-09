@@ -1,9 +1,5 @@
 {
   "app": {
-    "bundleName": "com.example.myapplication4324",
-<<<<<<< HEAD
-    "bundleName": "com.example.dengluyemian",
-=======
     "bundleName": "com.example.dro",
     "vendor": "example",
     "versionCode": 1000000,

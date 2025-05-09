@@ -3,11 +3,7 @@
     "pages/login",
     "pages/Index",
     "pages/StaffList",
-    "pages/StaffForm"
-  ]
-}
-
-    "pages/login"
+    "pages/StaffForm",
     "pages/Calendar",
     "pages/SampleForm"
   ]
