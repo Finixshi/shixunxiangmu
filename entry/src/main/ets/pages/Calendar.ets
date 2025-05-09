@@ -61,13 +61,22 @@ struct CalendarPage {
   @Builder
   private HeaderBuilder() {
     Row() {
-      Text('每日留样')
-        .fontSize(20)
-        .fontWeight(FontWeight.Medium)
-        .margin({ left: 16 })
+      Row() {
+        Text('<')
+          .fontSize(24)
+          .fontColor('#333333')
+          .onClick(() => {
+            router.back()
+          })
+        Text('每日留样')
+          .fontSize(20)
+          .fontWeight(FontWeight.Medium)
+          .margin({ left: 16 })
+      }
     }
     .width('100%')
     .height(56)
+    .padding({ left: 16, right: 16 })
     .backgroundColor('#FFFFFF')
   }
 

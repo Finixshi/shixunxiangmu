@@ -2,63 +2,63 @@
   "string": [
     {
       "name": "entry_desc",
-      "value": "Sample Management System"
+      "value": "留样管理系统"
     },
     {
       "name": "permission_reason_datasync",
-      "value": "Need to sync data to save sample records"
+      "value": "用于保存和同步留样数据"
     },
     {
       "name": "EntryAbility_desc",
-      "value": "Sample Management System Main Program"
+      "value": "留样管理系统"
     },
     {
       "name": "EntryAbility_label",
-      "value": "Sample Management"
+      "value": "留样管理"
     },
     {
       "name": "sample_form_title",
-      "value": "Sample Registration Form"
+      "value": "留样登记表"
     },
     {
       "name": "sample_name",
-      "value": "Sample Name"
+      "value": "样品名称"
     },
     {
       "name": "sample_type",
-      "value": "Sample Type"
+      "value": "样品类型"
     },
     {
       "name": "sample_date",
-      "value": "Sampling Date"
+      "value": "留样日期"
     },
     {
       "name": "sample_time",
-      "value": "Sampling Time"
+      "value": "留样时间"
     },
     {
       "name": "sample_quantity",
-      "value": "Sample Quantity"
+      "value": "留样数量"
     },
     {
       "name": "sample_unit",
-      "value": "Unit"
+      "value": "单位"
     },
     {
       "name": "sample_location",
-      "value": "Storage Location"
+      "value": "存放位置"
     },
     {
       "name": "sample_operator",
-      "value": "Operator"
+      "value": "操作人"
     },
     {
       "name": "save",
-      "value": "Save"
+      "value": "保存"
     },
     {
       "name": "cancel",
-      "value": "Cancel"
+      "value": "取消"
     }
   ]
 }

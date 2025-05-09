@@ -1,6 +1,10 @@
+import router from '@ohos.router';
 @Entry
 @Component
 struct LoginPage {
+  // 定义输入框状态变量
+  @State account: string = '';
+  @State password: string = '';
   build() {
     Stack() {
       // 背景图
@@ -26,7 +30,10 @@ struct LoginPage {
               .fontSize(18)
               .fontWeight(FontWeight.Bold)
               .margin({ left: -250, top: 24 })
-            TextInput({placeholder:'请输入你的账号'})
+            TextInput({ placeholder: '请输入你的账号' }) // 构造函数仅传占位符
+              .onChange((value: string) => { // 链式调用设置输入变化回调
+                this.account = value;
+              })
               .padding({ left: 16, right: 16 })
               .border({ color: '#E0E0E0', width: 1 })
               .margin({ left: 12, right: 12, top: 8 })
@@ -38,7 +45,10 @@ struct LoginPage {
               .fontSize(18)
               .fontWeight(FontWeight.Bold)
               .margin({ left: -250, top: 16 })
-            TextInput({placeholder:'请输入你的密码'})
+            TextInput({ placeholder: '请输入你的密码' }) // 保持你习惯的占位符写法
+              .onChange((value: string) => {
+                this.password = value;
+              })
               .padding({ left: 16, right: 16 })
               .border({ color: '#E0E0E0', width: 1 })
               .margin({ left: 12, right: 12, top: 8 })
@@ -53,6 +63,11 @@ struct LoginPage {
             .height(48)
             .margin({ top: 24, bottom: 24 })
             .borderRadius(8)
+            .onClick(() => {
+              if (this.account.trim() !== '' && this.password.trim() !== '') {
+                router.pushUrl({ url: 'pages/shouye' })
+              }
+            })
         }
         .margin(50)
         .width('100%')
