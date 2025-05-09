@@ -72,6 +72,82 @@ struct JinRiCaiPin {
     .backgroundColor('#FFFFFF')
     .margin({ bottom: 8 });
   }
+  private deleteRecipe(index: number) {
+    AlertDialog.show({
+      title: '删除确认',
+      message: '确定要删除该食谱吗？',
+      primaryButton: {
+        value: '取消',
+        action: () => {
+          console.info('取消删除')
+        }
+      },
+      secondaryButton: {
+        value: '删除',
+        action: () => {
+          this.recipeList.splice(index, 1)
+          AppStorage.Set<string>('recipeList', JSON.stringify(this.recipeList))
+          promptAction.showToast({ message: '删除成功' })
+        }
+      }
+    })
+  }
+
+  build() {
+    Stack({ alignContent: Alignment.Bottom }) {
+      Column() {
+        Stack({ alignContent: Alignment.Start }) {
+          Text('今日菜品')
+            .fontWeight(FontWeight.Bold)
+            .fontSize(20)
+            .textAlign(TextAlign.Center)
+            .width('100%')
+            .margin({ top: 18, bottom: 8 })
+
+          Text('←')
+            .fontSize(24)
+            .fontColor('#000')
+            .margin({ left: 16, top: 18 })
+            .onClick(() => {
+              router.back()
+            })
+        }
+        .width('100%')
+        // 筛选栏
+        Row() {
+          Select(this.options)
+            .selected(0)
+            .value(this.selectedValue)
+            .onSelect((index: number, value: string) => {
+              this.selectedValue = value
+            })
+            .width("48%")
+            .fontColor('#333')
+            .backgroundColor('#FFF')
+            .borderRadius(8)
+            .border({ width: 0, color: '#DDD' })
+
+          Text(this.timeText)
+            .onClick(() => {
+              DatePickerDialog.show({
+                start: new Date("2000-1-1"),
+                end: new Date("2100-12-31"),
+                selected: this.selectedDate,
+                onAccept: (value: DatePickerResult) => {
+                  if (value.year !== undefined && value.month !== undefined && value.day !== undefined) {
+                    this.selectedDate.setFullYear(value.year, value.month, value.day);
+                    const formattedDate = `${value.year.toString().padStart(4, '0')}-${(value.month + 1).toString().padStart(2, '0')}-${value.day.toString().padStart(2, '0')}`;
+                    this.timeText = formattedDate;
+                  }
+                }
+              });
+            })
+            .width('48%')
+            .fontWeight(1)
+            .textAlign(TextAlign.End)
+        }
+        .width('100%')
+        .padding({ left: 12, right: 12, bottom: 10 })
 
   @Builder
   private RecipeList() {
