@@ -15,6 +15,50 @@
     {
       "name": "EntryAbility_label",
       "value": "留样管理"
+    },
+    {
+      "name": "sample_form_title",
+      "value": "留样登记表"
+    },
+    {
+      "name": "sample_name",
+      "value": "样品名称"
+    },
+    {
+      "name": "sample_type",
+      "value": "样品类型"
+    },
+    {
+      "name": "sample_date",
+      "value": "留样日期"
+    },
+    {
+      "name": "sample_time",
+      "value": "留样时间"
+    },
+    {
+      "name": "sample_quantity",
+      "value": "留样数量"
+    },
+    {
+      "name": "sample_unit",
+      "value": "单位"
+    },
+    {
+      "name": "sample_location",
+      "value": "存放位置"
+    },
+    {
+      "name": "sample_operator",
+      "value": "操作人"
+    },
+    {
+      "name": "save",
+      "value": "保存"
+    },
+    {
+      "name": "cancel",
+      "value": "取消"
     }
   ]
 }
