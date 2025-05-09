@@ -21,10 +21,9 @@ struct ShiPu {
   private recipeService = getRecipeService(this.context);
 
   private mealTypes: SelectOption[] = [
-    { value: '早点' },
+    { value: '早餐' },
     { value: '午餐' },
-    { value: '晚点' },
-    { value: '其他' }
+    { value: '晚餐' }
   ];
 
   private diningTypes: SelectOption[] = [
@@ -34,13 +33,13 @@ struct ShiPu {
   ];
 
   private canteens: SelectOption[] = [
-    { value: '劳芙餐厅' },
-    { value: '泷湖一小餐厅' }
+    { value: '实训第一学校餐厅' },
+    { value: '实训第二学校餐厅' }
   ];
 
   aboutToAppear() {
     const params = router.getParams() as RecipeRouteParams;
-    
+
     // 判断是否是编辑模式
     if (params?.editRecipe) {
       this.isEditMode = true;
@@ -73,8 +72,8 @@ struct ShiPu {
   }
 
   validateForm(): boolean {
-    if (!this.formData.date || !this.formData.name || !this.formData.mealType || 
-        !this.formData.diningType || !this.formData.canteen) {
+    if (!this.formData.date || !this.formData.name || !this.formData.mealType ||
+      !this.formData.diningType || !this.formData.canteen) {
       promptAction.showToast({
         message: '请填写必填项',
         duration: 2000
@@ -160,6 +159,8 @@ struct ShiPu {
             this.FormHeader('餐别', true)
             Select(this.mealTypes)
               .value(this.formData.mealType)
+              .selectedOptionFont({ size: 16, weight: FontWeight.Regular })
+              .optionFont({ size: 16, weight: FontWeight.Regular })
               .onSelect((index: number) => {
                 this.formData.mealType = this.mealTypes[index].value
               })
@@ -175,6 +176,8 @@ struct ShiPu {
             this.FormHeader('用餐类型', true)
             Select(this.diningTypes)
               .value(this.formData.diningType)
+              .selectedOptionFont({ size: 16, weight: FontWeight.Regular })
+              .optionFont({ size: 16, weight: FontWeight.Regular })
               .onSelect((index: number) => {
                 this.formData.diningType = this.diningTypes[index].value
               })
@@ -190,6 +193,8 @@ struct ShiPu {
             this.FormHeader('餐厅', true)
             Select(this.canteens)
               .value(this.formData.canteen)
+              .selectedOptionFont({ size: 16, weight: FontWeight.Regular })
+              .optionFont({ size: 16, weight: FontWeight.Regular })
               .onSelect((index: number) => {
                 this.formData.canteen = this.canteens[index].value
               })
@@ -250,9 +255,9 @@ struct ShiPu {
               }
               router.back();
             } catch (error) {
-              await promptAction.showToast({ 
-                message: this.isEditMode ? '修改失败，请重试' : '保存失败，请重试', 
-                duration: 2000 
+              await promptAction.showToast({
+                message: this.isEditMode ? '修改失败，请重试' : '保存失败，请重试',
+                duration: 2000
               });
             }
           }
