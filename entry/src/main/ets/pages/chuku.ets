@@ -20,10 +20,21 @@ struct PurchaseInventory {
   build() {
     Column() {
       // 第一块：标题，使其居中
-      Text('供应出库')
-        .fontWeight(FontWeight.Bold)
-        .alignSelf(ItemAlign.Center)
-        .margin({ top: 0, bottom: 10 });
+      Row(){
+        Text('<')
+          .fontWeight(FontWeight.Bold)
+          .alignSelf(ItemAlign.Center)
+          .margin({ top: 0, bottom: 10 })
+          .onClick(() => {
+            router.back()
+          });
+
+        Text('供应出库')
+          .fontWeight(FontWeight.Bold)
+          .alignSelf(ItemAlign.Center)
+          .margin({ top: 0, bottom: 10 });
+      }
+
 
       // 第二块：选项卡
       Row() {
