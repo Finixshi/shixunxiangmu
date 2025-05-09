@@ -1,15 +1,17 @@
 {
   "src": [
-    "pages/Index",
-    "pages/shouye",
     "pages/login",
-    "pages/KitchenStaffList",
-    "pages/StaffEditor",
-    "pages/jinricaipin",
-    "pages/shipu",
+    "pages/houqin",
+    "pages/StaffList",
+    "pages/StaffForm",
+    "pages/Calendar",
+    "pages/SampleForm",
+    "pages/ruku",
     "pages/chuku",
-    "pages/jiacaidan",
     "pages/chukudan",
-    "pages/ruku"
+    "pages/jiacaidan",
+    "pages/shouye",
+    "pages/jinricaipin",
+    "pages/shipu"
   ]
 }
