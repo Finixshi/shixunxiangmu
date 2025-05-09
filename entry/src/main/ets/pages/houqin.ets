@@ -2,7 +2,7 @@ import router from '@ohos.router';
 
 @Entry
 @Component
-struct Index {
+struct houqin {
   aboutToAppear() {
     // 导航到人员列表页面
     router.pushUrl({
@@ -20,4 +20,4 @@ struct Index {
     .height('100%')
     .justifyContent(FlexAlign.Center)
   }
-}
+} 

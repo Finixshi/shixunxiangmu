@@ -5,7 +5,6 @@ struct LoginPage {
   // 定义输入框状态变量
   @State account: string = '';
   @State password: string = '';
-
   build() {
     Stack() {
       // 背景图
