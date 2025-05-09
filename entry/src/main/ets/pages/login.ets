@@ -45,7 +45,7 @@ struct LoginPage {
               .fontSize(18)
               .fontWeight(FontWeight.Bold)
               .margin({ left: -250, top: 16 })
-            TextInput({ placeholder: '请输入你的密码' }) // 保持你习惯的占位符写法
+            TextInput({ placeholder: '请输入你的密码' })
               .onChange((value: string) => {
                 this.password = value;
               })
@@ -73,7 +73,6 @@ struct LoginPage {
         .width('100%')
         .height('100%')
         .backgroundColor('#FFFFFF')
-
         .borderRadius(16)
       }
        .margin({ top: -20 })
