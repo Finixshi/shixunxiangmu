@@ -1,3 +1,5 @@
+import router from '@ohos.router';
+
 @Entry
 @Component
 struct PurchaseInventory {
@@ -20,12 +22,21 @@ struct PurchaseInventory {
 
   build() {
     Column() {
-      // 第一块：标题，使其居中
-      Text('选择食材')
-        .fontWeight(FontWeight.Bold)
-        .alignSelf(ItemAlign.Center)
-        .margin({ top: 10 })
-        .margin({ bottom: 20 });
+      Row(){
+        Text('<')
+          .fontWeight(FontWeight.Bold)
+          .alignSelf(ItemAlign.Center)
+          .margin({ top: 10 })
+          .margin({ bottom: 20 })
+          .onClick(() => {
+            router.back()
+          })
+        Text('选择食材')
+          .fontWeight(FontWeight.Bold)
+          .alignSelf(ItemAlign.Center)
+          .margin({ top: 10 })
+          .margin({ bottom: 20 });
+      }
 
       // 第二块：选项卡（已移除“待收货”）
       Row() {
