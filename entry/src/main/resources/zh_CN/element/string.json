@@ -1,0 +1,64 @@
+{
+  "string": [
+    {
+      "name": "entry_desc",
+      "value": "留样管理系统"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "留样管理系统主程序"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "留样管理"
+    },
+    {
+      "name": "permission_reason_datasync",
+      "value": "需要同步数据以保存留样记录"
+    },
+    {
+      "name": "sample_form_title",
+      "value": "留样登记表"
+    },
+    {
+      "name": "sample_name",
+      "value": "样品名称"
+    },
+    {
+      "name": "sample_type",
+      "value": "样品类型"
+    },
+    {
+      "name": "sample_date",
+      "value": "采样日期"
+    },
+    {
+      "name": "sample_time",
+      "value": "采样时间"
+    },
+    {
+      "name": "sample_quantity",
+      "value": "样品数量"
+    },
+    {
+      "name": "sample_unit",
+      "value": "单位"
+    },
+    {
+      "name": "sample_location",
+      "value": "存放位置"
+    },
+    {
+      "name": "sample_operator",
+      "value": "操作人员"
+    },
+    {
+      "name": "save",
+      "value": "保存"
+    },
+    {
+      "name": "cancel",
+      "value": "取消"
+    }
+  ]
+} 
