@@ -16,7 +16,8 @@ struct JinRiCaiPin {
   private mealTypes: SelectOption[] = [
     { value: '早餐' },
     { value: '午餐' },
-    { value: '晚餐' }
+    { value: '晚餐' },
+    { value: '其他' }
   ];
 
   aboutToAppear() {
@@ -57,14 +58,11 @@ struct JinRiCaiPin {
       // 筛选条件
       Row() {
         Column() {
-          Select(this.mealTypes)
-            .value(this.selectedMealType)
-            .selectedOptionFont({ size: 16, weight: FontWeight.Regular })
-            .optionFont({ size: 16, weight: FontWeight.Regular })
+          Text('请选择餐别 ▼')
+            .fontSize(16)
             .fontColor('#333333')
-            .onSelect((index: number) => {
-              this.selectedMealType = this.mealTypes[index].value;
-              this.loadRecipes();
+            .onClick(() => {
+              this.selectedMealType = '早餐'; // 这里应该弹出选择器
             })
         }
         .layoutWeight(1)
