@@ -1,5 +1,6 @@
 {
   "app": {
+    "bundleName": "com.example.myapplication4324",
     "bundleName": "com.example.dro",
     "vendor": "example",
     "versionCode": 1000000,

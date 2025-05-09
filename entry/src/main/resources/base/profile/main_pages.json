@@ -1,7 +1,7 @@
 {
   "src": [
     "pages/login",
-    "pages/Index",
+    "pages/houqin",
     "pages/StaffList",
     "pages/StaffForm",
     "pages/Calendar",

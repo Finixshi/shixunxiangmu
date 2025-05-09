@@ -1,0 +1,25 @@
+[33m88472b9[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m HEAD@{0}: commit (amend): testMovoest2025年5月9日10:12:35
+[33mfbd78d8[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{1}: commit: testMovoest2025年5月9日10:12:35
+[33me305ebe[m HEAD@{2}: rebase (finish): returning to refs/heads/master
+[33me305ebe[m HEAD@{3}: rebase (continue): testMovoest02
+[33mcfb6604[m HEAD@{4}: rebase (start): checkout origin/master
+[33mc5cce8e[m HEAD@{5}: rebase (abort): returning to refs/heads/master
+[33mcfb6604[m HEAD@{6}: rebase (start): checkout origin/master
+[33mc5cce8e[m HEAD@{7}: commit: testMovoest02
+[33mff20ce6[m HEAD@{8}: rebase (finish): returning to refs/heads/master
+[33mff20ce6[m HEAD@{9}: rebase (pick): Revert "testMovoest01"
+[33m9859413[m HEAD@{10}: rebase (pick): testMovoest01
+[33m9f8aab9[m HEAD@{11}: rebase (continue): testMovoest2025年5月9日09:18:34
+[33mf303164[m HEAD@{12}: rebase (start): checkout origin/master
+[33mea1b38a[m HEAD@{13}: merge origin/master: Merge made by the 'ort' strategy.
+[33m938be20[m HEAD@{14}: revert: Revert "testMovoest01"
+[33mb1b0e53[m HEAD@{15}: commit (merge): Merge remote-tracking branch 'origin/master'
+[33mf745954[m HEAD@{16}: commit (amend): testMovoest01
+[33m6e03e09[m HEAD@{17}: reset: moving to HEAD
+[33m6e03e09[m HEAD@{18}: commit: testMovoest
+[33mee559ff[m HEAD@{19}: rebase (finish): returning to refs/heads/master
+[33mee559ff[m HEAD@{20}: rebase (continue): testMovoest
+[33m4e12c3f[m HEAD@{21}: rebase (start): checkout origin/master
+[33mee2705e[m HEAD@{22}: commit (amend): testMovoest
+[33m1c39103[m HEAD@{23}: commit (amend): testMovoest
+[33medc8b21[m HEAD@{24}: commit (initial): test
