@@ -7,16 +7,20 @@ struct NewOutboundOrder {
 
   build() {
     Column() {
-      // 顶部导航栏：仅保留文字标题
-      Flex({
-        direction: FlexDirection.Row,
-        justifyContent: FlexAlign.Center,
-        alignItems: ItemAlign.Center
-      }) {
+      Row(){
+        Text('<')
+          .fontWeight(FontWeight.Bold)
+          .alignSelf(ItemAlign.Center)
+          .margin({ top: 10 })
+          .margin({ bottom: 20 })
+          .onClick(() => {
+            router.back()
+          });
         Text('新建出库单')
-          .fontSize(18)
-          .fontColor('#333333')
-          .fontWeight(FontWeight.Bold);
+          .fontWeight(FontWeight.Bold)
+          .alignSelf(ItemAlign.Center)
+          .margin({ top: 10 })
+          .margin({ bottom: 20 });
       }
       .height(56)
       .width('100%')
