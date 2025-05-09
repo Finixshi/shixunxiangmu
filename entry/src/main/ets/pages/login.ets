@@ -5,7 +5,6 @@ struct LoginPage {
   // 定义输入框状态变量
   @State account: string = '';
   @State password: string = '';
-
   build() {
     Stack() {
       // 背景图
@@ -66,7 +65,7 @@ struct LoginPage {
             .borderRadius(8)
             .onClick(() => {
               if (this.account.trim() !== '' && this.password.trim() !== '') {
-                router.pushUrl({ url: 'pages/shouye' })
+                router.pushUrl({ url: '/entry/pages/shouye' })
               }
             })
         }
