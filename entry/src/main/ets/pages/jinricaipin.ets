@@ -46,9 +46,6 @@ struct JinRiCaiPin {
           .fontWeight(FontWeight.Medium)
           .margin({ left: 16 })
         Blank()
-        Text('...')
-          .fontSize(24)
-          .fontColor('#333333')
       }
       .width('100%')
       .height(56)
