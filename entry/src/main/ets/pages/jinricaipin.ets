@@ -3,6 +3,7 @@ import { getRecipeService } from '../common/services/RecipeService';
 import { RecipeData, SelectOption } from '../common/types';
 import promptAction from '@ohos.promptAction';
 import common from '@ohos.app.ability.common';
+import preferences from '@ohos.data.preferences';
 
 @Entry
 @Component
@@ -27,7 +28,52 @@ struct JinRiCaiPin {
   }
 
   async loadRecipes() {
-    this.recipes = await this.recipeService.getRecipesByDate(this.selectedDate);
+    // 使用preferences代替PersistentStorage
+    this.getRecipeList();
+  }
+
+  private async getRecipeList() {
+    try {
+      const prefer = await preferences.getPreferences(this.context, 'myPreferences')
+      const storageRecipes = await prefer.get('recipeList', '[]')
+      console.info('获取的原始数据:', storageRecipes)
+      if (storageRecipes) {
+        this.recipes = JSON.parse(storageRecipes as string)
+        // 按日期倒序排列，最新的显示在前面
+        this.recipes.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+        console.info('解析后的列表:', JSON.stringify(this.recipes))
+      }
+    } catch (error) {
+      console.error('获取数据失败:', error)
+    }
+  }
+
+  private deleteRecipe(index: number) {
+    AlertDialog.show({
+      title: '删除确认',
+      message: '确定要删除该食谱吗？',
+      primaryButton: {
+        value: '取消',
+        action: () => {
+          console.info('取消删除')
+        }
+      },
+      secondaryButton: {
+        value: '删除',
+        action: async () => {
+          this.recipes.splice(index, 1)
+          try {
+            const prefer = await preferences.getPreferences(this.context, 'myPreferences')
+            await prefer.put('recipeList', JSON.stringify(this.recipes))
+            await prefer.flush()
+            promptAction.showToast({ message: '删除成功' })
+          } catch (error) {
+            console.error('删除失败:', error)
+            promptAction.showToast({ message: '删除失败' })
+          }
+        }
+      }
+    })
   }
 
   build() {
@@ -185,14 +231,8 @@ struct JinRiCaiPin {
                       .borderRadius(16)
                       .borderWidth(1)
                       .borderColor('#FF0000')
-                      .onClick(async () => {
-                        try {
-                          await this.recipeService.deleteRecipe(recipe.date, index);
-                          await promptAction.showToast({ message: '删除成功', duration: 2000 });
-                          this.loadRecipes();
-                        } catch (error) {
-                          await promptAction.showToast({ message: '删除失败，请重试', duration: 2000 });
-                        }
+                      .onClick(() => {
+                        this.deleteRecipe(index);
                       });
                   }
                   .width('100%')

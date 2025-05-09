@@ -1,0 +1,12 @@
+{
+  "string": [
+    {
+      "name": "kitchenstaff_list",
+      "value": "pages/KitchenStaffList"
+    },
+    {
+      "name": "staff_editor",
+      "value": "pages/StaffEditor"
+    }
+  ]
+} 
