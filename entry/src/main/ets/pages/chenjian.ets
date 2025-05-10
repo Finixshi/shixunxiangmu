@@ -1,4 +1,18 @@
 import { router } from '@kit.ArkUI'
+import preferences from '@ohos.data.preferences'
+import common from '@ohos.app.ability.common'
+
+// 定义后厨人员接口
+interface KitchenStaff {
+  id: string;
+  name: string;
+  position: string;
+  phone: string;
+  certificate: string;
+  certExpiry: string;
+  joinDate: string;
+  status: string;
+}
 
 @Entry
 @Component
@@ -11,6 +25,38 @@ struct CalendarPage {
   private weekDays: string[] = ['日', '一', '二', '三', '四', '五', '六']
   @State private selectedTab: number = 0 // 0:全部 1:晨检 2:午检 3:晚检
   private tabList: string[] = ['全部', '晨检', '午检', '晚检']
+  
+  // 添加统计相关的状态变量
+  @State private totalCount: number = 0
+  @State private checkedCount: number = 0
+  @State private uncheckedCount: number = 0
+  @State private failedCount: number = 0
+  private context = getContext(this) as common.UIAbilityContext
+
+  aboutToAppear() {
+    this.getStaffStatistics()
+  }
+
+  // 获取后厨人员统计数据
+  private async getStaffStatistics() {
+    try {
+      const prefer = await preferences.getPreferences(this.context, 'myPreferences')
+      const storageStaff = await prefer.get('staffList', '[]')
+      if (storageStaff) {
+        const staffList: KitchenStaff[] = JSON.parse(storageStaff as string)
+        // 只统计在职人员
+        const activeStaff = staffList.filter(staff => staff.status === '在职')
+        this.totalCount = activeStaff.length
+        // 这里可以根据实际需求设置其他统计数据
+        this.checkedCount = 0
+        this.uncheckedCount = this.totalCount
+        this.failedCount = 0
+      }
+    } catch (error) {
+      console.error('获取人员统计数据失败:', error)
+    }
+  }
+
   /**
    * 格式化日期为 YYYY-MM-DD 格式
    * @param date - 需要格式化的日期对象
@@ -214,19 +260,19 @@ struct CalendarPage {
       this.TabButtonRowBuilder()
       // 渲染统计信息行
       Row() {
-        Text('总人数：0人')
+        Text(`总人数：${this.totalCount}人`)
           .fontSize(11)
           .fontColor('#222222')
         Blank()
-        Text('已检测：0人')
+        Text(`已检测：${this.checkedCount}人`)
           .fontSize(11)
           .fontColor('#222222')
         Blank()
-        Text('未检测：0人')
+        Text(`未检测：${this.uncheckedCount}人`)
           .fontSize(11)
           .fontColor('#222222')
         Blank()
-        Text('不合格：0人')
+        Text(`不合格：${this.failedCount}人`)
           .fontSize(11)
           .fontColor('#222222')
       }

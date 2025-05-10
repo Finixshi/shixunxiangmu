@@ -21,6 +21,8 @@
     "pages/tianjiashicai",
     "pages/changjianwentijieda",
     "pages/uploadPlan",
-    "pages/uploadPlan_2"
+    "pages/uploadPlan_2",
+    "pages/chenjian",
+    "pages/chenjian1"
   ]
 }
