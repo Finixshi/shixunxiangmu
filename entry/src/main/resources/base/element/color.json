@@ -39,6 +39,10 @@
     {
       "name": "success",
       "value": "#4CD964"
+    },
+    {
+      "name": "start_window_background",
+      "value": "#FFFFFF"
     }
   ]
 }
