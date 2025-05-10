@@ -40,7 +40,7 @@ struct DatePickerExample {
           Column({ space: 10 }) {
             this.buildLabelRow($r("app.media.iunitName"), "领用单位", true, 0)
             this.buildLabelRow($r("app.media.isupplyDate"), "出库日期", true, 1)
-            this.buildLabelRow($r("app.media.idemand"), "需求类型", true, 3)
+            this.buildLabelRow($r("app.media.idemand"), "出库类型", true, 3)
 
             // 条件用餐类型行
             if (this.showMealType) {
@@ -55,22 +55,24 @@ struct DatePickerExample {
 
           // 添加食材按钮
           Row() {
-            Button({type: ButtonType.Normal}) {
+            Button({ type: ButtonType.Normal }) {
               Text('+添加食材')
-                .onClick(() => {
-                  router.pushUrl({
-                    url: 'pages/jiacaidan' })
-                })
                 .fontSize(16)
                 .fontColor(Color.White)
-                .padding({
-                  left: 16,
-                  right: 16,
-                  top: 8,
-                  bottom: 8
-                })
+                .padding({ left: 16, right: 16, top: 8, bottom: 8 })
                 .borderRadius(8)
-
+                .onClick(() => {
+                  if (this.selectedText[3] === '请选择') {
+                    promptAction.showToast({
+                      message: '请选择出库类型',
+                      duration: 2000
+                    });
+                  } else {
+                    router.pushUrl({
+                      url: 'pages/jiacaidan'
+                    });
+                  }
+                })
             }
             .width('80%')
             .height(35)
@@ -84,6 +86,7 @@ struct DatePickerExample {
               .fontColor('#8A96A2')
               .position({ x: 137, y: 15 })
           }
+
 
           Column()//渐变框
             .linearGradient({
@@ -174,44 +177,72 @@ struct DatePickerExample {
               .textAlign(TextAlign.End)
           }
           Row() {
-            Button({type: ButtonType.Normal}){
+            Button({ type: ButtonType.Normal }) {
               Text('保存')
                 .textAlign(TextAlign.Center)
                 .fontSize(16)
                 .fontColor(Color.White)
                 .width('40%')
-            }
+                .onClick(() => {
+                  let requiredFields = [
+                    this.selectedText[0], // 领用单位
+                    this.selectedText[1], // 出库日期
+                    this.selectedText[3], // 出库类型
+                    this.selectedText[5]  // 餐别
+                  ];
 
+                  if (requiredFields.includes('请选择')) {
+                    promptAction.showToast({
+                      message: '请选择全部内容后重试',
+                      duration: 2000
+                    });
+                  } else {
+                    router.pushUrl({
+                      url: 'pages/chuku'
+                    });
+                  }
+                })
+            }
             .height(35)
             .backgroundColor('#02BC65')
             .fontColor(Color.White)
             .borderRadius(8)
             .width('auto')
             .padding({ left: 15, right: 15 })
-            .onClick(() => {
-              router.pushUrl({
-                url: 'pages/chuku'
-              });
-            });
 
-            Button({type: ButtonType.Normal}){
+            Button({ type: ButtonType.Normal }) {
               Text('保存并审核')
                 .textAlign(TextAlign.Center)
                 .fontSize(16)
                 .fontColor(Color.White)
                 .width('40%')
-            }
-            .onClick(() => {
-              router.pushUrl({
-                url: 'pages/chuku' })
-            })
+                .onClick(() => {
+                  let requiredFields = [
+                    this.selectedText[0], // 领用单位
+                    this.selectedText[1], // 出库日期
+                    this.selectedText[3], // 出库类型
+                    this.selectedText[5]  // 餐别
+                  ];
 
+                  if (requiredFields.includes('请选择')) {
+                    promptAction.showToast({
+                      message: '请选择全部内容后重试',
+                      duration: 2000
+                    });
+                  } else {
+                    router.pushUrl({
+                      url: 'pages/chuku'
+                    });
+                  }
+                })
+            }
             .height(35)
             .backgroundColor('#02BC65')
             .fontColor(Color.White)
             .borderRadius(8)
             .width('auto')
             .padding({ left: 15, right: 15 })
+
           }
           .width('100%')
           .justifyContent(FlexAlign.SpaceBetween)
@@ -272,7 +303,7 @@ struct DatePickerExample {
             case "出库日期":
               this.showDateDialog()
               break;
-            case "需求类型":
+            case "出库类型":
               this.showTextDialog(this.demandOptions,3)
               break;
             case "用餐类型":

@@ -77,14 +77,15 @@ struct Index1 {
               left: 10,
               right: 10,
             })
-            Row(){
+
+            Row() {
               Image($r('app.media.notice'))
                 .height(25)
                 .layoutWeight(1)
               Text()
                 .height(50)
                 .layoutWeight(4.5)
-                .animation({duration: 3000})
+                .animation({ duration: 3000 })
             }
             .width('100%')
             .height(60)
@@ -116,17 +117,19 @@ struct Index1 {
                         .width(50)
                         .height(50)
                         .onClick(() => {
-                          router.pushUrl({          // 使用push入栈一个新页面
+                          router.pushUrl({
+                            // 使用push入栈一个新页面
                             url: item.route // 通过url指定新打开的页面
                           ,
-                            params:{
-                              token:this.receivedToken,
-                              relTenantIds:this.tenantId
+                            params: {
+                              token: this.receivedToken,
+                              relTenantIds: this.tenantId
 
                             }
                           })
                         })
                     }
+
                     Text(item.text)
                       .fontSize(14)
                       .margin({ top: 5 })
@@ -164,17 +167,19 @@ struct Index1 {
                         .width(50)
                         .height(50)
                         .onClick(() => {
-                          router.pushUrl({          // 使用push入栈一个新页面
+                          router.pushUrl({
+                            // 使用push入栈一个新页面
                             url: item1.route1 // 通过url指定新打开的页面
                           ,
-                            params:{
-                              token:this.receivedToken,
-                              relTenantIds:this.tenantId
+                            params: {
+                              token: this.receivedToken,
+                              relTenantIds: this.tenantId
 
                             }
                           })
                         })
                     }
+
                     Text(item1.text1)
                       .fontSize(14)
                       .margin({ top: 5 })
@@ -199,31 +204,137 @@ struct Index1 {
         .edgeEffect(EdgeEffect.Fade)
       }
       .tabBar('首页')
+
       TabContent() {
         Column() {
-          Row(){
+          Row() {
             Image($r('app.media.avatar'))
               .width(100)
               .height(100)
               .layoutWeight(1)
               .borderRadius(50)
-            Column(){
+            Column() {
               Text('实训第二学校')
                 .fontSize(20)
-
               Text('人15502933673')
             }
             .layoutWeight(2.4)
           }
+          .width('100%')
+          .padding({
+            left: 20,
+          })
+
+          // 添加功能按钮
+          List() {
+            // 修改个人信息
+            ListItem() {
+              Row() {
+                Stack() {
+                  Text('修改个人信息')
+                  Image($r('app.media.right_icon'))
+                    .width(15)
+                    .position({x:320})
+                }
+              }
+              .onClick(() => {
+                router.pushUrl({ url: 'pages/editProfile', params: { token: this.receivedToken } })
+              })
+              .margin({left:10})
+              .width('95%')
+              .height(50)
+              .backgroundColor(Color.White)
+              .borderRadius({topLeft:10,topRight:10})
+              .border({width:1,color:Color.Gray})
+            }
+
+            // 修改密码
+            ListItem() {
+              Row() {
+                Stack() {
+                  Text('修改密码')
+                  Image($r('app.media.right_icon'))
+                    .width(15)
+                    .position({x:320})
+                }
+              }
+              .onClick(() => {
+                router.pushUrl({ url: 'pages/editProfile', params: { token: this.receivedToken } })
+              })
+              .margin({left:10})
+              .width('95%')
+              .height(50)
+              .backgroundColor(Color.White)
+              .border({width:1,color:Color.Gray})
+            }
+
+            // 解绑微信
+            ListItem() {
+              Row() {
+                Stack() {
+                  Text('解绑微信')
+                  Image($r('app.media.right_icon'))
+                    .width(15)
+                    .position({x:320})
+                }
+              }
+              .onClick(() => {
+                router.pushUrl({ url: 'pages/editProfile', params: { token: this.receivedToken } })
+              })
+              .margin({left:10})
+              .width('95%')
+              .height(50)
+              .backgroundColor(Color.White)
+              .border({width:1,color:Color.Gray})
+            }
+
+            // 常见问题解答
+            ListItem() {
+              Row() {
+                Stack() {
+                  Text('常见问题解答')
+                  Image($r('app.media.right_icon'))
+                    .width(15)
+                    .position({x:320})
+                }
+              }
+              .onClick(() => {
+                router.pushUrl({ url: 'pages/page1', params: { token: this.receivedToken } })
+              })
+              .margin({left:10})
+              .width('95%')
+              .height(50)
+              .backgroundColor(Color.White)
+              .border({width:1,color:Color.Gray})
+            }
+
+            // 退出登录
+            ListItem() {
+              Row() {
+                Stack() {
+                  Text('退出登录')
+                  Image($r('app.media.right_icon'))
+                    .width(15)
+                    .position({x:320})
+                }
+              }
+              .onClick(() => {
+                router.pushUrl({ url: 'pages/page1', params: { token: this.receivedToken } })
+              })
+              .margin({left:10})
+              .width('95%')
+              .height(50)
+              .backgroundColor(Color.White)
+              .borderRadius({bottomLeft:10,bottomRight:10})
+              .border({width:1,color:Color.Gray})
+            }
+          }
+          .width('100%')
+          .margin({ top: 20 })
         }
-        .width('100%')
-        .height('100%')
-        .padding({
-          left: 20,
-        })
-        .justifyContent(FlexAlign.Start)
       }
       .tabBar('我的')
+      .backgroundColor('rgba(241,241,241,0.9)')
     }
     .barPosition(BarPosition.End)
   }

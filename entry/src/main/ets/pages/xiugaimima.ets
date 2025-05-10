@@ -36,7 +36,7 @@ struct ChangePassword {
     Column() {
       // 顶部栏
       Row() {
-        Text('×')
+        Text('<')
           .fontSize(28)
           .fontColor('#333')
           .onClick(() => {
