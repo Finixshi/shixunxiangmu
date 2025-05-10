@@ -36,7 +36,7 @@ struct ChangePassword {
     Column() {
       // 顶部栏
       Row() {
-        Text('×')
+        Text('<')
           .fontSize(28)
           .fontColor('#333')
           .onClick(() => {
@@ -46,10 +46,6 @@ struct ChangePassword {
           Text('修改密码')
             .fontSize(20)
             .fontWeight(FontWeight.Medium)
-            .margin({ top: 4 })
-          Text('phone.suoeryun.com')
-            .fontSize(14)
-            .fontColor('#999')
             .margin({ top: 4 })
         }
         .layoutWeight(1)
