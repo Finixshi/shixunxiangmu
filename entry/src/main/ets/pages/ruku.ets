@@ -158,16 +158,99 @@ struct ruku {
       if (this.currentTabContent === '待收货') {
         Scroll() {
           Column() {
-            Text('~暂无相关数据~')
-              .fontSize(16)
-              .fontWeight(FontWeight.Normal)
-              .alignSelf(ItemAlign.Center);
+            Stack() {
+              Column() {
+                Row() {
+                  Text('诚信蔬菜批发门市')
+                    .fontSize(20)
+                    .fontWeight(FontWeight.Bold)
+                    .fontColor('#333')
+                  Blank()
+                  Text('订单信息二维码 >')
+                    .fontSize(14)
+                    .fontColor('#1BBE6C')
+                }
+                .width('100%')
+                .padding({ bottom: 8 })
+
+                Text('下单时间：2025-05-07 15:08:45')
+                  .fontSize(14)
+                  .fontColor('#666')
+                  .margin({ top: 4 })
+                Text('供应时间：2025-05-21 上午')
+                  .fontSize(14)
+                  .fontColor('#666')
+                  .margin({ top: 4 })
+                Text('需求单位：实训第一学校(库房)')
+                  .fontSize(14)
+                  .fontColor('#666')
+                  .margin({ top: 4 })
+                Text('单据号：RK20250507001')
+                  .fontSize(14)
+                  .fontColor('#666')
+                  .margin({ top: 4 })
+                Text('入库类型：学生餐')
+                  .fontSize(14)
+                  .fontColor('#666')
+                  .margin({ top: 4 })
+                Text('用餐类型：营养餐')
+                  .fontSize(14)
+                  .fontColor('#666')
+                  .margin({ top: 4 })
+                Text('餐别：其他')
+                  .fontSize(14)
+                  .fontColor('#666')
+                  .margin({ top: 4 })
+                Text('供应商联系人：李诚信')
+                  .fontSize(14)
+                  .fontColor('#666')
+                  .margin({ top: 4 })
+                Row() {
+                  Text('供应商电话：18991274263')
+                    .fontSize(14)
+                    .fontColor('#666')
+                  Text('📞')
+                    .fontSize(16)
+                    .fontColor('#1BBE6C')
+                    .margin({ left: 4 })
+                }
+                .margin({ top: 4 })
+                Text('摘要：无')
+                  .fontSize(14)
+                  .fontColor('#666')
+                  .margin({ top: 4 })
+
+                Row() {
+                  Text('→')
+                    .fontSize(24)
+                    .fontColor('#1BBE6C')
+                    .backgroundColor('#E8F7F0')
+                    .width(40)
+                    .height(40)
+                    .textAlign(TextAlign.Center)
+                    .borderRadius(20)
+                    .onClick(() => {
+                      router.pushUrl({
+                        url: 'pages/rukuyanshou',
+                        params: {
+                          orderId: 'RK20250507001'
+                        }
+                      })
+                    })
+                }
+                .width('100%')
+                .justifyContent(FlexAlign.End)
+                .margin({ top: 12 })
+              }
+              .padding(16)
+              .backgroundColor('#F8FFFA')
+              .borderRadius(12)
+              .border({ width: 1, color: '#1BBE6C' })
+              .margin({ left: 16, right: 16, top: 16, bottom: 16 })
+            }
           }
-          .backgroundColor(0xCCCCCC)
           .width('100%')
           .height('100%')
-          .justifyContent(FlexAlign.Center)
-          .alignItems(HorizontalAlign.Center);
         }
       } else if (this.currentTabContent === '未配送') {
         Scroll() {
