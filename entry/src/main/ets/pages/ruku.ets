@@ -22,19 +22,19 @@ struct ruku {
     Column() {
       Row() {
         Text('<')
-          .fontWeight(FontWeight.Bold)
-          .alignSelf(ItemAlign.Center)
-          .margin({ top: 10 })
-          .margin({ bottom: 20 })
+          .alignSelf(ItemAlign.Start) // 保持在行的最左侧
+          .fontSize(30)
+          .margin({ top: 0, bottom: 10, right: 130})
           .onClick(() => {
             router.back()
-          })
+          });
+
         Text('采购入库')
           .fontWeight(FontWeight.Bold)
-          .alignSelf(ItemAlign.Center)
-          .margin({ top: 10 })
-          .margin({ bottom: 20 });
+          .alignSelf(ItemAlign.Center) // 居中显示
+          .margin({ top: 0, bottom: 10 });
       }
+      .width('100%') // 确保 Row 占据全部宽度
 
       // 第二块：选项卡
       Row() {

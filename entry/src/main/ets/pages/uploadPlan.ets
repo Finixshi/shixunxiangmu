@@ -29,16 +29,16 @@ struct ReportPlanPage {
       Column() {
         Row(){
           Text('<')
-          .fontSize(24)
-          .fontColor('#333333')
-          .onClick(() => {
-            router.back();
-          })
-          Text('上报计划')
+            .alignSelf(ItemAlign.Start) // 保持在行的最左侧
             .fontSize(20)
-            .fontWeight(FontWeight.Medium)
-            .margin({ left: 16 })
-          Blank()
+            .margin({ top: 0, bottom: 10})
+            .onClick(() => {
+              router.back()
+            })
+          Text('新建上报计划')
+            .fontWeight(FontWeight.Bold)
+            .alignSelf(ItemAlign.Center) // 居中显示
+            .margin({ top: 0, bottom: 10 });
         }
 
         Row() {

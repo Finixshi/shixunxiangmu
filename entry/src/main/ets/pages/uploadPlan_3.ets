@@ -102,7 +102,7 @@ struct PurchaseInventory {
       .width('100%')
       .height('100%')
       .backgroundColor(Color.White);
-      }
+    }
   }
 
   // 渲染所有分类通用内容

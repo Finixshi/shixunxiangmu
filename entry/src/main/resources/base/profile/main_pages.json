@@ -16,6 +16,7 @@
     "pages/KitchenStaffList",
     "pages/StaffEditor",
     "pages/uploadPlan",
-    "pages/uploadPlan_2"
+    "pages/uploadPlan_2",
+    "pages/uploadPlan_3"
   ]
 }
