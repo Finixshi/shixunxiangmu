@@ -299,7 +299,7 @@ struct Index1 {
                 }
               }
               .onClick(() => {
-                router.pushUrl({ url: 'pages/page1', params: { token: this.receivedToken } })
+                router.pushUrl({ url: 'pages/changjianwentijieda', params: { token: this.receivedToken } })
               })
               .margin({left:10})
               .width('95%')
