@@ -7,24 +7,21 @@ struct NewOutboundOrder {
 
   build() {
     Column() {
-      Row(){
+      Row() {
         Text('<')
-          .fontWeight(FontWeight.Bold)
-          .alignSelf(ItemAlign.Center)
-          .margin({ top: 10 })
-          .margin({ bottom: 20 })
+          .alignSelf(ItemAlign.Start) // 保持在行的最左侧
+          .fontSize(20)
+          .margin({ top: 0, bottom: 10, right: 125})
           .onClick(() => {
             router.back()
           });
+
         Text('新建出库单')
           .fontWeight(FontWeight.Bold)
-          .alignSelf(ItemAlign.Center)
-          .margin({ top: 10 })
-          .margin({ bottom: 20 });
+          .alignSelf(ItemAlign.Center) // 居中显示
+          .margin({ top: 0, bottom: 10 });
       }
-      .height(56)
-      .width('100%')
-      .backgroundColor('#F5F5F5');
+      .width('100%') // 确保 Row 占据全部宽度
 
       // 表单项区域
       Column({ space: 1 }) {
