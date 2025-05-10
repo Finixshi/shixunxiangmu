@@ -12,7 +12,7 @@ struct DatePickerExample {
   @State scaleValue: number = 0.8
   @State summary: string = ''// 摘要内容
   @State selectedText: string[] = ['请选择','请选择','请选择','请选择','请选择','请选择','请输入摘要']
-  private unitOptions = ['实验第二学校（库房）', '实验第二学校餐厅']
+  private unitOptions = ['实训第一学校（库房）', '实训第一学校餐厅']
   private demandOptions = ['学生餐', '老师餐']
   private mealTypeOptions = ['其他','营养餐']
   private mealOptions = ['其他', '早餐', '午餐', '晚餐']
