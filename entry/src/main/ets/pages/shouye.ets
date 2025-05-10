@@ -26,7 +26,7 @@ interface cuku{
 @Component
 struct Index1 {
   @State image: ImageCount[] = [
-    { url: 'app.media.shangbaojihua', count: 0, text: '上报计划' ,route:'pages/addStaff_test'},
+    { url: 'app.media.shangbaojihua', count: 0, text: '上报计划' ,route:'pages/uploadPlan'},
     { url: 'app.media.jinricaipin', count: 0, text: '今日菜品' ,route:'pages/jinricaipin'},
     { url: 'app.media.houchurenyuan', count: 0, text: '后厨人员',route:'pages/KitchenStaffList' },
     { url: 'app.media.meiriliuyang', count: 0, text: '每日留样' ,route:'pages/Calendar'},
@@ -238,7 +238,7 @@ struct Index1 {
                 }
               }
               .onClick(() => {
-                router.pushUrl({ url: 'pages/editProfile', params: { token: this.receivedToken } })
+                router.pushUrl({ url: 'pages/xiugaigerenxinxi', params: { token: this.receivedToken } })
               })
               .margin({left:10})
               .width('95%')
@@ -259,7 +259,7 @@ struct Index1 {
                 }
               }
               .onClick(() => {
-                router.pushUrl({ url: 'pages/editProfile', params: { token: this.receivedToken } })
+                router.pushUrl({ url: 'pages/xiugaimima', params: { token: this.receivedToken } })
               })
               .margin({left:10})
               .width('95%')
