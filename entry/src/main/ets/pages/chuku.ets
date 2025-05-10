@@ -19,21 +19,22 @@ struct PurchaseInventory {
 
   build() {
     Column() {
-      // 第一块：标题，使其居中
-      Row(){
+      Row() {
         Text('<')
-          .fontWeight(FontWeight.Bold)
-          .alignSelf(ItemAlign.Center)
-          .margin({ top: 0, bottom: 10 })
+          .alignSelf(ItemAlign.Start) // 保持在行的最左侧
+          .fontSize(20)
+          .margin({ top: 0, bottom: 10, right: 125})
           .onClick(() => {
             router.back()
           });
 
         Text('供应出库')
           .fontWeight(FontWeight.Bold)
-          .alignSelf(ItemAlign.Center)
+          .alignSelf(ItemAlign.Center) // 居中显示
           .margin({ top: 0, bottom: 10 });
       }
+      .width('100%') // 确保 Row 占据全部宽度
+
 
 
       // 第二块：选项卡
