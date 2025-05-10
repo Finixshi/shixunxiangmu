@@ -12,7 +12,8 @@ struct DatePickerExample {
   @State scaleValue: number = 0.8
   @State summary: string = ''// 摘要内容
   @State selectedText: string[] = ['请选择','请选择','请选择','请选择','请选择','请选择','请输入摘要']
-  private unitOptions = ['实训第一学校（库房）', '实训第一学校餐厅']
+  private unitOptions = ['实验第二学校（库房）', '实验第二学校餐厅']
+  private selectedTime = ['上午', '下午']
   private demandOptions = ['学生餐', '老师餐']
   private mealTypeOptions = ['其他','营养餐']
   private mealOptions = ['其他', '早餐', '午餐', '晚餐']
@@ -21,58 +22,53 @@ struct DatePickerExample {
   build() {
     Stack(){
       Column() {
-        Row() {
-          Text('<')
-            .alignSelf(ItemAlign.Start)
-            .fontSize(20)
-            .margin({ top: 0, bottom: 10, right: 125 })
-            .onClick(() => {
-              router.back()
-            });
-
-          Text('新建出库单')
-            .fontWeight(FontWeight.Bold)
-            .alignSelf(ItemAlign.Center)
-            .margin({ top: 0, bottom: 10 });
-        }
-        .width('100%')
         Column(){
           Column({ space: 10 }) {
-            this.buildLabelRow($r("app.media.iunitName"), "领用单位", true, 0)
-            this.buildLabelRow($r("app.media.isupplyDate"), "出库日期", true, 1)
-            this.buildLabelRow($r("app.media.idemand"), "出库类型", true, 3)
+            Row(){
+              Text('<')
+                .fontSize(24)
+                .fontColor('#333333')
+                .onClick(() => {
+                  router.back();
+                })
+              Text('新建上报计划')
+                .fontSize(20)
+                .fontWeight(FontWeight.Medium)
+                .margin({ left: 16 })
+              Blank()
+            }
+            this.buildLabelRow($r("app.media.unitName"), "需求单位", true, 0)
+            this.buildLabelRow($r("app.media.supplyDate"), "供应日期", true, 1)
+            this.buildLabelRow($r("app.media.supplyTime"), "供应时间", false, 2)
+            this.buildLabelRow($r("app.media.demand"), "需求类型", true, 3)
 
             // 条件用餐类型行
             if (this.showMealType) {
               this.buildLabelRow($r("app.media.requirementType"), "用餐类型", true, 4)
             }
 
-            this.buildLabelRow($r("app.media.imealCategory"), "餐别", true, 5)
-            this.buildLabelRow($r("app.media.iremarks"), "摘要", false, 6)
+            this.buildLabelRow($r("app.media.mealCategory"), "餐别", true, 5)
+            this.buildLabelRow($r("app.media.remarks"), "摘要", false, 6)
           }
           .width('100%')
           .padding(10)
 
           // 添加食材按钮
           Row() {
-            Button({ type: ButtonType.Normal }) {
+            Button({type: ButtonType.Normal}) {
               Text('+添加食材')
                 .fontSize(16)
                 .fontColor(Color.White)
-                .padding({ left: 16, right: 16, top: 8, bottom: 8 })
-                .borderRadius(8)
-                .onClick(() => {
-                  if (this.selectedText[3] === '请选择') {
-                    promptAction.showToast({
-                      message: '请选择出库类型',
-                      duration: 2000
-                    });
-                  } else {
-                    router.pushUrl({
-                      url: 'pages/jiacaidan'
-                    });
-                  }
+                .padding({
+                  left: 16,
+                  right: 16,
+                  top: 8,
+                  bottom: 8
                 })
+                .onClick(() => {
+                  router.pushUrl({ url: 'pages/uploadPlan_3' })
+                })
+                .borderRadius(8)
             }
             .width('80%')
             .height(35)
@@ -86,7 +82,6 @@ struct DatePickerExample {
               .fontColor('#8A96A2')
               .position({ x: 137, y: 15 })
           }
-
 
           Column()//渐变框
             .linearGradient({
@@ -166,7 +161,6 @@ struct DatePickerExample {
           })
           .zIndex(2)
         }
-
         // 底部按钮部分
         Column() {
           Row() {
@@ -174,34 +168,11 @@ struct DatePickerExample {
               .fontColor('#8A96A2')
               .fontSize(16)
               .margin({ right: 10 })
-              .textAlign(TextAlign.End)
-          }
-          Row() {
-            Button({ type: ButtonType.Normal }) {
+
+            Button({type: ButtonType.Normal}){
               Text('保存')
-                .textAlign(TextAlign.Center)
                 .fontSize(16)
                 .fontColor(Color.White)
-                .width('40%')
-                .onClick(() => {
-                  let requiredFields = [
-                    this.selectedText[0], // 领用单位
-                    this.selectedText[1], // 出库日期
-                    this.selectedText[3], // 出库类型
-                    this.selectedText[5]  // 餐别
-                  ];
-
-                  if (requiredFields.includes('请选择')) {
-                    promptAction.showToast({
-                      message: '请选择全部内容后重试',
-                      duration: 2000
-                    });
-                  } else {
-                    router.pushUrl({
-                      url: 'pages/chuku'
-                    });
-                  }
-                })
             }
             .height(35)
             .backgroundColor('#02BC65')
@@ -210,31 +181,10 @@ struct DatePickerExample {
             .width('auto')
             .padding({ left: 15, right: 15 })
 
-            Button({ type: ButtonType.Normal }) {
-              Text('保存并审核')
-                .textAlign(TextAlign.Center)
+            Button({type: ButtonType.Normal}){
+              Text('保存上报')
                 .fontSize(16)
                 .fontColor(Color.White)
-                .width('40%')
-                .onClick(() => {
-                  let requiredFields = [
-                    this.selectedText[0], // 领用单位
-                    this.selectedText[1], // 出库日期
-                    this.selectedText[3], // 出库类型
-                    this.selectedText[5]  // 餐别
-                  ];
-
-                  if (requiredFields.includes('请选择')) {
-                    promptAction.showToast({
-                      message: '请选择全部内容后重试',
-                      duration: 2000
-                    });
-                  } else {
-                    router.pushUrl({
-                      url: 'pages/chuku'
-                    });
-                  }
-                })
             }
             .height(35)
             .backgroundColor('#02BC65')
@@ -242,7 +192,6 @@ struct DatePickerExample {
             .borderRadius(8)
             .width('auto')
             .padding({ left: 15, right: 15 })
-
           }
           .width('100%')
           .justifyContent(FlexAlign.SpaceBetween)
@@ -284,26 +233,49 @@ struct DatePickerExample {
         Row() {
           // 使用固定宽度容器包裹 Text 组件
 
-          Text(this.selectedText[index])
-            .fontSize(14)
-            .fontColor('#000000')
-            .maxLines(1) // 限制为一行
-            .textOverflow({ overflow: TextOverflow.Ellipsis }) // 超出显示省略号
-            .width('210px') // 设置限制宽度
+          if (label === "摘要") {
+            Column() {
+              Text(this.selectedText[index] === '请输入摘要' ? '请输入摘要' :
+                `${this.selectedText[index].substring(0, 10)}${this.selectedText[index].length > 10 ? '...' : ''}`)
+                .fontSize(14)
+                .fontColor(this.selectedText[index] === '请输入摘要' ? '#8A96A2' : '#000000')
+                .maxLines(1)
+                .textOverflow({ overflow: TextOverflow.Ellipsis })
+                .width('210px')
 
+              // 添加字数统计（仅当已输入内容时显示）
+
+            }
+            .alignItems(HorizontalAlign.End)
+          } else {
+            // 其他行保持原样
+            Text(this.selectedText[index])
+              .fontSize(14)
+              .fontColor('#000000')
+          }
+
+
+          Image($r("app.media.right_icon"))
+            .width(20)
+            .height(20)
+            .margin({ left: 5 })
+            .fillColor('#8A96A2')
         }
 
         .justifyContent(FlexAlign.End) // 确保文本和箭头靠右对齐
 
         .onClick(() => {
           switch (label){
-            case "领用单位":
+            case "需求单位":
               this.showTextDialog(this.unitOptions,0)
               break;
-            case "出库日期":
+            case "供应日期":
               this.showDateDialog()
               break;
-            case "出库类型":
+            case "供应时间":
+              this.showTextDialog(this.selectedTime,2)
+              break;
+            case "需求类型":
               this.showTextDialog(this.demandOptions,3)
               break;
             case "用餐类型":
@@ -313,6 +285,7 @@ struct DatePickerExample {
               this.showTextDialog(this.mealOptions,5)
               break;
             case "摘要":
+              this.summary = this.selectedText[6] === '请输入摘要' ? '' : this.selectedText[6]
               this.showDialog = true
               this.opacityValue = 1
               this.scaleValue = 1

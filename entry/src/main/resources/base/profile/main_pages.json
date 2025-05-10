@@ -15,6 +15,14 @@
     "pages/shipu",
     "pages/KitchenStaffList",
     "pages/StaffEditor",
+    "pages/xiugaigerenxinxi",
+    "pages/xiugaimima",
+    "pages/rukuyanshou",
+    "pages/tianjiashicai",
+    "pages/changjianwentijieda",
+    "pages/uploadPlan",
+    "pages/uploadPlan_2",
+    "pages/uploadPlan_3",
     "pages/peicanjilu",
     "pages/shangchuanpeican"
   ]
