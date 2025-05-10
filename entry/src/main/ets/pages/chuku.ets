@@ -22,7 +22,7 @@ struct PurchaseInventory {
       Row() {
         Text('<')
           .alignSelf(ItemAlign.Start) // 保持在行的最左侧
-          .fontSize(20)
+          .fontSize(30)
           .margin({ top: 0, bottom: 10, right: 125})
           .onClick(() => {
             router.back()
