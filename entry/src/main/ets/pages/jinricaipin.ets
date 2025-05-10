@@ -86,10 +86,11 @@ struct JinRiCaiPin {
           .onClick(() => {
             router.back();
           })
+        Blank()
         Text('今日菜品')
           .fontSize(20)
           .fontWeight(FontWeight.Medium)
-          .margin({ left: 16 })
+          .textAlign(TextAlign.Center)
         Blank()
       }
       .width('100%')
