@@ -23,9 +23,6 @@ struct EditProfile {
           Text('修改个人信息')
             .fontSize(20)
             .fontWeight(FontWeight.Medium)
-          Text('phone.suoeryun.com')
-            .fontSize(14)
-            .fontColor('#999')
         }
         .layoutWeight(1)
         .alignItems(HorizontalAlign.Center)

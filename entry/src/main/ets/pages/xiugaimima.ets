@@ -47,10 +47,6 @@ struct ChangePassword {
             .fontSize(20)
             .fontWeight(FontWeight.Medium)
             .margin({ top: 4 })
-          Text('phone.suoeryun.com')
-            .fontSize(14)
-            .fontColor('#999')
-            .margin({ top: 4 })
         }
         .layoutWeight(1)
         .alignItems(HorizontalAlign.Center)
