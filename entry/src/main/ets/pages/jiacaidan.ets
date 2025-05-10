@@ -78,6 +78,7 @@ struct PurchaseInventory {
       }
 
       // 底部信息栏
+      // 底部信息栏
       Column() {
         Row() {
           Text(`已选中${this.selectedItemCount}种食材`)
@@ -89,7 +90,7 @@ struct PurchaseInventory {
           Button('确定')
             .type(ButtonType.Capsule)
             .onClick(() => {
-              console.log('Confirm button clicked');
+              router.pushUrl({ url: 'pages/chukudan' });
             })
             .margin({ right: 20 });
         }
@@ -102,6 +103,7 @@ struct PurchaseInventory {
       .width('100%')
       .height('100%')
       .backgroundColor(Color.White);
+
     }
   }
 
@@ -185,11 +187,14 @@ struct PurchaseInventory {
   }
 
   // 自定义商品卡片组件（替换原 Card）
+  // 自定义商品卡片组件，并添加点击事件
+  // 自定义商品卡片组件，并添加点击事件
   @Builder
   renderProductCard() {
     Column() {
-      // 模拟卡片容器
+      // 卡片容器
       Column() {
+        // 第一张卡片
         Row() {
           Image($r('app.media.food_default'))
             .width('30%')
@@ -200,94 +205,104 @@ struct PurchaseInventory {
             Text('圆白菜')
               .fontSize(24)
               .fontWeight(FontWeight.Bold)
-              .alignSelf(ItemAlign.Center) // 修改为左对齐
+              .alignSelf(ItemAlign.Start)
               .margin({ top: 10 });
 
-            Text('生产日期：2025-05-06')
+            Text('生产日期：2025-05-09')
               .fontSize(16)
-              .alignSelf(ItemAlign.Start) // 修改为左对齐
+              .alignSelf(ItemAlign.Start)
               .margin({ top: 10 });
 
             Text('供应价：1.56元/Kg')
               .fontSize(16)
               .fontColor(Color.Red)
-              .alignSelf(ItemAlign.Start) // 修改为左对齐
+              .alignSelf(ItemAlign.Start)
               .margin({ top: 10 });
 
             Text('库存量：2斤(1Kg)')
               .fontSize(16)
-              .alignSelf(ItemAlign.Start) // 修改为左对齐
+              .alignSelf(ItemAlign.Start)
               .margin({ top: 10 });
 
             Text('保质期：3天')
               .fontSize(16)
-              .alignSelf(ItemAlign.Start) // 修改为左对齐
+              .alignSelf(ItemAlign.Start)
               .margin({ top: 10 });
 
             Text('餐别：其他')
               .fontSize(16)
-              .alignSelf(ItemAlign.Start) // 修改为左对齐
+              .alignSelf(ItemAlign.Start)
               .margin({ top: 10 });
 
-            Text('已过期')
+            Text('未过期')
               .fontSize(16)
-              .fontColor(Color.Red)
-              .alignSelf(ItemAlign.Start) // 修改为左对齐
-              .margin({ top: 10 });
-          }
-          .width('70%')
-          .padding({ left: 10 });
-        }
-        Row() {
-          Image($r('app.media.food_default'))
-            .width('30%')
-            .height(100)
-            .objectFit(ImageFit.Contain);
-
-          Column() {
-            Text('圆白菜')
-              .fontSize(24)
-              .fontWeight(FontWeight.Bold)
-              .alignSelf(ItemAlign.Center) // 修改为左对齐
-              .margin({ top: 10 });
-
-            Text('生产日期：2025-05-06')
-              .fontSize(16)
-              .alignSelf(ItemAlign.Start) // 修改为左对齐
-              .margin({ top: 10 });
-
-            Text('供应价：1.56元/Kg')
-              .fontSize(16)
-              .fontColor(Color.Red)
-              .alignSelf(ItemAlign.Start) // 修改为左对齐
-              .margin({ top: 10 });
-
-            Text('库存量：2斤(1Kg)')
-              .fontSize(16)
-              .alignSelf(ItemAlign.Start) // 修改为左对齐
-              .margin({ top: 10 });
-
-            Text('保质期：3天')
-              .fontSize(16)
-              .alignSelf(ItemAlign.Start) // 修改为左对齐
-              .margin({ top: 10 });
-
-            Text('餐别：其他')
-              .fontSize(16)
-              .alignSelf(ItemAlign.Start) // 修改为左对齐
-              .margin({ top: 10 });
-
-            Text('已过期')
-              .fontSize(16)
-              .fontColor(Color.Red)
-              .alignSelf(ItemAlign.Start) // 修改为左对齐
+              .fontColor(Color.Green)
+              .alignSelf(ItemAlign.Start)
               .margin({ top: 10 });
           }
           .width('70%')
           .padding({ left: 10 });
         }
         .width('100%')
-        .padding({ left: 10, right: 10 });
+        .padding({ left: 10, right: 10 })
+        .onClick(() => {
+          this.selectedItemCount += 1;
+        })
+
+        // 第二张卡片
+        Row() {
+          Image($r('app.media.food_default'))
+            .width('30%')
+            .height(100)
+            .objectFit(ImageFit.Contain);
+
+          Column() {
+            Text('圆白菜')
+              .fontSize(24)
+              .fontWeight(FontWeight.Bold)
+              .alignSelf(ItemAlign.Start)
+              .margin({ top: 10 });
+
+            Text('生产日期：2025-05-06')
+              .fontSize(16)
+              .alignSelf(ItemAlign.Start)
+              .margin({ top: 10 });
+
+            Text('供应价：1.56元/Kg')
+              .fontSize(16)
+              .fontColor(Color.Red)
+              .alignSelf(ItemAlign.Start)
+              .margin({ top: 10 });
+
+            Text('库存量：2斤(1Kg)')
+              .fontSize(16)
+              .alignSelf(ItemAlign.Start)
+              .margin({ top: 10 });
+
+            Text('保质期：3天')
+              .fontSize(16)
+              .alignSelf(ItemAlign.Start)
+              .margin({ top: 10 });
+
+            Text('餐别：其他')
+              .fontSize(16)
+              .alignSelf(ItemAlign.Start)
+              .margin({ top: 10 });
+
+            Text('已过期')
+              .fontSize(16)
+              .fontColor(Color.Red)
+              .alignSelf(ItemAlign.Start)
+              .margin({ top: 10 });
+          }
+          .width('70%')
+          .padding({ left: 10 });
+        }
+        .width('100%')
+        .padding({ left: 10, right: 10 })
+        .onClick(() => {
+          this.selectedItemCount += 1;
+        })
 
       }
       .width('100%')
@@ -295,11 +310,13 @@ struct PurchaseInventory {
       .backgroundColor('#FFFFFF')
       .border({
         width: 2,
-        color: '#FFA500', // 橙色边框
+        color: '#FFA500',
         radius: 10
       })
       .margin({ top: 20, bottom: 20, left: 10, right: 10 });
-    }
+
+  }
+
     .width('100%')
     .backgroundColor('#F5F5F5')
     .padding(0);
