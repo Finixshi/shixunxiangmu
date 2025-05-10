@@ -87,8 +87,8 @@ struct Shipu {
   ]
   
   private canteens: SelectOption[] = [
-    new SelectOption('劳芙餐厅'),
-    new SelectOption('泷湖一小餐厅')
+    new SelectOption('实训第一学校餐厅'),
+    new SelectOption('实训第二学校餐厅')
   ]
   
   // 服务对象 - 用于处理食谱数据
