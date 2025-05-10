@@ -1,122 +1,388 @@
+import { promptAction } from '@kit.ArkUI'
+import { image } from '@kit.ImageKit'
 import router from '@ohos.router';
-
 @Entry
 @Component
-struct NewOutboundOrder {
-  @State totalAmount: number = 0; // 总计金额状态
+struct DatePickerExample {
+
+  @State selectedDate: string = ''
+  @State selectDate: Date = new Date()
+  @State showDialog: boolean = false
+  @State opacityValue: number = 0
+  @State scaleValue: number = 0.8
+  @State summary: string = ''// 摘要内容
+  @State selectedText: string[] = ['请选择','请选择','请选择','请选择','请选择','请选择','请输入摘要']
+  private unitOptions = ['实训第一学校（库房）', '实训第一学校餐厅']
+  private demandOptions = ['学生餐', '老师餐']
+  private mealTypeOptions = ['其他','营养餐']
+  private mealOptions = ['其他', '早餐', '午餐', '晚餐']
+  @State private showMealType: boolean = false // 控制是否显示用餐类型
 
   build() {
-    Column() {
-      Row() {
-        Text('<')
-          .alignSelf(ItemAlign.Start) // 保持在行的最左侧
-          .fontSize(20)
-          .margin({ top: 0, bottom: 10, right: 125})
-          .onClick(() => {
-            router.back()
-          });
+    Stack(){
+      Column() {
+        Row() {
+          Text('<')
+            .alignSelf(ItemAlign.Start)
+            .fontSize(20)
+            .margin({ top: 0, bottom: 10, right: 125 })
+            .onClick(() => {
+              router.back()
+            });
 
-        Text('新建出库单')
-          .fontWeight(FontWeight.Bold)
-          .alignSelf(ItemAlign.Center) // 居中显示
-          .margin({ top: 0, bottom: 10 });
-      }
-      .width('100%') // 确保 Row 占据全部宽度
+          Text('新建出库单')
+            .fontWeight(FontWeight.Bold)
+            .alignSelf(ItemAlign.Center)
+            .margin({ top: 0, bottom: 10 });
+        }
+        .width('100%')
+        Column(){
+          Column({ space: 10 }) {
+            this.buildLabelRow($r("app.media.iunitName"), "领用单位", true, 0)
+            this.buildLabelRow($r("app.media.isupplyDate"), "出库日期", true, 1)
+            this.buildLabelRow($r("app.media.idemand"), "出库类型", true, 3)
 
-      // 表单项区域
-      Column({ space: 1 }) {
-        // 领用单位
-        this.renderFormItem('领用单位 *', '请选择', $r('app.media.iunitName'));
-        // 出库日期
-        this.renderFormItem('出库日期 *', '请选择', $r('app.media.isupplyDate'));
-        // 出库类型
-        this.renderFormItem('出库类型 *', '请选择', $r('app.media.idemand'));
-        // 餐别
-        this.renderFormItem('餐别', '其他', $r('app.media.imealCategory'));
-        // 摘要
-        this.renderFormItem('摘    要：', '请输入摘要', $r('app.media.iremarks'));
-      }
-      .padding({ left: 16, right: 16 })
-      .width('100%');
+            // 条件用餐类型行
+            if (this.showMealType) {
+              this.buildLabelRow($r("app.media.requirementType"), "用餐类型", true, 4)
+            }
 
-      // 添加食材按钮
-      Button('+ 添加食材')
-        .type(ButtonType.Capsule)
-        .width('50%')
-        .margin({ top: 24, bottom: 8 })
-        .onClick(() => {
-          // 跳转到 chukudan 页面
-          router.pushUrl({
-            url: 'pages/jiacaidan'
-          });
-        });
+            this.buildLabelRow($r("app.media.imealCategory"), "餐别", true, 5)
+            this.buildLabelRow($r("app.media.iremarks"), "摘要", false, 6)
+          }
+          .width('100%')
+          .padding(10)
 
-      // 已选食材提示
-      Text('已选中0种食材')
-        .fontSize(14)
-        .fontColor('#999999')
-        .margin({ bottom: 16 });
+          // 添加食材按钮
+          Row() {
+            Button({ type: ButtonType.Normal }) {
+              Text('+添加食材')
+                .fontSize(16)
+                .fontColor(Color.White)
+                .padding({ left: 16, right: 16, top: 8, bottom: 8 })
+                .borderRadius(8)
+                .onClick(() => {
+                  if (this.selectedText[3] === '请选择') {
+                    promptAction.showToast({
+                      message: '请选择出库类型',
+                      duration: 2000
+                    });
+                  } else {
+                    router.pushUrl({
+                      url: 'pages/jiacaidan'
+                    });
+                  }
+                })
+            }
+            .width('80%')
+            .height(35)
+            .backgroundColor('#02BC65')
+            .fontColor(Color.White)
+            .borderRadius(8)
+            .width('auto')
+            .padding({ left: 15, right: 15 })
 
-      // 总计金额
-      Text(`总计：${this.totalAmount}元`)
-        .fontSize(18)
-        .fontColor('#FF4040')
-        .fontWeight(FontWeight.Bold)
-        .margin({ top: 16, right: 16 })
-        .alignSelf(ItemAlign.End);
+            Text('已选中*种食材')
+              .fontColor('#8A96A2')
+              .position({ x: 137, y: 15 })
+          }
 
-      // 底部按钮区域
-      Row({ space: 16 }) {
-        Button('保存')
-          .type(ButtonType.Capsule)
-          .width('45%')
-          .onClick(() => {
-            // TODO: 保存逻辑
-          });
 
-        Button('保存并审核')
-          .type(ButtonType.Capsule)
-          .width('45%')
-          .onClick(() => {
-            // TODO: 保存并审核逻辑
-          });
-      }
-      .padding({ left: 16, right: 16 })
-      .margin({ top: 24 })
-      .width('100%')
-      .justifyContent(FlexAlign.SpaceEvenly);
-    }
-    .width('100%')
-    .height('100%')
-    .backgroundColor('#FFFFFF');
+          Column()//渐变框
+            .linearGradient({
+              angle: 180,
+              colors: [['#93D0B1', 0.1],['#FDFDFD',1]],
+            })
+            .margin({top: 10})
+            .width('100%')
+            .height(20)
+        }
+        .layoutWeight(1)
+
+        if (this.showDialog) {
+          // 半透明背景层
+          Column()
+            .width('100%')
+            .height('100%')
+            .backgroundColor('#80000000')
+            .position({ x: 0, y: 0 })
+            .opacity(this.opacityValue)
+            .onClick(() => {
+              animateTo({
+                duration: 300,
+                curve: Curve.EaseOut
+              }, () => {
+                this.opacityValue = 0
+                this.scaleValue = 0.8
+              })
+              setTimeout(() => {
+                this.showDialog = false
+              }, 300)
+            })
+            .zIndex(2)
+
+          // 对话框内容
+          Column() {
+            Text('摘要')
+              .fontSize(18)
+              .margin({ bottom: 16 })
+
+            TextArea({ text:this.summary,placeholder: '输入摘要'})
+
+              .onChange((value: string) => {
+                // this.summary = value
+                this.selectedText[6] = value
+              })
+              .height(150)
+              .width('100%')
+              .border({
+                width: 2,                     // 边框宽度
+                color: '#4CAF50',             // 边框颜色
+                radius: 8,                    // 圆角半径
+
+              })
+
+            Row({space:100}) {
+              Button('取消', {type: ButtonType.Normal})
+                .onClick(() => { this.showDialog = false })
+                .backgroundColor('#ffffffff')
+                .fontColor('#ff706f6f')
+              Button('确定', {type: ButtonType.Normal})
+                .backgroundColor('#ffffffff')
+                .fontColor('#5BC043')
+                .onClick(() => { this.showDialog = false })
+            }
+          }
+          .padding(20)
+          .backgroundColor(Color.White)
+          .borderRadius(12)
+          .width('80%')
+          .position({ x: '11%', y: '30%' })
+          .opacity(this.opacityValue)
+          .scale({ x: this.scaleValue, y: this.scaleValue })
+          .animation({
+            duration: 300,
+            curve: Curve.EaseOut
+          })
+          .zIndex(2)
+        }
+
+        // 底部按钮部分
+        Column() {
+          Row() {
+            Text('总计：*元')
+              .fontColor('#8A96A2')
+              .fontSize(16)
+              .margin({ right: 10 })
+              .textAlign(TextAlign.End)
+          }
+          Row() {
+            Button({ type: ButtonType.Normal }) {
+              Text('保存')
+                .textAlign(TextAlign.Center)
+                .fontSize(16)
+                .fontColor(Color.White)
+                .width('40%')
+                .onClick(() => {
+                  let requiredFields = [
+                    this.selectedText[0], // 领用单位
+                    this.selectedText[1], // 出库日期
+                    this.selectedText[3], // 出库类型
+                    this.selectedText[5]  // 餐别
+                  ];
+
+                  if (requiredFields.includes('请选择')) {
+                    promptAction.showToast({
+                      message: '请选择全部内容后重试',
+                      duration: 2000
+                    });
+                  } else {
+                    router.pushUrl({
+                      url: 'pages/chuku'
+                    });
+                  }
+                })
+            }
+            .height(35)
+            .backgroundColor('#02BC65')
+            .fontColor(Color.White)
+            .borderRadius(8)
+            .width('auto')
+            .padding({ left: 15, right: 15 })
+
+            Button({ type: ButtonType.Normal }) {
+              Text('保存并审核')
+                .textAlign(TextAlign.Center)
+                .fontSize(16)
+                .fontColor(Color.White)
+                .width('40%')
+                .onClick(() => {
+                  let requiredFields = [
+                    this.selectedText[0], // 领用单位
+                    this.selectedText[1], // 出库日期
+                    this.selectedText[3], // 出库类型
+                    this.selectedText[5]  // 餐别
+                  ];
+
+                  if (requiredFields.includes('请选择')) {
+                    promptAction.showToast({
+                      message: '请选择全部内容后重试',
+                      duration: 2000
+                    });
+                  } else {
+                    router.pushUrl({
+                      url: 'pages/chuku'
+                    });
+                  }
+                })
+            }
+            .height(35)
+            .backgroundColor('#02BC65')
+            .fontColor(Color.White)
+            .borderRadius(8)
+            .width('auto')
+            .padding({ left: 15, right: 15 })
+
+          }
+          .width('100%')
+          .justifyContent(FlexAlign.SpaceBetween)
+          .margin({ top: 20 })
+        }
+        .padding(10)
+        .zIndex(1)
+      }}
+
   }
 
-  // 封装通用表单项组件，支持图标传参
   @Builder
-  renderFormItem(label: string, value: string, iconRes: Resource) {
-    Row({ space: 8 }) {
-      Image(iconRes)
-        .width(16)
-        .height(16);
+  buildLabelRow(iconResource: Resource, label: string, showAsterisk: boolean, index: number) {
+    Column() {
+      Row() {
+        // 左侧图标和标签
+        Row() {
+          Image(iconResource)
+            .width(30)
+            .height(30)
+            .objectFit(ImageFit.Contain)
+            .margin({ right: 10 })
 
-      Text(label)
-        .fontSize(16)
-        .fontColor('#333333')
-        .width('25%');
+          Text(label)
+            .fontSize(16)
+            .fontWeight(FontWeight.Bold)
 
-      Text(value)
-        .fontSize(16)
-        .fontColor('#999999')
-        .width('55%')
-        .textAlign(TextAlign.End);
+          if (showAsterisk) {
+            Text("*")
+              .fontSize(16)
+              .fontWeight(FontWeight.Bold)
+              .fontColor(Color.Red)
+              .margin({ left: 4 })
+          }
+        }
+        .layoutWeight(1)
+
+        // 右侧选择区域
+        Row() {
+          // 使用固定宽度容器包裹 Text 组件
+
+          Text(this.selectedText[index])
+            .fontSize(14)
+            .fontColor('#000000')
+            .maxLines(1) // 限制为一行
+            .textOverflow({ overflow: TextOverflow.Ellipsis }) // 超出显示省略号
+            .width('210px') // 设置限制宽度
+
+        }
+
+        .justifyContent(FlexAlign.End) // 确保文本和箭头靠右对齐
+
+        .onClick(() => {
+          switch (label){
+            case "领用单位":
+              this.showTextDialog(this.unitOptions,0)
+              break;
+            case "出库日期":
+              this.showDateDialog()
+              break;
+            case "出库类型":
+              this.showTextDialog(this.demandOptions,3)
+              break;
+            case "用餐类型":
+              this.showTextDialog(this.mealTypeOptions,4)
+              break;
+            case "餐别":
+              this.showTextDialog(this.mealOptions,5)
+              break;
+            case "摘要":
+              this.showDialog = true
+              this.opacityValue = 1
+              this.scaleValue = 1
+              break;
+
+          }
+        })      }
+      .width('100%')
+      .alignItems(VerticalAlign.Center)
+      .height(40)
+      .padding({ right: 10 })
+
+      // 添加横线
+      Divider()
+        .strokeWidth(1)
+        .color('#ffb1afaf')
+        .margin({ top: 0, bottom: 7 })
     }
-    .height(56)
-    .border({
-      width: { bottom: 1 },
-      color: { bottom: '#EAEAEA' },
-      radius: 0,
-      style: { bottom: BorderStyle.Solid }
+    .width('100%')
+  }
+  //日历函数
+
+  private showDateDialog() {
+    DatePickerDialog.show({
+      start: new Date('2000-1-1'),
+      end: new Date('2100-1-1'),
+      selected: this.selectDate,
+      onAccept: (value: DatePickerResult) => {
+        const year = value.year ?? new Date().getFullYear()
+        const month = value.month ?? new Date().getMonth() + 1
+        const day = value.day ?? new Date().getDate()
+        this.selectDate = new Date(year, month - 1, day)
+        this.selectedText[1] = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+      }
     })
-    .alignItems(VerticalAlign.Center);
+  }
+
+  private showTextDialog(array:string[],index:number) {
+    TextPickerDialog.show({
+      range: array,
+      selected: array.findIndex(item => item === this.selectedText[index]),
+      canLoop:false,
+      onAccept: (value: TextPickerResult) => {
+        // 安全写法：添加双重验证
+        if (typeof value.index === 'number' &&
+          value.index < array.length) {
+          this.selectedText[index] = array[value.index]
+        }
+        switch (index){
+          case 3:
+            if(this.selectedText[index] === '学生餐')
+              this.showMealType = true
+            else{
+              this.showMealType = false
+              this.selectedText[4] = '请选择'
+            }
+            break;
+          case 4:
+            this.showMealType = true
+            break;
+          default :
+            if(!this.showMealType){
+              this.showMealType = false
+              this.selectedText[4] = '请选择'
+            }
+            break;
+
+        }
+      }
+
+    })
   }
 }

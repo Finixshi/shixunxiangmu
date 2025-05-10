@@ -76,32 +76,33 @@ struct PurchaseInventory {
         this.renderCategoryByValue(this.selectedValue);
       }
 
-      // 第四块：底部信息栏（始终位于页面最底端）
-      Row() {
-        // 左侧：已选中食材数量
-        Text(`已选中${this.selectedItemCount}种食材`)
-          .fontSize(14)
-          .fontColor('#666')
-          .alignSelf(ItemAlign.Center)
-          .margin({ left: 20 });
+      Column() {
+        Row() {
+          // 左侧：已选中食材数量
+          Text(`已选中${this.selectedItemCount}种食材`)
+            .fontSize(14)
+            .fontColor('#666')
+            .alignSelf(ItemAlign.Center)
+            .margin({ left: 20 });
 
-        // 右侧：确定按钮
-        Button('确定')
-          .type(ButtonType.Capsule)
-          .onClick(() => {
-            console.log('Confirm button clicked');
-          })
-          .margin({ right: 20 });
+          // 右侧：确定按钮
+          Button('确定')
+            .type(ButtonType.Capsule)
+            .onClick(() => {
+              console.log('Confirm button clicked');
+            })
+            .margin({ right: 20 });
+        }
+        .width('100%')
+        .height('10%')
+        .backgroundColor(Color.White) // 设置背景色
+        .alignItems(VerticalAlign.Center) // 水平居中
+        .justifyContent(FlexAlign.SpaceBetween); // 内容两端对齐
       }
       .width('100%')
-      .height(60)
-      .backgroundColor(Color.White) // 设置背景色
-      .alignItems(VerticalAlign.Center) // 水平居中
-      .justifyContent(FlexAlign.SpaceBetween); // 内容两端对齐
-    }
-    .width('100%')
-    .height('100%')
-    .backgroundColor(Color.White);
+      .height('100%')
+      .backgroundColor(Color.White);
+      }
   }
 
   // 渲染所有分类通用内容
@@ -116,13 +117,14 @@ struct PurchaseInventory {
       }
       .backgroundColor('#EEEEEE')
       .width('100%')
-      .height('100%')
+      .height('80%')
       .justifyContent(FlexAlign.Center)
       .alignItems(HorizontalAlign.Center);
     }
   }
 
   // 根据分类名动态渲染不同 Column 内容
+  // 修改后的 renderCategoryByValue 方法
   @Builder
   renderCategoryByValue(category: string) {
     if (category === '谷薯类') {
@@ -144,10 +146,14 @@ struct PurchaseInventory {
     } else if (category === '其他类') {
       this.renderCategoryContent('其他类');
     } else {
-      Text('~暂无相关内容~')
-        .fontSize(16)
-        .fontWeight(FontWeight.Normal)
-        .alignSelf(ItemAlign.Center);
+      Column() {
+        Text('~暂无相关内容~')
+          .fontSize(16)
+          .fontWeight(FontWeight.Normal)
+          .alignSelf(ItemAlign.Center)
+      }
+      .width('100%')
+      .height('80%');
     }
   }
 
