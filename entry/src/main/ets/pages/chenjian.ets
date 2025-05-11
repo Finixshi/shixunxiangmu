@@ -119,13 +119,7 @@ struct CalendarPage {
         .height(24)
         .margin({ right: 16 })
         .onClick(() => {
-          try {
-            router.pushUrl({
-              url: 'pages/shouye'
-            })
-          } catch (error) {
-            console.error('路由跳转失败：', error)
-          }
+         router.back()
         })
       // 显示当前年月
       Text(`${this.currentDate.getFullYear()}年${this.currentDate.getMonth() + 1}月`)
