@@ -232,7 +232,7 @@ struct Index1 {
               Row() {
                 Stack() {
                   Text('修改个人信息')
-                  Image($r('app.media.right_icon'))
+                  Image($r('app.media.right_icon_black'))
                     .width(15)
                     .position({x:320})
                 }
@@ -253,7 +253,7 @@ struct Index1 {
               Row() {
                 Stack() {
                   Text('修改密码')
-                  Image($r('app.media.right_icon'))
+                  Image($r('app.media.right_icon_black'))
                     .width(15)
                     .position({x:320})
                 }
@@ -273,7 +273,7 @@ struct Index1 {
               Row() {
                 Stack() {
                   Text('解绑微信')
-                  Image($r('app.media.right_icon'))
+                  Image($r('app.media.right_icon_black'))
                     .width(15)
                     .position({x:320})
                 }
@@ -293,7 +293,7 @@ struct Index1 {
               Row() {
                 Stack() {
                   Text('常见问题解答')
-                  Image($r('app.media.right_icon'))
+                  Image($r('app.media.right_icon_black'))
                     .width(15)
                     .position({x:320})
                 }
@@ -313,7 +313,7 @@ struct Index1 {
               Row() {
                 Stack() {
                   Text('退出登录')
-                  Image($r('app.media.right_icon'))
+                  Image($r('app.media.right_icon_black'))
                     .width(15)
                     .position({x:320})
                 }

@@ -22,12 +22,7 @@ struct ChangJianWenTiJieJue {
           .fontWeight(FontWeight.Medium)
           .margin({ right: 16 })
           .onClick(() => {
-            router.pushUrl({
-              url: 'pages/shouye',
-              params: {
-                currentIndex: 3  // 3对应"我的"界面
-              }
-            })
+            router.back()
           })
         Text('常见问题解答')
           .fontSize(20)

@@ -269,7 +269,13 @@ struct CalendarPage {
         .height(24)
         .margin({ right: 16 })
         .onClick(() => {
-         router.back()
+          try {
+            router.pushUrl({
+              url: 'pages/shouye'
+            })
+          } catch (error) {
+            console.error('路由跳转失败：', error)
+          }
         })
       // 显示当前年月
       Text(`${this.currentDate.getFullYear()}年${this.currentDate.getMonth() + 1}月`)
@@ -316,15 +322,14 @@ struct CalendarPage {
 
   /**
    * 构建底部按钮行
-   * 包含"全部、晨检、午检、晚检"四个切换按钮，靠左排列，点击高亮；
-   * 右侧为"未晨检人员>"跳转按钮。
-   * 整体底部白色横条，按钮间距紧凑，样式与日历区域分层。
    */
   @Builder
   private TabButtonRowBuilder() {
     Row() {
+      // 左侧按钮组
       Row() {
         ForEach(this.tabList, (tab: string, idx: number) => {
+          // 渲染每个切换按钮，选中高亮，未选中灰边
           Text(tab)
             .fontSize(13)
             .fontColor(this.selectedTab === idx ? '#ffffffff' : '#ff000000')
@@ -333,26 +338,30 @@ struct CalendarPage {
             .borderRadius(4)
             .padding({ left: 8, right: 8, top: 2, bottom: 2 })
             .margin({ right: 2 })
-            .onClick(() => { 
-              this.selectedTab = idx
-              this.currentPage = 1
-              this.fetchCheckRecords()
-            })
+            .onClick(() => { this.selectedTab = idx })
         })
       }
       .layoutWeight(1)
-      
+      // 右侧"未晨检人员>"按钮
       Blank()
       Text('未晨检人员 >')
-        .fontSize(13)
+        .fontSize(16)
         .fontColor('#00C853')
         .onClick(() => {
-          // 可以添加跳转到未晨检人员列表的逻辑
+          try {
+            router.pushUrl({
+              url: 'pages/chenjian1'
+            })
+          } catch (error) {
+            console.error('路由跳转失败：', error)
+          }
         })
     }
     .width('100%')
-    .backgroundColor('#ffffffff')
-    .padding(8)
+    .padding({ left: 16, right: 16, top: 16, bottom: 16 })
+    .backgroundColor('#ffffffff') // 底部白色横条
+    .borderRadius({ topLeft: 16, topRight: 16, bottomLeft: 0, bottomRight: 0 })
+    .margin({ top: 0 })
   }
 
   // 添加晨检记录列表构建器
@@ -452,53 +461,39 @@ struct CalendarPage {
       }
       .width('100%')
       .backgroundColor('#00C853') // 绿色背景只包裹日历内容
-      // 添加统计信息显示
-      Row() {
-        Column() {
-          Text('总人数')
-            .fontSize(14)
-          Text(this.totalCount.toString())
-            .fontSize(20)
-            .fontWeight(FontWeight.Bold)
-        }
-        .layoutWeight(1)
-        
-        Column() {
-          Text('已检查')
-            .fontSize(14)
-          Text(this.checkedCount.toString())
-            .fontSize(20)
-            .fontWeight(FontWeight.Bold)
-            .fontColor('#00C853')
-        }
-        .layoutWeight(1)
-        
-        Column() {
-          Text('未检查')
-            .fontSize(14)
-          Text(this.uncheckedCount.toString())
-            .fontSize(20)
-            .fontWeight(FontWeight.Bold)
-            .fontColor('#FF9800')
-        }
-        .layoutWeight(1)
-        
-        Column() {
-          Text('异常')
-            .fontSize(14)
-          Text(this.failedCount.toString())
-            .fontSize(20)
-            .fontWeight(FontWeight.Bold)
-            .fontColor('#FF0000')
-        }
-        .layoutWeight(1)
-      }
-      .padding(16)
-      .backgroundColor('#FFFFFF')
-      // 添加切换按钮行
+      // 渲染底部按钮行
       this.TabButtonRowBuilder()
-      // 添加晨检记录列表
-      this.CheckRecordListBuilder()
+      // 渲染统计信息行
+      Row() {
+        Text(`总人数：${this.totalCount}人`)
+          .fontSize(11)
+          .fontColor('#222222')
+        Blank()
+        Text(`已检测：${this.checkedCount}人`)
+          .fontSize(11)
+          .fontColor('#222222')
+        Blank()
+        Text(`未检测：${this.uncheckedCount}人`)
+          .fontSize(11)
+          .fontColor('#222222')
+        Blank()
+        Text(`不合格：${this.failedCount}人`)
+          .fontSize(11)
+          .fontColor('#222222')
+      }
+      .width('100%')
+      .padding({ top: 8, bottom: 8, left: 8, right: 8 })
+      .backgroundColor('#F8F8F8')
+      // 添加暂无数据提示
+      Row() {
+        Blank()
+        Text('~暂无相关数据~')
+          .fontSize(15)
+          .fontColor('#BBBBBB')
+        Blank()
+      }
+      .width('100%')
+      .padding({ top: 16, bottom: 16 })
     }
     .width('100%')
     .height('100%')
