@@ -65,6 +65,9 @@ struct DatePickerExample {
                   top: 8,
                   bottom: 8
                 })
+                .onClick(() => {
+                  router.pushUrl({ url: 'pages/uploadPlan_3' })
+                })
                 .borderRadius(8)
             }
             .width('80%')

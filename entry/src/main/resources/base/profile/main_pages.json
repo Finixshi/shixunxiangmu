@@ -22,6 +22,11 @@
     "pages/changjianwentijieda",
     "pages/uploadPlan",
     "pages/uploadPlan_2",
+
+    "pages/peicanjilu",
+    "pages/shangchuanpeican",
+
+
     "pages/chenjian",
     "pages/chenjian1"
   ]

@@ -31,7 +31,7 @@ struct Index1 {
     { url: 'app.media.houchurenyuan', count: 0, text: '后厨人员',route:'pages/KitchenStaffList' },
     { url: 'app.media.meiriliuyang', count: 0, text: '每日留样' ,route:'pages/Calendar'},
     { url: 'app.media.chenjianjilu', count: 0, text: '晨检记录' ,route:'pages/chenjian'},
-    { url: 'app.media.peicanjilu', count: 0, text: '陪餐记录' ,route:'pages/addStaff_test'},
+    { url: 'app.media.peicanjilu', count: 0, text: '陪餐记录' ,route:'pages/peicanjilu'},
   ];
   @State image1:cuku[]=[
     {url1:'app.media.gongyingchuku',count1:0,text1:'供应出库',route1:'pages/chuku' },
