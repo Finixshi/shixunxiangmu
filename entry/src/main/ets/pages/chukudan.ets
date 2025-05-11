@@ -197,7 +197,7 @@ struct DatePickerExample {
                       duration: 2000
                     });
                   } else {
-                    router.pushUrl({
+                    router.back ({
                       url: 'pages/chuku'
                     });
                   }
@@ -230,7 +230,7 @@ struct DatePickerExample {
                       duration: 2000
                     });
                   } else {
-                    router.pushUrl({
+                    router.back ({
                       url: 'pages/chuku'
                     });
                   }
@@ -335,19 +335,25 @@ struct DatePickerExample {
   }
   //日历函数
 
-  private showDateDialog() {
+  private showDateDialog(): void {
     DatePickerDialog.show({
       start: new Date('2000-1-1'),
       end: new Date('2100-1-1'),
-      selected: this.selectDate,
+      selected: new Date(this.selectedText[1]), // 使用字符串构造 Date
       onAccept: (value: DatePickerResult) => {
-        const year = value.year ?? new Date().getFullYear()
-        const month = value.month ?? new Date().getMonth() + 1
-        const day = value.day ?? new Date().getDate()
-        this.selectDate = new Date(year, month - 1, day)
-        this.selectedText[1] = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+        const year = value.year ?? new Date().getFullYear();
+        const month = value.month ?? new Date().getMonth() ; // 1-based
+        const day = value.day ?? new Date().getDate();
+
+        // 构造 Date 对象并保存文本格式
+        this.selectDate = new Date(year, month, day); // 转换为 0-based
+        this.selectedText[1] = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+
+        // 打印调试信息
+        console.log("构造的 Date 对象:", this.selectDate);
+        console.log("显示的文本:", this.selectedText[1]);
       }
-    })
+    });
   }
 
   private showTextDialog(array:string[],index:number) {

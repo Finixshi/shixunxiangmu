@@ -108,7 +108,7 @@ struct Page1 {
       .borderRadius(5)
       .backgroundColor(Color.Green)
       .onClick(() => {
-        router.pushUrl({
+        router.back ({
           url: 'pages/peicanjilu',
           params: {
             mealDate: this.dates,
@@ -130,10 +130,10 @@ struct Page1 {
       selected: this.selectDate,
       onAccept: (value: DatePickerResult) => {
         const year = value.year?? new Date().getFullYear();
-        const month = value.month?? new Date().getMonth() + 1;
+        const month = value.month?? new Date().getMonth() ;
         const day = value.day?? new Date().getDate();
         this.selectDate = new Date(year, month - 1, day);
-        this.dates = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+        this.dates = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
         this.selectedDate = this.dates; // 新增赋值逻辑
       }
     });
