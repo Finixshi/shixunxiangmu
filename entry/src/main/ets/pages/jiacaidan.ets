@@ -93,7 +93,7 @@ struct PurchaseInventory {
           Button('确定')
             .type(ButtonType.Capsule)
             .onClick(() => {
-              router.pushUrl({ url: 'pages/chukudan' });
+              router.back()
             })
             .margin({ right: 20 });
         }

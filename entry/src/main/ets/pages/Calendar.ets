@@ -19,6 +19,10 @@ struct CalendarPage {
     this.loadSamples()
   }
 
+  onPageShow() {
+    this.loadSamples()
+  }
+
   async loadSamples() {
     const date = this.formatDate(this.selectedDate)
     this.samples = await this.sampleService.getSamplesByDate(date)
