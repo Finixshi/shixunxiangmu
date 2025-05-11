@@ -319,7 +319,7 @@ struct Index1 {
                 }
               }
               .onClick(() => {
-                router.pushUrl({ url: 'pages/page1', params: { token: this.receivedToken } })
+                router.back({ url: 'pages/login', params: { token: this.receivedToken } })
               })
               .margin({left:10})
               .width('95%')
