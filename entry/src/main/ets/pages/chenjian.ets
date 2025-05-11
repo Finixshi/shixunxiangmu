@@ -1,6 +1,8 @@
 import { router } from '@kit.ArkUI'
 import preferences from '@ohos.data.preferences'
 import common from '@ohos.app.ability.common'
+import http from '@ohos.net.http'
+import { promptAction } from '@kit.ArkUI'
 
 // 定义后厨人员接口
 interface KitchenStaff {
@@ -12,6 +14,58 @@ interface KitchenStaff {
   certExpiry: string;
   joinDate: string;
   status: string;
+}
+
+// 晨检记录对象接口
+interface CheckRecord {
+  id: string;
+  personName: string;
+  temperature: number;
+  health: string;
+  healthStr: string;
+  checkDate: string;
+  checkDayTime: string;
+  pictureImg: string;
+  pictureBackImg: string;
+  sceneImg: string;
+  healthCertificateState: number;
+  healthCertificateStateStr: string;
+  state: string;
+  temperatureWay: string;
+  unitName: string;
+}
+
+// 分页响应接口
+interface PageResponse {
+  records: CheckRecord[];
+  total: number;
+  size: number;
+  current: number;
+  pages: number;
+}
+
+// API响应接口
+interface ApiResponse {
+  code: number;
+  message: string;
+  result: PageResponse;
+  success: boolean;
+  timestamp: number;
+}
+
+// 单条记录查询响应接口
+interface SingleRecordResponse {
+  code: number;
+  message: string;
+  result: CheckRecord;
+  success: boolean;
+  timestamp: number;
+}
+
+// HTTP响应类型
+interface HttpResponse {
+  responseCode: number;
+  result: string;
 }
 
 @Entry
@@ -31,29 +85,125 @@ struct CalendarPage {
   @State private checkedCount: number = 0
   @State private uncheckedCount: number = 0
   @State private failedCount: number = 0
+  @State private checkRecords: CheckRecord[] = [] // 晨检记录列表
+  @State private loading: boolean = false // 加载状态
+  @State private currentPage: number = 1 // 当前页码
+  @State private pageSize: number = 10 // 每页数量
+  private token: string = '' // 用于存储token
   private context = getContext(this) as common.UIAbilityContext
 
   aboutToAppear() {
     this.getStaffStatistics()
+    this.loadToken()
   }
 
   // 获取后厨人员统计数据
-  private async getStaffStatistics() {
+  private async getStaffStatistics(): Promise<void> {
     try {
-      const prefer = await preferences.getPreferences(this.context, 'myPreferences')
-      const storageStaff = await prefer.get('staffList', '[]')
+      const prefer: preferences.Preferences = await preferences.getPreferences(this.context, 'myPreferences')
+      const storageStaff: string = await prefer.get('staffList', '[]') as string
       if (storageStaff) {
-        const staffList: KitchenStaff[] = JSON.parse(storageStaff as string)
-        // 只统计在职人员
-        const activeStaff = staffList.filter(staff => staff.status === '在职')
+        const staffList: KitchenStaff[] = JSON.parse(storageStaff)
+        const activeStaff: KitchenStaff[] = staffList.filter((staff: KitchenStaff) => staff.status === '在职')
         this.totalCount = activeStaff.length
-        // 这里可以根据实际需求设置其他统计数据
         this.checkedCount = 0
         this.uncheckedCount = this.totalCount
         this.failedCount = 0
       }
     } catch (error) {
       console.error('获取人员统计数据失败:', error)
+    }
+  }
+
+  // 加载token
+  private async loadToken(): Promise<void> {
+    try {
+      const prefer: preferences.Preferences = await preferences.getPreferences(this.context, 'myPreferences')
+      this.token = await prefer.get('token', '') as string
+      if (this.token) {
+        this.fetchCheckRecords()
+      }
+    } catch (error) {
+      console.error('加载token失败:', error)
+    }
+  }
+
+  // 获取晨检记录列表
+  private async fetchCheckRecords(): Promise<void> {
+    if (this.loading) return
+    this.loading = true
+
+    try {
+      const httpRequest = http.createHttp()
+      const response = await httpRequest.request(
+        'https://api.suoeryun.com/ifood/jeecg-school/school/xxUnitCheckdata/list',
+        {
+          method: http.RequestMethod.GET,
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Access-Token': this.token
+          },
+          extraData: {
+            pageNo: this.currentPage,
+            pageSize: this.pageSize,
+            checkDayTime: this.selectedTab === 1 ? '晨检' : 
+                         this.selectedTab === 2 ? '午检' : 
+                         this.selectedTab === 3 ? '晚检' : undefined
+          }
+        }
+      )
+
+      if (response.responseCode === 200 && typeof response.result === 'string') {
+        const jsonData: ApiResponse = JSON.parse(response.result)
+        if (jsonData.success) {
+          this.checkRecords = jsonData.result.records
+          this.totalCount = jsonData.result.total
+          this.updateStatistics()
+        } else {
+          promptAction.showToast({ message: jsonData.message || '获取数据失败' })
+        }
+      }
+    } catch (error) {
+      console.error('获取晨检记录失败:', error)
+      promptAction.showToast({ message: '获取晨检记录失败' })
+    } finally {
+      this.loading = false
+    }
+  }
+
+  // 更新统计数据
+  private updateStatistics() {
+    this.checkedCount = this.checkRecords.filter(record => record.health === '0').length
+    this.uncheckedCount = this.totalCount - this.checkedCount
+    this.failedCount = this.checkRecords.filter(record => record.health === '1').length
+  }
+
+  // 通过ID查询晨检记录
+  private async fetchCheckRecordById(id: string): Promise<CheckRecord | null> {
+    try {
+      const httpRequest = http.createHttp()
+      const response = await httpRequest.request(
+        `https://api.suoeryun.com/ifood/jeecg-school/school/xxUnitCheckdata/queryById?id=${id}`,
+        {
+          method: http.RequestMethod.GET,
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Access-Token': this.token
+          }
+        }
+      )
+
+      if (response.responseCode === 200 && typeof response.result === 'string') {
+        const jsonData: SingleRecordResponse = JSON.parse(response.result)
+        if (jsonData.success) {
+          return jsonData.result
+        }
+      }
+      return null
+    } catch (error) {
+      console.error('查询晨检记录详情失败:', error)
+      promptAction.showToast({ message: '查询晨检记录详情失败' })
+      return null
     }
   }
 
@@ -173,10 +323,8 @@ struct CalendarPage {
   @Builder
   private TabButtonRowBuilder() {
     Row() {
-      // 左侧按钮组
       Row() {
         ForEach(this.tabList, (tab: string, idx: number) => {
-          // 渲染每个切换按钮，选中高亮，未选中灰边
           Text(tab)
             .fontSize(13)
             .fontColor(this.selectedTab === idx ? '#ffffffff' : '#ff000000')
@@ -185,24 +333,78 @@ struct CalendarPage {
             .borderRadius(4)
             .padding({ left: 8, right: 8, top: 2, bottom: 2 })
             .margin({ right: 2 })
-            .onClick(() => { this.selectedTab = idx })
+            .onClick(() => { 
+              this.selectedTab = idx
+              this.currentPage = 1
+              this.fetchCheckRecords()
+            })
         })
       }
       .layoutWeight(1)
-      // 右侧"未晨检人员>"按钮
+      
       Blank()
       Text('未晨检人员 >')
-        .fontSize(16)
+        .fontSize(13)
         .fontColor('#00C853')
         .onClick(() => {
-          router.pushUrl({url :'pages/chenjian1'})
+          // 可以添加跳转到未晨检人员列表的逻辑
         })
     }
     .width('100%')
-    .padding({ left: 16, right: 16, top: 16, bottom: 16 })
-    .backgroundColor('#ffffffff') // 底部白色横条
-    .borderRadius({ topLeft: 16, topRight: 16, bottomLeft: 0, bottomRight: 0 })
-    .margin({ top: 0 })
+    .backgroundColor('#ffffffff')
+    .padding(8)
+  }
+
+  // 添加晨检记录列表构建器
+  @Builder
+  private CheckRecordListBuilder() {
+    List() {
+      ForEach(this.checkRecords, (record: CheckRecord) => {
+        ListItem() {
+          Column() {
+            Row() {
+              Text(record.personName)
+                .fontSize(16)
+                .fontWeight(FontWeight.Bold)
+              Blank()
+              Text(record.checkDate)
+                .fontSize(14)
+                .fontColor('#666666')
+            }
+            .width('100%')
+            .padding({ bottom: 8 })
+
+            Row() {
+              Text(`体温: ${record.temperature}℃`)
+                .fontSize(14)
+              Blank()
+              Text(record.healthStr)
+                .fontSize(14)
+                .fontColor(record.health === '0' ? '#00C853' : '#FF0000')
+            }
+            .width('100%')
+            .padding({ bottom: 4 })
+
+            Text(`检查时段: ${record.checkDayTime}`)
+              .fontSize(14)
+              .fontColor('#666666')
+          }
+          .padding(12)
+          .backgroundColor('#FFFFFF')
+          .borderRadius(8)
+          .margin({ bottom: 8 })
+          .onClick(async () => {
+            const detail: CheckRecord | null = await this.fetchCheckRecordById(record.id)
+            if (detail) {
+              // 这里可以添加显示详情的逻辑
+              promptAction.showToast({ message: '查看详情功能待实现' })
+            }
+          })
+        }
+      })
+    }
+    .width('100%')
+    .padding({ left: 16, right: 16 })
   }
 
   /**
@@ -250,39 +452,53 @@ struct CalendarPage {
       }
       .width('100%')
       .backgroundColor('#00C853') // 绿色背景只包裹日历内容
-      // 渲染底部按钮行
+      // 添加统计信息显示
+      Row() {
+        Column() {
+          Text('总人数')
+            .fontSize(14)
+          Text(this.totalCount.toString())
+            .fontSize(20)
+            .fontWeight(FontWeight.Bold)
+        }
+        .layoutWeight(1)
+        
+        Column() {
+          Text('已检查')
+            .fontSize(14)
+          Text(this.checkedCount.toString())
+            .fontSize(20)
+            .fontWeight(FontWeight.Bold)
+            .fontColor('#00C853')
+        }
+        .layoutWeight(1)
+        
+        Column() {
+          Text('未检查')
+            .fontSize(14)
+          Text(this.uncheckedCount.toString())
+            .fontSize(20)
+            .fontWeight(FontWeight.Bold)
+            .fontColor('#FF9800')
+        }
+        .layoutWeight(1)
+        
+        Column() {
+          Text('异常')
+            .fontSize(14)
+          Text(this.failedCount.toString())
+            .fontSize(20)
+            .fontWeight(FontWeight.Bold)
+            .fontColor('#FF0000')
+        }
+        .layoutWeight(1)
+      }
+      .padding(16)
+      .backgroundColor('#FFFFFF')
+      // 添加切换按钮行
       this.TabButtonRowBuilder()
-      // 渲染统计信息行
-      Row() {
-        Text(`总人数：${this.totalCount}人`)
-          .fontSize(11)
-          .fontColor('#222222')
-        Blank()
-        Text(`已检测：${this.checkedCount}人`)
-          .fontSize(11)
-          .fontColor('#222222')
-        Blank()
-        Text(`未检测：${this.uncheckedCount}人`)
-          .fontSize(11)
-          .fontColor('#222222')
-        Blank()
-        Text(`不合格：${this.failedCount}人`)
-          .fontSize(11)
-          .fontColor('#222222')
-      }
-      .width('100%')
-      .padding({ top: 8, bottom: 8, left: 8, right: 8 })
-      .backgroundColor('#F8F8F8')
-      // 添加暂无数据提示
-      Row() {
-        Blank()
-        Text('~暂无相关数据~')
-          .fontSize(15)
-          .fontColor('#BBBBBB')
-        Blank()
-      }
-      .width('100%')
-      .padding({ top: 16, bottom: 16 })
+      // 添加晨检记录列表
+      this.CheckRecordListBuilder()
     }
     .width('100%')
     .height('100%')
