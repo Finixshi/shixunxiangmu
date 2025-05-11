@@ -5,6 +5,9 @@
   "main": "",
   "author": "",
   "license": "",
-  "dependencies": {}
+  "dependencies": {},
+  "dependencies": {
+    "@ohos/arkui": "^2.0.0"
+  }
 }
 

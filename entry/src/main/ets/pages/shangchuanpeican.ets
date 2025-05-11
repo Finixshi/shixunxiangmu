@@ -1,5 +1,23 @@
 import router from '@ohos.router';
+import { peicanjilu as ImportedRecordType } from './peicanjilu';
 
+// 现在可以使用 ImportedRecordType 而不是 RecordType
+const myRecord: ImportedRecordType = {
+  date: '',
+  unit: '',
+  meal: '',
+  position: '',
+  name: '',
+  evaluation: ''
+};
+interface RecordType {
+  date: string;
+  unit: string;
+  meal: string;
+  position: string;
+  name: string;
+  evaluation: string;
+}
 @Entry
 @Component
 struct Page1 {
@@ -10,6 +28,8 @@ struct Page1 {
   @State selectedDate: string = '请选择陪餐日期'; // 用于展示选择的日期
   @State selectDate: Date = new Date();
   @State dates: string = '请选择'; // 用于存储选择的日期，也用于传递
+  @State name: string = '';        // 陪餐人姓名
+  @State evaluation: string = '';
   private unitOptions = [
     '实训第一中学',
     '实训第二中学',
@@ -65,6 +85,7 @@ struct Page1 {
           .value(this.selectedUnit)
           .onSelect((index: number) => {
             this.selectedUnit = this.unitOptions[index];
+            console.info(`提交单位：${this.selectedPosition}`)
           })
           .margin(10)
           .width('70%')
@@ -93,35 +114,53 @@ struct Page1 {
           .width('70%')
       }
 
-      Button({ type: ButtonType.Normal })
-      {
-        Text("提交")
-          .margin({ top: 1, bottom: 1 })
-          .fontColor(Color.White)
-          .width('90%')
-          .height(40)
-          .textAlign(TextAlign.Center)
-      }
-      .width('90%')
-      .height(40)
-      .margin({ top: 250 })
-      .borderRadius(5)
-      .backgroundColor(Color.Green)
-      .onClick(() => {
-        router.pushUrl({
-          url: 'pages/peicanjilu',
-          params: {
-            mealDate: this.dates,
-            submitUnit: this.selectedUnit,
-            mealType: this.selectedMeal,
-            attendantPosition: this.selectedPosition
-          }
-        });
-      })
+      Button('提交')
+        .onClick(() => {
+          const record: RecordType = {
+            date: this.selectedDate,
+            unit: this.selectedUnit,
+            meal: this.selectedMeal,
+            position: this.selectedPosition,
+            name: this.name,
+            evaluation: this.evaluation
+          };
+          console.log('即将传递的陪餐记录数据:', record);
+          router.pushUrl({
+            url: 'pages/DatePickerPage',
+            params: record
+          });
+          // 如果有前往 'pages/peicanjilu' 的需求，也在此处处理
+          // router.pushUrl({
+          //   url: 'pages/peicanjilu',
+          //   params: {
+          //     mealDate: this.dates,
+          //     submitUnit: this.selectedUnit,
+          //     mealType: this.selectedMeal,
+          //     attendantPosition: this.selectedPosition
+          //   }
+          // });
+        })
+        .width('90%')
+        .height(40)
+        .margin({ top: 250 })
+        .borderRadius(5)
+        .backgroundColor(Color.Green)
+        .onClick(() => {
+          router.pushUrl({
+            url: 'pages/peicanjilu',
+            params: {
+              mealDate: this.dates,
+              submitUnit: this.selectedUnit,
+              mealType: this.selectedMeal,
+              attendantPosition: this.selectedPosition
+            }
+          });
+        })
     }
     .width('100%')
     .height('100%')
   }
+
 
   private showDateDialog() {
     DatePickerDialog.show({
@@ -132,7 +171,7 @@ struct Page1 {
         const year = value.year?? new Date().getFullYear();
         const month = value.month?? new Date().getMonth() ;
         const day = value.day?? new Date().getDate();
-        this.selectDate = new Date(year, month - 1, day);
+        this.selectDate = new Date(year, month , day);
         this.dates = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
         this.selectedDate = this.dates; // 新增赋值逻辑
       }
