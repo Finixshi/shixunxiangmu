@@ -108,7 +108,7 @@ struct Page1 {
       .borderRadius(5)
       .backgroundColor(Color.Green)
       .onClick(() => {
-        router.pushUrl({
+        router.back ({
           url: 'pages/peicanjilu',
           params: {
             mealDate: this.dates,
