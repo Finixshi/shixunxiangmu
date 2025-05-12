@@ -93,13 +93,26 @@ export class SampleServiceClass {
 
   // 删除留样数据
   async deleteSample(date: string, index: number): Promise<void> {
+    // 获取要删除的样本信息
     const store = await this.getStore()
     const key = `sample_${date}`
     const samplesStr = await store.get(key, '[]') as string
     const samples = JSON.parse(samplesStr) as SampleFormData[]
-    samples.splice(index, 1)
-    await store.put(key, JSON.stringify(samples))
-    await store.flush()
+    
+    if (index >= 0 && index < samples.length) {
+      const sampleToDelete = samples[index]
+      
+      // 如果有ID，则调用API删除
+      if (sampleToDelete.id) {
+        const apiSuccess = await this.deleteSampleFromApi(sampleToDelete.id)
+        console.info(`API删除留样${apiSuccess ? '成功' : '失败'}, ID: ${sampleToDelete.id}`)
+      }
+      
+      // 本地也删除
+      samples.splice(index, 1)
+      await store.put(key, JSON.stringify(samples))
+      await store.flush()
+    }
   }
 
   // 获取指定日期的留样数据
@@ -227,6 +240,45 @@ export class SampleServiceClass {
       return false
     } catch (error) {
       console.error('编辑留样API调用失败:', error)
+      return false
+    }
+  }
+
+  // 调用删除留样API
+  private async deleteSampleFromApi(id: string): Promise<boolean> {
+    try {
+      const httpRequest = http.createHttp()
+      // 确保URL格式正确
+      const url = `https://api.suoeryun.com/ifood/jeecg-school/school/xxReservedSample/delete?id=${id}`
+      
+      // 添加日志调试
+      console.info(`删除留样API URL: ${url}`)
+      
+      const response = await httpRequest.request(
+        url,
+        {
+          method: http.RequestMethod.DELETE,
+          header: {
+            'Content-Type': 'application/json',
+            'Tenant-Id': '10021011',
+            // 使用shipu.ets中使用的有效token
+            'X-Access-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwd2QiOiI5NzJiNzBjMWQwNGQ3YTY0ZGFjYzUwYTY3MzkyOWRlZSIsImV4cCI6MTc0NzYzNzg5MSwidXNlcm5hbWUiOiIxODk5MTI3NDI2MSJ9.ucMMMTv2a3bC4h_pqUcB1URENVmPy1Q2MD3FWPdgSFY'
+          }
+        }
+      )
+      
+      // 打印响应信息
+      console.info(`删除留样API响应状态码: ${response.responseCode}`)
+      console.info(`删除留样API响应数据: ${response.result}`)
+      
+      if (response.responseCode === 200) {
+        const resData = JSON.parse(response.result as string) as ApiResponse
+        console.info(`删除留样API响应成功: ${resData.success}, 代码: ${resData.code}, 消息: ${resData.message}`)
+        return resData.success === true || resData.code === 200
+      }
+      return false
+    } catch (error) {
+      console.error('删除留样API调用失败:', error)
       return false
     }
   }

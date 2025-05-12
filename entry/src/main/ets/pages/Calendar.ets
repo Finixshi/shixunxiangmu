@@ -330,11 +330,37 @@ struct CalendarPage {
                           value: '确认',
                           action: async () => {
                             try {
+                              // 显示删除中提示
+                              await promptAction.showToast({ 
+                                message: '删除中...', 
+                                duration: 1000,
+                                bottom: 100
+                              })
+                              
+                              // 先确保样本有id
+                              if (sample.id) {
+                                console.info(`开始删除留样记录, ID: ${sample.id}`)
+                              } else {
+                                console.info(`开始删除本地留样记录，无ID`)
+                              }
+                              
+                              // 调用删除API
                               await this.sampleService.deleteSample(this.formatDate(this.selectedDate), index)
-                              await promptAction.showToast({ message: '删除成功', duration: 2000 })
+                              
+                              // 显示删除成功提示
+                              await promptAction.showToast({ 
+                                message: '删除成功', 
+                                duration: 2000 
+                              })
+                              
+                              // 重新加载数据
                               this.loadSamples()
                             } catch (error) {
-                              await promptAction.showToast({ message: '删除失败，请重试', duration: 2000 })
+                              console.error('删除留样失败:', error)
+                              await promptAction.showToast({ 
+                                message: '删除失败，请重试', 
+                                duration: 2000 
+                              })
                             }
                           }
                         }
