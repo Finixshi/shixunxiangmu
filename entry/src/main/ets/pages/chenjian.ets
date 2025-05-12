@@ -1,6 +1,8 @@
 import { router } from '@kit.ArkUI'
 import preferences from '@ohos.data.preferences'
 import common from '@ohos.app.ability.common'
+import http from '@ohos.net.http'
+import { promptAction } from '@kit.ArkUI'
 
 // 定义后厨人员接口
 interface KitchenStaff {
@@ -12,6 +14,58 @@ interface KitchenStaff {
   certExpiry: string;
   joinDate: string;
   status: string;
+}
+
+// 晨检记录对象接口
+interface CheckRecord {
+  id: string;
+  personName: string;
+  temperature: number;
+  health: string;
+  healthStr: string;
+  checkDate: string;
+  checkDayTime: string;
+  pictureImg: string;
+  pictureBackImg: string;
+  sceneImg: string;
+  healthCertificateState: number;
+  healthCertificateStateStr: string;
+  state: string;
+  temperatureWay: string;
+  unitName: string;
+}
+
+// 分页响应接口
+interface PageResponse {
+  records: CheckRecord[];
+  total: number;
+  size: number;
+  current: number;
+  pages: number;
+}
+
+// API响应接口
+interface ApiResponse {
+  code: number;
+  message: string;
+  result: PageResponse;
+  success: boolean;
+  timestamp: number;
+}
+
+// 单条记录查询响应接口
+interface SingleRecordResponse {
+  code: number;
+  message: string;
+  result: CheckRecord;
+  success: boolean;
+  timestamp: number;
+}
+
+// HTTP响应类型
+interface HttpResponse {
+  responseCode: number;
+  result: string;
 }
 
 @Entry
@@ -31,29 +85,125 @@ struct CalendarPage {
   @State private checkedCount: number = 0
   @State private uncheckedCount: number = 0
   @State private failedCount: number = 0
+  @State private checkRecords: CheckRecord[] = [] // 晨检记录列表
+  @State private loading: boolean = false // 加载状态
+  @State private currentPage: number = 1 // 当前页码
+  @State private pageSize: number = 10 // 每页数量
+  private token: string = '' // 用于存储token
   private context = getContext(this) as common.UIAbilityContext
 
   aboutToAppear() {
     this.getStaffStatistics()
+    this.loadToken()
   }
 
   // 获取后厨人员统计数据
-  private async getStaffStatistics() {
+  private async getStaffStatistics(): Promise<void> {
     try {
-      const prefer = await preferences.getPreferences(this.context, 'myPreferences')
-      const storageStaff = await prefer.get('staffList', '[]')
+      const prefer: preferences.Preferences = await preferences.getPreferences(this.context, 'myPreferences')
+      const storageStaff: string = await prefer.get('staffList', '[]') as string
       if (storageStaff) {
-        const staffList: KitchenStaff[] = JSON.parse(storageStaff as string)
-        // 只统计在职人员
-        const activeStaff = staffList.filter(staff => staff.status === '在职')
+        const staffList: KitchenStaff[] = JSON.parse(storageStaff)
+        const activeStaff: KitchenStaff[] = staffList.filter((staff: KitchenStaff) => staff.status === '在职')
         this.totalCount = activeStaff.length
-        // 这里可以根据实际需求设置其他统计数据
         this.checkedCount = 0
         this.uncheckedCount = this.totalCount
         this.failedCount = 0
       }
     } catch (error) {
       console.error('获取人员统计数据失败:', error)
+    }
+  }
+
+  // 加载token
+  private async loadToken(): Promise<void> {
+    try {
+      const prefer: preferences.Preferences = await preferences.getPreferences(this.context, 'myPreferences')
+      this.token = await prefer.get('token', '') as string
+      if (this.token) {
+        this.fetchCheckRecords()
+      }
+    } catch (error) {
+      console.error('加载token失败:', error)
+    }
+  }
+
+  // 获取晨检记录列表
+  private async fetchCheckRecords(): Promise<void> {
+    if (this.loading) return
+    this.loading = true
+
+    try {
+      const httpRequest = http.createHttp()
+      const response = await httpRequest.request(
+        'https://api.suoeryun.com/ifood/jeecg-school/school/xxUnitCheckdata/list',
+        {
+          method: http.RequestMethod.GET,
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Access-Token': this.token
+          },
+          extraData: {
+            pageNo: this.currentPage,
+            pageSize: this.pageSize,
+            checkDayTime: this.selectedTab === 1 ? '晨检' : 
+                         this.selectedTab === 2 ? '午检' : 
+                         this.selectedTab === 3 ? '晚检' : undefined
+          }
+        }
+      )
+
+      if (response.responseCode === 200 && typeof response.result === 'string') {
+        const jsonData: ApiResponse = JSON.parse(response.result)
+        if (jsonData.success) {
+          this.checkRecords = jsonData.result.records
+          this.totalCount = jsonData.result.total
+          this.updateStatistics()
+        } else {
+          promptAction.showToast({ message: jsonData.message || '获取数据失败' })
+        }
+      }
+    } catch (error) {
+      console.error('获取晨检记录失败:', error)
+      promptAction.showToast({ message: '获取晨检记录失败' })
+    } finally {
+      this.loading = false
+    }
+  }
+
+  // 更新统计数据
+  private updateStatistics() {
+    this.checkedCount = this.checkRecords.filter(record => record.health === '0').length
+    this.uncheckedCount = this.totalCount - this.checkedCount
+    this.failedCount = this.checkRecords.filter(record => record.health === '1').length
+  }
+
+  // 通过ID查询晨检记录
+  private async fetchCheckRecordById(id: string): Promise<CheckRecord | null> {
+    try {
+      const httpRequest = http.createHttp()
+      const response = await httpRequest.request(
+        `https://api.suoeryun.com/ifood/jeecg-school/school/xxUnitCheckdata/queryById?id=${id}`,
+        {
+          method: http.RequestMethod.GET,
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Access-Token': this.token
+          }
+        }
+      )
+
+      if (response.responseCode === 200 && typeof response.result === 'string') {
+        const jsonData: SingleRecordResponse = JSON.parse(response.result)
+        if (jsonData.success) {
+          return jsonData.result
+        }
+      }
+      return null
+    } catch (error) {
+      console.error('查询晨检记录详情失败:', error)
+      promptAction.showToast({ message: '查询晨检记录详情失败' })
+      return null
     }
   }
 
@@ -172,9 +322,6 @@ struct CalendarPage {
 
   /**
    * 构建底部按钮行
-   * 包含"全部、晨检、午检、晚检"四个切换按钮，靠左排列，点击高亮；
-   * 右侧为"未晨检人员>"跳转按钮。
-   * 整体底部白色横条，按钮间距紧凑，样式与日历区域分层。
    */
   @Builder
   private TabButtonRowBuilder() {
@@ -201,7 +348,13 @@ struct CalendarPage {
         .fontSize(16)
         .fontColor('#00C853')
         .onClick(() => {
-          router.pushUrl({url :'pages/chenjian1'})
+          try {
+            router.pushUrl({
+              url: 'pages/chenjian1'
+            })
+          } catch (error) {
+            console.error('路由跳转失败：', error)
+          }
         })
     }
     .width('100%')
@@ -209,6 +362,58 @@ struct CalendarPage {
     .backgroundColor('#ffffffff') // 底部白色横条
     .borderRadius({ topLeft: 16, topRight: 16, bottomLeft: 0, bottomRight: 0 })
     .margin({ top: 0 })
+  }
+
+  // 添加晨检记录列表构建器
+  @Builder
+  private CheckRecordListBuilder() {
+    List() {
+      ForEach(this.checkRecords, (record: CheckRecord) => {
+        ListItem() {
+          Column() {
+            Row() {
+              Text(record.personName)
+                .fontSize(16)
+                .fontWeight(FontWeight.Bold)
+              Blank()
+              Text(record.checkDate)
+                .fontSize(14)
+                .fontColor('#666666')
+            }
+            .width('100%')
+            .padding({ bottom: 8 })
+
+            Row() {
+              Text(`体温: ${record.temperature}℃`)
+                .fontSize(14)
+              Blank()
+              Text(record.healthStr)
+                .fontSize(14)
+                .fontColor(record.health === '0' ? '#00C853' : '#FF0000')
+            }
+            .width('100%')
+            .padding({ bottom: 4 })
+
+            Text(`检查时段: ${record.checkDayTime}`)
+              .fontSize(14)
+              .fontColor('#666666')
+          }
+          .padding(12)
+          .backgroundColor('#FFFFFF')
+          .borderRadius(8)
+          .margin({ bottom: 8 })
+          .onClick(async () => {
+            const detail: CheckRecord | null = await this.fetchCheckRecordById(record.id)
+            if (detail) {
+              // 这里可以添加显示详情的逻辑
+              promptAction.showToast({ message: '查看详情功能待实现' })
+            }
+          })
+        }
+      })
+    }
+    .width('100%')
+    .padding({ left: 16, right: 16 })
   }
 
   /**

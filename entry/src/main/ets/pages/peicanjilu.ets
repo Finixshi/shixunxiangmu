@@ -1,12 +1,11 @@
 import router from '@ohos.router';
+
 @Entry
 @Component
 struct DatePickerPage {
   @State currentDate: Date = new Date()
   @State selectedDate: string = '请选择供应日期'
   @State selectDate: Date = new Date()
-
-
 
   private getThisWeekDates(): Array<Date> {
     const start = new Date(this.currentDate)
@@ -28,12 +27,13 @@ struct DatePickerPage {
       selected: this.selectDate,
       onAccept: (value: DatePickerResult) => {
         // 使用可选链和默认值保证安全性
-        const year = value.year ?? new Date().getFullYear()
-        const month = value.month ?? new Date().getMonth() + 1
-        const day = value.day ?? new Date().getDate()
+        const year = value.year?? new Date().getFullYear()
+        const month = value.month?? new Date().getMonth()
+        const day = value.day?? new Date().getDate()
 
-        this.selectDate = new Date(year, month - 1, day)
-        this.selectedDate = `${year}-${month.toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+        // 不需要再减1
+        this.selectDate = new Date(year, month, day)
+        this.selectedDate = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
       }
     })
   }
@@ -58,9 +58,6 @@ struct DatePickerPage {
       .padding({ left: 16, right: 16 })
       .backgroundColor('#FFFFFF');
 
-
-
-      // 日期横排选择
       // 日期横排选择
       Row({ space: 10 }) {
         Select([])
@@ -73,7 +70,6 @@ struct DatePickerPage {
           .height(70)
           .font({ size: 20 })
       }
-
       .justifyContent(FlexAlign.Center)
       .padding({ bottom: 20 })
 
