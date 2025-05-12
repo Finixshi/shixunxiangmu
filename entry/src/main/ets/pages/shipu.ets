@@ -98,8 +98,7 @@ struct Shipu {
   ]
 
   private canteens: SelectOption[] = [
-    new SelectOption('实训第一学校餐厅'),
-    new SelectOption('实训第二学校餐厅')
+    new SelectOption('实训第一学校餐厅')
   ]
 
   // 服务对象 - 用于处理食谱数据
@@ -414,7 +413,7 @@ private async Tv(): Promise<boolean> {
     dishName: this.formData.name,       // 使用表单名称
     sampleType: "0",
     demandUnit: "1651892693627330561",
-    demandUnitName: "实训第二学校餐厅",
+    demandUnitName: "实训第一学校餐厅",
     recipeImg: "https://admin.suoeryun.com/pcUpload/1917469119841849345_1745995237687.png",
     recipeStatus: "1"
   };
@@ -427,7 +426,7 @@ private async Tv(): Promise<boolean> {
         header: {
           'Content-Type': 'application/json',
           'Tenant-Id': '10021011',
-          'X-Access-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwd2QiOiIyZjg5NWM4NDI2MWFlNzJiYmUyMjVkMjllOWJhZjVjZCIsImV4cCI6MTc0NzUzOTM4NSwidXNlcm5hbWUiOiIxNTUwMjkzMzY3MyJ9.H3G_Um8fR4uMTNAYyD0tMZ2xwl-CDjkh4eNFgeS1BRo'
+          'X-Access-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwd2QiOiI5NzJiNzBjMWQwNGQ3YTY0ZGFjYzUwYTY3MzkyOWRlZSIsImV4cCI6MTc0NzYzNzg5MSwidXNlcm5hbWUiOiIxODk5MTI3NDI2MSJ9.ucMMMTv2a3bC4h_pqUcB1URENVmPy1Q2MD3FWPdgSFY'
         },
         extraData: JSON.stringify(data)
       }
@@ -446,7 +445,4 @@ private async Tv(): Promise<boolean> {
     return false;
   }
 }
-
-
-
     }
