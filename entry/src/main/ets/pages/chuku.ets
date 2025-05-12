@@ -262,7 +262,7 @@ struct PurchaseInventory {
               .shadow({ radius: 8, color: '#07C160', offsetX: 0, offsetY: 4 })
               .onClick(() => {
                 router.pushUrl({
-                  url: 'pages/yishenpi',
+                  url: 'pages/xiangqing',
                   params: {
                     orderId: item.documentNo,
                     token: this.token,
