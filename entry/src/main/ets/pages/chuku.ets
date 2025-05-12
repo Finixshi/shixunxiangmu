@@ -159,21 +159,21 @@ struct PurchaseInventory {
 
   build() {
     Column() {
-      // 标题
       Row() {
         Text('<')
-          .fontWeight(FontWeight.Bold)
-          .alignSelf(ItemAlign.Center)
-          .margin({ top: 0, bottom: 10 })
+          .alignSelf(ItemAlign.Start)
+          .fontSize(30)
+          .margin({ top: 0, bottom: 10, right: 125 })
           .onClick(() => {
             router.back()
           });
-
         Text('供应出库')
           .fontWeight(FontWeight.Bold)
           .alignSelf(ItemAlign.Center)
           .margin({ top: 0, bottom: 10 });
       }
+      .width('100%');
+
 
       // 选项卡
       Row() {
@@ -325,7 +325,7 @@ struct PurchaseInventory {
     }
     .height('100vh')
     .width('100vw')
-    .padding({ top: 10, bottom: 10, left: 10, right: 10 })
+    .padding({ top: 10, bottom: 20, left: 10, right: 10 })
     .backgroundColor(Color.White);
   }
 }
