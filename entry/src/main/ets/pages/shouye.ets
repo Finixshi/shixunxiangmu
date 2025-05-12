@@ -35,7 +35,7 @@ struct Index1 {
   ];
   @State image1:cuku[]=[
     {url1:'app.media.gongyingchuku',count1:0,text1:'供应出库',route1:'pages/chuku' },
-    {url1:'app.media.caigouruku',count1:0,text1:'采购入库',route1:'pages/ruku'},
+    {url1:'app.media.shishikucun',count1:0,text1:'实时库存',route1:'pages/kucun'},
   ]
 
 

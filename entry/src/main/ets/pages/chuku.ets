@@ -246,12 +246,12 @@ struct PurchaseInventory {
                   .fontSize(20)
                   .fontWeight(FontWeight.Bold)
                   .margin({ bottom: 8 });
-                Text(`单据号：${item.documentNo}`).fontSize(16).margin({ bottom: 2 });
-                Text(`出库日期：${item.accountingDate}`).fontSize(16).margin({ bottom: 2 });
-                Text(`出库类型：${item.mealType_dictText}`).fontSize(16).margin({ bottom: 2 });
-                Text(`用餐类型：${item.requirementType_dictText}`).fontSize(16).margin({ bottom: 2 });
-                Text(`餐    别：${item.mealCategory_dictText}`).fontSize(16).margin({ bottom: 2 });
-                Text(`制单时间：${item.createTime}`).fontSize(16).margin({ bottom: 2 });
+                Text(`单据号：${item.documentNo}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
+                Text(`出库日期：${item.accountingDate}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
+                Text(`出库类型：${item.mealType_dictText}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
+                Text(`用餐类型：${item.requirementType_dictText}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
+                Text(`餐别：${item.mealCategory_dictText}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
+                Text(`制单时间：${item.createTime}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
               }
               .padding(16)
               .backgroundColor('#fff')
@@ -262,7 +262,7 @@ struct PurchaseInventory {
               .shadow({ radius: 8, color: '#07C160', offsetX: 0, offsetY: 4 })
               .onClick(() => {
                 router.pushUrl({
-                  url: 'pages/yishenpi',
+                  url: 'pages/xiangqing',
                   params: {
                     orderId: item.documentNo,
                     token: this.token,
