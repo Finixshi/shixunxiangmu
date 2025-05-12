@@ -4,7 +4,7 @@ import { RecipeData, SelectOption } from '../common/types';
 import promptAction from '@ohos.promptAction';
 import common from '@ohos.app.ability.common';
 import preferences from '@ohos.data.preferences';
-
+import http from '@ohos.net.http'
 @Entry
 @Component
 struct JinRiCaiPin {
