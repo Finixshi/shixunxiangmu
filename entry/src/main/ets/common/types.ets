@@ -1,4 +1,5 @@
 export interface SampleFormData {
+  id?: string       // 添加可选的id字段用于编辑操作
   location: string
   date: string
   type: string

@@ -29,7 +29,7 @@ struct ruku {
             router.back()
           });
 
-        Text('采购入库')
+        Text('实时库存')
           .fontWeight(FontWeight.Bold)
           .alignSelf(ItemAlign.Center) // 居中显示
           .margin({ top: 0, bottom: 10 });
