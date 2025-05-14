@@ -2,6 +2,7 @@ import router from '@ohos.router';
 import http from '@ohos.net.http';
 import { promptAction } from '@kit.ArkUI';
 //账号18991274261密码lwjy123456
+//账号18991274264密码123456
 // 接口类型定义
 interface UserInfo {
   id: string;
@@ -197,7 +198,7 @@ struct LoginPage {
     if (clientType === '2') {
       targetUrl = 'pages/shouye'; // 用户界面
     } else if (clientType === '3') {
-      targetUrl = 'pages/buliangjilu'; // 供应商界面
+      targetUrl = 'pages/gongyingshangshouye'; // 供应商界面
     }
 
     // 执行路由跳转
