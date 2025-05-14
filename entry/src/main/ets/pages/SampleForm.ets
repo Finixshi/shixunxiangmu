@@ -280,7 +280,7 @@ struct SampleForm {
             .onClick(() => {
               DatePickerDialog.show({
                 selected: new Date(this.formData.date),
-                onAccept: (value) => {
+                onAccept: (value: DatePickerResult) => {
                   const date = value.year + '-' +
                   String(value.month).padStart(2, '0') + '-' +
                   String(value.day).padStart(2, '0')
@@ -419,7 +419,7 @@ struct SampleForm {
             .onClick(() => {
               DatePickerDialog.show({
                 selected: new Date(),
-                onAccept: (value) => {
+                onAccept: (value: DatePickerResult) => {
                   // 先选择日期，确保month不是undefined
                   if (value.year !== undefined && value.month !== undefined && value.day !== undefined) {
                     const date = `${value.year}-${String(value.month + 1).padStart(2, '0')}-${String(value.day).padStart(2, '0')}`
@@ -428,7 +428,7 @@ struct SampleForm {
                     TimePickerDialog.show({
                       selected: new Date(),
                       useMilitaryTime: true, // 使用24小时制
-                      onAccept: (time) => {
+                      onAccept: (time: TimePickerResult) => {
                         const hours = String(time.hour).padStart(2, '0')
                         const minutes = String(time.minute).padStart(2, '0')
                         this.formData.disposalTime = `${date} ${hours}:${minutes}`

@@ -3,6 +3,8 @@ import common from '@ohos.app.ability.common';
 import preferences from '@ohos.data.preferences';
 import promptAction from '@ohos.promptAction';
 import http from '@ohos.net.http'
+import { DatePickerResult, RecipeData as RecipeItem, RecipeRouteParams, SelectOption as TypesSelectOption, TimePickerResult } from '../common/types';
+import { getRecipeService } from '../common/services/RecipeService';
 
 // 定义Select选项类
 class SelectOption {
@@ -13,6 +15,44 @@ class SelectOption {
   }
 }
 
+// 定义用户信息接口
+interface UserInfo {
+  id?: string;
+  username?: string;
+  relTenantIds?: string;
+}
+
+// 为Result接口定义明确的结构，而不是使用索引签名
+interface Result {
+  // 定义具体字段，替代索引签名
+  code?: number;
+  data?: string | ApiData;
+  userInfo?: UserInfo;
+  // 其他可能的字段...
+}
+
+// 定义API数据类型
+interface ApiData {
+  id?: string;
+  name?: string;
+  code?: string | number;
+  message?: string;
+  values?: Array<string | number | boolean>;
+  items?: Array<ApiDataItem>;
+  // 其他可能的数据字段...
+}
+
+// 定义API数据项
+interface ApiDataItem {
+  id: string;
+  name: string;
+  type?: string;
+  value?: string | number | boolean;
+  status?: string | number;
+  date?: string;
+  description?: string;
+}
+
 interface ApiResponse {
   success: boolean;
   message: string;
@@ -21,23 +61,29 @@ interface ApiResponse {
   timestamp: number;
 }
 
-// 定义食谱类型接口
-interface RecipeItem {
-  date: string;
-  name: string;
-  mealType: string;
-  diningType: string;
-  canteen: string;
-  images?: string[];
+// 定义食谱API请求数据接口
+interface RecipeRequestData {
+  id?: string;         // 添加可选的id字段用于编辑操作
+  recipeDate: string;
+  startTime: string;
+  endTime: string;
+  mealCategory: string;
+  dishName: string;
+  sampleType: string;
+  demandUnit: string;
+  demandUnitName: string;
+  recipeImg: string;
+  recipeStatus: string;
 }
 
-// 定义路由参数接口
-interface RecipeRouteParams {
-  editRecipe?: RecipeItem;
-  editIndex?: number;
-  selectedDate?: string;
+// 定义食谱API响应接口
+interface RecipeApiResponse {
+  success: boolean;
+  message: string;
+  code: number;
+  result: null;
+  timestamp: number;
 }
-
 
 // 定义食谱服务类
 class RecipeService {
@@ -111,7 +157,25 @@ struct Shipu {
     if (params?.editRecipe) {
       this.isEditMode = true;
       this.editIndex = params.editIndex ?? -1;
-      this.formData = JSON.parse(JSON.stringify(params.editRecipe));
+      // 创建深拷贝而不使用JSON方法
+      this.formData = {
+        id: params.editRecipe.id,       // 保存API id用于编辑操作
+        date: params.editRecipe.date || '',
+        name: params.editRecipe.name || '',
+        mealType: params.editRecipe.mealType || '',
+        diningType: params.editRecipe.diningType || '',
+        canteen: params.editRecipe.canteen || '',
+        images: undefined
+      };
+      
+      // 如果有图片数组，使用循环复制而不是扩展运算符
+      if (params.editRecipe.images && Array.isArray(params.editRecipe.images)) {
+        const newImages: string[] = [];
+        for (let i = 0; i < params.editRecipe.images.length; i++) {
+          newImages.push(params.editRecipe.images[i]);
+        }
+        this.formData.images = newImages;
+      }
     } else if (params?.selectedDate) {
       this.formData.date = params.selectedDate;
     } else {
@@ -289,20 +353,108 @@ struct Shipu {
         .onClick(async () => {
           if (this.validateForm()) {
             try {
-              if (this.isEditMode) {
-                await this.recipeService.updateRecipe(this.formData, this.editIndex);
+              // 1. 首先保存到本地存储
+              if (this.isEditMode && this.editIndex >= 0) {
+                // 从preferences中获取所有食谱数据
+                const prefer = await preferences.getPreferences(this.context, 'myPreferences');
+                const storageRecipes = await prefer.get('recipeList', '[]');
+                const recipesStr: string = storageRecipes as string;
+                let allRecipes: RecipeItem[] = [];
+                
+                // 添加类型检查，确保解析得到的是数组
+                try {
+                  const parsedData = JSON.parse(recipesStr) as Array<RecipeItem>;
+                  if (Array.isArray(parsedData)) {
+                    allRecipes = parsedData;
+                  } else {
+                    console.error('解析的数据不是数组:', parsedData);
+                    allRecipes = [];
+                  }
+                } catch (error) {
+                  console.error('解析食谱数据失败:', error instanceof Error ? error.message : String(error));
+                  allRecipes = [];
+                }
+                
+                // 更新指定的食谱数据
+                if (this.editIndex < allRecipes.length) {
+                  allRecipes[this.editIndex] = this.formData;
+                  await prefer.put('recipeList', JSON.stringify(allRecipes));
+                  await prefer.flush();
+                  console.info('食谱更新成功(recipeList):', this.formData);
+                  
+                  // 关键修复：同时更新到RecipeService
+                  try {
+                    // 获取RecipeServiceClass的实例
+                    const recipeServiceInstance = getRecipeService(this.context);
+                    // 更新对应日期的食谱数据
+                    await recipeServiceInstance.updateRecipe(this.formData, this.editIndex);
+                    console.info('食谱更新成功(RecipeService):', this.formData);
+                  } catch (serviceError) {
+                    console.error('RecipeService更新失败:', serviceError instanceof Error ? serviceError.message : String(serviceError));
+                    // RecipeService更新失败不影响主流程
+                  }
+                } else {
+                  console.error('编辑索引超出范围:', this.editIndex, '总数:', allRecipes.length);
+                  throw new Error('编辑索引超出范围');
+                }
               } else {
-                await this.recipeService.saveRecipe(this.formData);
+                // 新建食谱
+                const prefer = await preferences.getPreferences(this.context, 'myPreferences');
+                const storageRecipes = await prefer.get('recipeList', '[]');
+                const recipesStr: string = storageRecipes as string;
+                let allRecipes: RecipeItem[] = [];
+                
+                // 添加类型检查，确保解析得到的是数组
+                try {
+                  const parsedData = JSON.parse(recipesStr) as Array<RecipeItem>;
+                  if (Array.isArray(parsedData)) {
+                    allRecipes = parsedData;
+                  } else {
+                    console.error('解析的数据不是数组:', parsedData);
+                    allRecipes = [];
+                  }
+                } catch (error) {
+                  console.error('解析食谱数据失败:', error instanceof Error ? error.message : String(error));
+                  allRecipes = [];
+                }
+                
+                allRecipes.push(this.formData);
+                await prefer.put('recipeList', JSON.stringify(allRecipes));
+                await prefer.flush();
+                console.info('新食谱保存成功(recipeList):', this.formData);
+                
+                // 关键修复：同时保存到RecipeService
+                try {
+                  // 获取RecipeServiceClass的实例
+                  const recipeServiceInstance = getRecipeService(this.context);
+                  // 保存新食谱数据
+                  await recipeServiceInstance.saveRecipe(this.formData);
+                  console.info('新食谱保存成功(RecipeService):', this.formData);
+                } catch (serviceError) {
+                  console.error('RecipeService保存失败:', serviceError instanceof Error ? serviceError.message : String(serviceError));
+                  // RecipeService保存失败不影响主流程
+                }
               }
+              
+              // 2. 尝试同步到服务器（如果失败也不影响本地存储）
+              try {
+                const success = await this.Tv();
+                console.info('服务器同步结果:', success ? '成功' : '失败');
+              } catch (error) {
+                console.error('服务器同步失败:', error instanceof Error ? error.message : String(error));
+                // 服务器同步失败不影响本地保存结果
+              }
+              
+              // 显示成功提示并返回
+              await promptAction.showToast({
+                message: this.isEditMode ? '修改成功' : '保存成功',
+                duration: 2000
+              });
+              
+              // 返回上一页
               router.back();
-              const success = await this.Tv();
-              if (success) {
-                await promptAction.showToast({
-                  message: this.isEditMode ? '修改成功' : '保存成功',
-                  duration: 2000
-                });
-              }
             } catch (error) {
+              console.error('保存失败:', error instanceof Error ? error.message : String(error));
               await promptAction.showToast({
                 message: this.isEditMode ? '修改失败，请重试' : '保存失败，请重试',
                 duration: 2000
@@ -353,7 +505,8 @@ struct Shipu {
         };
       }
 
-      const jsonData = JSON.parse(response.result as string) as ApiResponse;
+      const responseText: string = response.result as string;
+      const jsonData: ApiResponse = JSON.parse(responseText) as ApiResponse;
       //console.log('',jsonData.result.userInfo.relTenantIds);
       return {
         success: jsonData.code === 200,
@@ -363,7 +516,7 @@ struct Shipu {
         timestamp:jsonData.timestamp
       };
     } catch (error) {
-      console.error('Login Error:', JSON.stringify(error));
+      console.error('Login Error:', error instanceof Error ? error.message : String(error));
       return {
         success: false,
         message: '出现异常·',
@@ -372,7 +525,7 @@ struct Shipu {
         timestamp:0
       };
     }
-  }//自己的接口请求逻辑
+  }
 
 
 
@@ -382,41 +535,30 @@ struct Shipu {
   // 在 Shipu 组件内添加以下方法
 private async Tv(): Promise<boolean> {
   let httpRequest = http.createHttp();
-
-  interface Data {
-    recipeDate: string;
-    startTime: string;
-    endTime: string;
-    mealCategory: string;
-    dishName: string;
-    sampleType: string;
-    demandUnit: string;
-    demandUnitName: string;
-    recipeImg: string;
-    recipeStatus: string;
-  }
-
-  interface TvResponse {
-    success: boolean;
-    message: string;
-    code: number;
-    result: null;
-    timestamp: number;
-  }
-
-  let url = 'https://api.suoeryun.com/ifood/jeecg-school/school/xxRecipeReported/add';
-  let data: Data = {
+  
+  // 根据编辑模式选择不同的API接口
+  let url = this.isEditMode 
+    ? 'https://api.suoeryun.com/ifood/jeecg-school/school/xxRecipeReported/edit'
+    : 'https://api.suoeryun.com/ifood/jeecg-school/school/xxRecipeReported/add';
+  
+  console.info(`使用API接口: ${url}, 编辑模式: ${this.isEditMode}`);
+  
+  // 准备请求数据
+  let data: RecipeRequestData = {
+    id: this.isEditMode ? this.formData.id : undefined,
     recipeDate: this.formData.date,     // 使用表单日期
     startTime: this.formData.date,      // 开始时间同日期
     endTime: this.formData.date,        // 结束时间同日期
-    mealCategory: "0",
+    mealCategory: this.getMealCategoryCode(this.formData.mealType), // 转换餐别代码
     dishName: this.formData.name,       // 使用表单名称
-    sampleType: "0",
+    sampleType: this.getDiningTypeCode(this.formData.diningType), // 转换用餐类型代码
     demandUnit: "1651892693627330561",
     demandUnitName: "实训第一学校餐厅",
     recipeImg: "https://admin.suoeryun.com/pcUpload/1917469119841849345_1745995237687.png",
     recipeStatus: "1"
   };
+  
+  console.info(`发送API数据: ${JSON.stringify(data)}`);
 
   try {
     let response = await httpRequest.request(
@@ -433,16 +575,40 @@ private async Tv(): Promise<boolean> {
     );
 
     if (response.responseCode === 200) {
-      const jsonResponse = JSON.parse(response.result as string) as TvResponse;
-      console.log('响应 code:', jsonResponse.code);
+      const responseText: string = response.result as string;
+      const jsonResponse: RecipeApiResponse = JSON.parse(responseText) as RecipeApiResponse;
+      console.log(`API响应成功, code: ${jsonResponse.code}, message: ${jsonResponse.message}`);
       return jsonResponse.code === 200;
     } else {
       console.log('请求失败，状态码:', response.responseCode);
       return false;
     }
   } catch (error) {
-    console.error('请求异常:', error);
+    console.error('请求异常:', error instanceof Error ? error.message : String(error));
     return false;
   }
 }
-    }
+
+// 获取餐别代码
+private getMealCategoryCode(mealType: string): string {
+  const mealTypeMap: Record<string, string> = {
+    '早餐': '0',
+    '午餐': '1',
+    '晚餐': '2',
+    '早点': '3',
+    '午点': '4', 
+    '晚点': '5',
+    '其他': '6'
+  };
+  return mealTypeMap[mealType] || '1'; // 默认为午餐
+}
+
+// 获取用餐类型代码
+private getDiningTypeCode(diningType: string): string {
+  const diningTypeMap: Record<string, string> = {
+    '堂食': '0',
+    '外卖': '1'
+  };
+  return diningTypeMap[diningType] || '0'; // 默认为堂食
+}
+}

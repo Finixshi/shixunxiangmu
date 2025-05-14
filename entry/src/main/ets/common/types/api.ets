@@ -1,4 +1,5 @@
 import http from '@ohos.net.http'
+import { TimePickerResult } from '../types'
 
 /**
  * HTTP请求头接口
@@ -26,7 +27,7 @@ export interface ApiResponse<T> {
 export interface TimePickerParams {
   selected: Date;
   useMilitaryTime: boolean;
-  onAccept: (value: TimePickerValue) => void;
+  onAccept: (value: TimePickerResult) => void;
 } 
 
 /**

@@ -24,12 +24,11 @@
     "pages/uploadPlan",
     "pages/uploadPlan_2",
     "pages/buliangjilu",
-    "pages/gongyingshangshouye",
     "pages/peicanjilu",
     "pages/shangchuanpeican",
-
-
     "pages/chenjian",
-    "pages/chenjian1"
+    "pages/chenjian1",
+    "pages/peisongdangh",
+    "pages/peisongdanDetailgh"
   ]
 }

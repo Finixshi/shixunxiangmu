@@ -49,7 +49,7 @@ export class SampleServiceClass {
     this.context = context
   }
 
-  private async getStore() {
+  private async getStore(): Promise<dataPreferences.Preferences> {
     return await dataPreferences.getPreferences(this.context, STORE_NAME)
   }
 
