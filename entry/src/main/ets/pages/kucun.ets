@@ -342,12 +342,12 @@ struct Kucun {
         .fontSize(20)
         .fontWeight(FontWeight.Bold)
         .margin({ bottom: 8 });
-      Text(`供应价：${item.supplyPricing || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
+      Text(`供应价：${item.modifyPrice || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
       Text(`入库时间：${item.createTime || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
       Text(`库存量：${item.totalNum || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
       Text(`需求类型：${item.requirementType_dictText || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
       Text(`用餐类型：${item.mealType_dictText || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
-      Text(`供应商：${item.createBy || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
+      Text(`供应商：${item.supplierName || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
       Text(`状态：${item.izExpired === '1' ? '已过期' : '正常'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
     }
     .padding(16)
