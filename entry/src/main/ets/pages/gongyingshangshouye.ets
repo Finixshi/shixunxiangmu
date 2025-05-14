@@ -42,42 +42,42 @@ struct Index1 {
       route: 'pages/peisong_page' // 配送单页面路由，需替换为实际页面路径
     },
     {
-      url: 'app.media.education_3', // 送货单图标资源名，需替换为实际图标资源路径
+      url: 'app.media.education_3',
       count: 0,
       text: '送货单',
-      route: 'pages/songhuo_page' // 送货单页面路由，需替换为实际页面路径
+      route: 'pages/songhuo_page'
     },
     {
-      url: 'app.media.home_11', // 退货单图标资源名，需替换为实际图标资源路径
+      url: 'app.media.home_11',
       count: 0,
       text: '退货单',
-      route: 'pages/tuihuo_page' // 退货单页面路由，需替换为实际页面路径
+      route: 'pages/tuihuo_page'
     },
     {
-      url: 'app.media.home_4', // 新品申购图标资源名，需替换为实际图标资源路径
+      url: 'app.media.home_4',
       count: 0,
       text: '新品申购',
-      route: 'pages/shengou_page' // 新品申购页面路由，需替换为实际页面路径
+      route: 'pages/shengou_page'
     }
   ];
   // 资料管理数据
   @State dataItems: DataItem[] = [
     {
-      url: 'app.media.education_4', // 不良记录图标资源名，需替换为实际图标资源路径
+      url: 'app.media.education_4',
       text: '不良记录',
-      route: 'pages/buliangjilu' // 不良记录页面路由，需替换为实际页面路径
+      route: 'pages/buliangjilu'
     },
     {
-      url: 'app.media.education_6', // 资质信息图标资源名，需替换为实际图标资源路径
+      url: 'app.media.education_6',
       text: '资质信息',
-      route: 'pages/zizhi_page' // 资质信息页面路由，需替换为实际页面路径
+      route: 'pages/zizhi_page'
     }
   ];
   // 公司信息
   @State companyName: string = '彦红粮油有限公司';
   @State companyPhone: string = '18991274264';
   @State receivedToken: string = ''; // 参数传递
-  @State tenantId: number = 0; // 同上
+  @State tenantId: number = 0;
 
   onPageShow() { // 这是一个接收传递参数的方法
     // 使用接口类型断言
