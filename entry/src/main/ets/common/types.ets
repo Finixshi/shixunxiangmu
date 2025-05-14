@@ -15,6 +15,7 @@ export interface SampleFormData {
 }
 
 export interface RecipeData {
+  id?: string          // 添加可选的id字段用于编辑操作
   date: string          // 食谱日期
   name: string          // 食谱名称
   mealType: string      // 餐别（早点、午餐、晚点等）
