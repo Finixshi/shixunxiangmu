@@ -247,18 +247,26 @@ struct Kucun {
     Row() {
       this.buildSelect(this.categoryOptions, this.selectedCategoryValue, (value: string) => {
         this.selectedCategoryValue = value;
+        this.resetData();
+        this.fetchStockItems();
       }, "25%");
 
       this.buildSelect(this.stockTypeOptions, this.selectedStockTypeValue, (value: string) => {
         this.selectedStockTypeValue = value;
+        this.resetData();
+        this.fetchStockItems();
       }, "25%", 10);
 
       this.buildSelect(this.mealTypeOptions, this.selectedMealTypeValue, (value: string) => {
         this.selectedMealTypeValue = value;
+        this.resetData();
+        this.fetchStockItems();
       }, "25%", 10);
 
       this.buildSelect(this.mealCategoryOptions, this.selectedMealCategoryValue, (value: string) => {
         this.selectedMealCategoryValue = value;
+        this.resetData();
+        this.fetchStockItems();
       }, "25%", 10);
     }
     .width('90%')
@@ -375,7 +383,7 @@ struct Kucun {
   async fetchCategoryOptions() {
     let httpRequest = http.createHttp();
     try {
-      const url = 'https://api.suoeryun.com/education/jyjFoodGroup/queryFoodGroupByGroupId';
+      const url = 'https://api.suoeryun.com/ifood/education/jyjFoodGroup/queryFoodGroupByGroupId';
       const response = await httpRequest.request(
         url,
         {
@@ -392,11 +400,13 @@ struct Kucun {
       if (response.responseCode === http.ResponseCode.OK) {
         const responseData: ApiResponse<JyjFoodGroup> = JSON.parse(response.result as string);
         if (responseData.code === 200 && responseData.result) {
-          this.categoryOptions = responseData.result.map((group: JyjFoodGroup) =>
-          new SelectOption(group.groupName, group.id)
-          );
-          if (this.categoryOptions.length > 0) {
-            this.selectedCategoryValue = this.categoryOptions[0].value;
+          // 动态更新分类选项
+          this.categoryOptions = [
+            new SelectOption('全部分类'), // 保留默认选项
+            ...responseData.result.map((group: JyjFoodGroup) => new SelectOption(group.groupName, group.id))
+          ];
+          if (this.categoryOptions.length > 1) { // 如果有分类数据，设置第一个分类为默认值
+            this.selectedCategoryValue = this.categoryOptions[1].value;
           }
         } else {
           this.handleError(responseData.message || '请求失败');
@@ -426,7 +436,7 @@ struct Kucun {
       };
 
       // 添加筛选条件
-      if (this.selectedCategoryValue && this.selectedCategoryValue !== '全部类型') {
+      if (this.selectedCategoryValue && this.selectedCategoryValue !== '全部分类') {
         const selectedOption = this.categoryOptions.find(opt => opt.value === this.selectedCategoryValue);
         if (selectedOption && selectedOption.id) {
           params.groupId = selectedOption.id;
