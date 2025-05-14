@@ -2,6 +2,7 @@ import router from '@ohos.router';
 import http from '@ohos.net.http';
 import { promptAction } from '@kit.ArkUI';
 //账号18991274261密码lwjy123456
+//账号18991274264密码123456
 // 接口类型定义
 interface UserInfo {
   id: string;
@@ -190,9 +191,19 @@ struct LoginPage {
 
   // 处理用户跳转
   private handleUserRedirection(clientType?: string) {
-    // 所有用户类型都跳转到首页
+    // 根据返回值决定跳转路径
+    let targetUrl = 'pages/shouye'; // 默认跳转到首页
+
+    // 根据 clientType 值决定跳转路径
+    if (clientType === '2') {
+      targetUrl = 'pages/shouye'; // 用户界面
+    } else if (clientType === '3') {
+      targetUrl = 'pages/gongyingshangshouye'; // 供应商界面
+    }
+
+    // 执行路由跳转
     router.pushUrl({
-      url: 'pages/shouye',
+      url: targetUrl,
       params: {
         token: this.authToken,
         relTenantIds: this.currentUser?.relTenantIds
