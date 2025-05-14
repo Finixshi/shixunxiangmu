@@ -5,53 +5,71 @@ import { BusinessError } from '@ohos.base';
 
 // 商品分类接口定义
 interface JyjFoodGroup {
-  childNodes?: JyjFoodGroup[];
-  createBy?: string;
-  createTime?: string;
-  forShort?: string;
-  groupCode?: string;
-  groupName?: string;
-  id?: string;
-  parentId?: string;
-  sortNumber?: number;
+  id: string;
+  parentId: string;
+  groupCode: string;
+  groupName: string;
+  sortNumber: number;
+  forShort: string;
+  createBy: null;
+  createTime: null;
+  updateBy: null;
+  updateTime: null;
+  tenantId: string;
+  testType: null;
+  childNodes: null;
+  foodType: null;
+  itemName: null;
 }
 
 // 库存项接口定义
-class StockItem {
-  accountingDate: string = '';
-  batch: string = '';
-  brandLevel: string = '';
-  createBy: string = '';
-  createTime: string = '';
-  demandUnit: string = '';
-  demandUnitName: string = '';
-  encoding: string = '';
-  expirationDate: string = '';
-  expirationDay: number = 0;
-  failureTime: string = '';
-  foodId: string = '';
-  foodName: string = '';
-  groupId: string = '';
-  groupName: string = '';
-  id: string = '';
-  images: string = '';
-  izExpired: string = '';
-  modifyPrice: number = 0;
-  placeOrigin: string = '';
-  producedDate: string = '';
-  realSpecification: string = '';
-  residueDay: string = '';
-  schoolId: string = '';
-  specification: string = '';
-  supplyPricing: number = 0;
-  totalNum: number = 0;
-  unit: string = '';
-  requirementType: string = '';
-  requirementType_dictText: string = '';
-  mealCategory: string = '';
-  mealCategory_dictText: string = '';
-  mealType: string = '';
-  mealType_dictText: string = '';
+interface StockItem {
+  id?: string;
+  createBy?: string;
+  createTime?: string;
+  updateBy?: string;
+  updateTime?: string;
+  schoolId?: string;
+  demandUnit?: string;
+  demandUnitName?: string;
+  foodId?: string;
+  foodName?: string;
+  encoding?: string;
+  groupId?: string;
+  groupName?: string;
+  unit?: string;
+  specification?: string;
+  brandLevel?: string;
+  modifyPrice?: number;
+  supplyPricing?: number;
+  totalNum?: number;
+  totalWeight?: number;
+  storageLocation?: string;
+  supplyWay?: string;
+  supplierId?: string;
+  supplierName?: string;
+  producedDate?: string;
+  batch?: string;
+  izRemind?: string;
+  images?: string;
+
+  expirationDay?: number;
+  izConvert?: string;
+  failureTime?: string;
+  tenantId?: string;
+  requirementType?: string;
+  realSpecification?: string;
+  placeOrigin?: string;
+  izExpired?: string;
+  internationalCode?: string;
+  residueDay?: string;
+  expirationDate?: string;
+  mealType?: string;
+  mealCategory?: string;
+  accountingDate?: string;
+  requirementType_dictText?: string;
+  mealType_dictText?: string;
+  mealCategory_dictText?: string;
 }
 
 // 接口返回整体结构
@@ -64,13 +82,16 @@ interface ApiResponse<T> {
 }
 
 // 分页列表返回结构
-// 新增接口定义
 interface PageResult<T> {
+  total: number;
+  size: number;
   current: number;
   pages: number;
   records: T[];
-  size: number;
-  total: number;
+  optimizeCountSql?: boolean;
+  searchCount?: boolean;
+  countId?: string;
+  maxLimit?: string;
 }
 
 // 修改后的 PageResponse 接口
@@ -81,7 +102,6 @@ interface PageResponse<T> {
   success: boolean;
   timestamp: number;
 }
-
 
 // 定义 SelectOption 类
 class SelectOption {
@@ -108,8 +128,8 @@ interface RequestParams {
 
 @Entry
 @Component
-struct kucun {
-  @State activeTab: number = 0;
+struct Kucun {
+  @State activeTab: number = 1;
   @State message: string = '~暂无相关数据~';
   @State showSupplierPopup: boolean = false;
   @State showDatePopup: boolean = false;
@@ -153,7 +173,7 @@ struct kucun {
   @State selectedMealCategoryValue: string = '全部餐别';
   @State currentTabContent: string = '非零库存';
   @State stockItems: StockItem[] = [];
-  @State token: string = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwd2QiOiIyZjg5NWM4NDI2MWFlNzJiYmUyMjVkMjllOWJhZjVjZCIsImV4cCI6MTc0NzYxOTExNiwidXNlcm5hbWUiOiIxNTUwMjkzMzY3MyJ9.Zsc8fNnV0rlF17dLSv1RpO3ecWn96FOYQ7pH9Y0JJ7Q';
+  @State token: string = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwd2QiOiIyZjg5NWM4NDI2MWFlNzJiYmUyMjVkMjllOWJhZjVjZCIsImV4cCI6MTc0NzYxOTExNiwidXNlcm5hbWUiOiIxNTUwMjkzMzY3MyJ9.Zsc8fNnV0rlF17dLSv1RpO3ecWn96FOYQ7pH9Y0JJ7Q'; // 替换为你的实际 token
   @State tenantId: number = 10021011;
 
   private pageNo: number = 1;
@@ -161,10 +181,10 @@ struct kucun {
 
   build() {
     Column() {
-      this.buildHeader()
-      this.buildTabs()
-      this.buildFilters()
-      this.buildContent()
+      this.buildHeader();
+      this.buildTabs();
+      this.buildFilters();
+      this.buildContent();
     }
     .height('100%')
     .width('100%')
@@ -178,9 +198,9 @@ struct kucun {
       Text('<')
         .alignSelf(ItemAlign.Start)
         .fontSize(30)
-        .margin({ top: 0, bottom: 10, right: 130})
+        .margin({ top: 0, bottom: 10, right: 130 })
         .onClick(() => {
-          router.back()
+          router.back();
         });
 
       Text('实时库存')
@@ -188,7 +208,7 @@ struct kucun {
         .alignSelf(ItemAlign.Center)
         .margin({ top: 0, bottom: 10 });
     }
-    .width('100%')
+    .width('100%');
   }
 
   // 构建选项卡
@@ -197,29 +217,28 @@ struct kucun {
     Row() {
       Text('非零库存')
         .fontSize(15)
-        .fontWeight(this.activeTab === 0 ? FontWeight.Bold : FontWeight.Normal)
-        .width('50%')
-        .maxLines(1)
-        .alignSelf(ItemAlign.Center)
-        .textAlign(TextAlign.Center)
-        .onClick(() => {
-          this.switchTab(0, '非零库存');
-        });
-
-      Text('零库存')
-        .fontSize(15)
         .fontWeight(this.activeTab === 1 ? FontWeight.Bold : FontWeight.Normal)
         .width('50%')
         .maxLines(1)
         .alignSelf(ItemAlign.Center)
         .textAlign(TextAlign.Center)
         .onClick(() => {
-          this.switchTab(1, '零库存');
+          this.switchTab(1, '非零库存');
+        });
+
+      Text('零库存')
+        .fontSize(15)
+        .fontWeight(this.activeTab === 0 ? FontWeight.Bold : FontWeight.Normal)
+        .width('50%')
+        .maxLines(1)
+        .alignSelf(ItemAlign.Center)
+        .textAlign(TextAlign.Center)
+        .onClick(() => {
+          this.switchTab(0, '零库存');
         });
     }
     .width('100%')
-    .margin({ left: 10, right: 10 })
-    .margin({ bottom: 20 });
+    .margin({ left: 10, right: 10, bottom: 20 });
   }
 
   // 构建筛选器
@@ -228,19 +247,19 @@ struct kucun {
     Row() {
       this.buildSelect(this.categoryOptions, this.selectedCategoryValue, (value: string) => {
         this.selectedCategoryValue = value;
-      }, "25%")
+      }, "25%");
 
       this.buildSelect(this.stockTypeOptions, this.selectedStockTypeValue, (value: string) => {
         this.selectedStockTypeValue = value;
-      }, "25%", 10)
+      }, "25%", 10);
 
       this.buildSelect(this.mealTypeOptions, this.selectedMealTypeValue, (value: string) => {
         this.selectedMealTypeValue = value;
-      }, "25%", 10)
+      }, "25%", 10);
 
       this.buildSelect(this.mealCategoryOptions, this.selectedMealCategoryValue, (value: string) => {
         this.selectedMealCategoryValue = value;
-      }, "25%", 10)
+      }, "25%", 10);
     }
     .width('90%')
     .margin({ bottom: 20 });
@@ -248,8 +267,7 @@ struct kucun {
 
   // 构建选择器组件
   @Builder
-  buildSelect(options: SelectOption[], selectedValue: string,
-    onSelect: (value: string) => void, width: string, marginLeft: number = 0) {
+  buildSelect(options: SelectOption[], selectedValue: string, onSelect: (value: string) => void, width: string, marginLeft: number = 0) {
     Select(options)
       .selected(options.findIndex(opt => opt.value === selectedValue))
       .value(selectedValue)
@@ -261,9 +279,9 @@ struct kucun {
       .fontColor('#333')
       .backgroundColor('#FFF')
       .borderRadius(8)
-      .border({ width: 0, color: '#DDD'})
+      .border({ width: 0, color: '#DDD' })
       .margin({ left: marginLeft })
-      .font({ size: '20px' })
+      .font({ size: '20px' });
   }
 
   // 构建内容区域
@@ -283,7 +301,7 @@ struct kucun {
             .alignSelf(ItemAlign.Center);
         } else {
           ForEach(this.stockItems, (item: StockItem) => {
-            this.buildStockItem(item)
+            this.buildStockItem(item);
           });
 
           if (this.hasMore) {
@@ -316,12 +334,12 @@ struct kucun {
         .fontSize(20)
         .fontWeight(FontWeight.Bold)
         .margin({ bottom: 8 });
-      Text(`供应价：${item.supplyPricing}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
-      Text(`入库时间：${item.createTime}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
-      Text(`库存量：${item.totalNum}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
-      Text(`需求类型：${item.requirementType_dictText}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
-      Text(`用餐类型：${item.mealType_dictText}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
-      Text(`供应商：${item.createBy}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
+      Text(`供应价：${item.supplyPricing || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
+      Text(`入库时间：${item.createTime || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
+      Text(`库存量：${item.totalNum || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
+      Text(`需求类型：${item.requirementType_dictText || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
+      Text(`用餐类型：${item.mealType_dictText || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
+      Text(`供应商：${item.createBy || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
       Text(`状态：${item.izExpired === '1' ? '已过期' : '正常'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
     }
     .padding(16)
@@ -373,9 +391,9 @@ struct kucun {
 
       if (response.responseCode === http.ResponseCode.OK) {
         const responseData: ApiResponse<JyjFoodGroup> = JSON.parse(response.result as string);
-        if (responseData.code === 200 && Array.isArray(responseData.result)) {
+        if (responseData.code === 200 && responseData.result) {
           this.categoryOptions = responseData.result.map((group: JyjFoodGroup) =>
-          new SelectOption(group.groupName || '未知分类', group.id)
+          new SelectOption(group.groupName, group.id)
           );
           if (this.categoryOptions.length > 0) {
             this.selectedCategoryValue = this.categoryOptions[0].value;
@@ -440,54 +458,13 @@ struct kucun {
 
       if (response.responseCode === http.ResponseCode.OK) {
         const responseData: PageResponse<StockItem> = JSON.parse(response.result as string);
-        if (responseData.code === 200 && Array.isArray(responseData.result.records)) {
-          const newItems = responseData.result.records.map(item => {
-            const stockItem = new StockItem();
-            stockItem.accountingDate = item.accountingDate;
-            stockItem.batch = item.batch;
-            stockItem.brandLevel = item.brandLevel;
-            stockItem.createBy = item.createBy;
-            stockItem.createTime = item.createTime;
-            stockItem.demandUnit = item.demandUnit;
-            stockItem.demandUnitName = item.demandUnitName;
-            stockItem.encoding = item.encoding;
-            stockItem.expirationDate = item.expirationDate;
-            stockItem.expirationDay = item.expirationDay;
-            stockItem.failureTime = item.failureTime;
-            stockItem.foodId = item.foodId;
-            stockItem.foodName = item.foodName;
-            stockItem.groupId = item.groupId;
-            stockItem.groupName = item.groupName;
-            stockItem.id = item.id;
-            stockItem.images = item.images;
-            stockItem.izExpired = item.izExpired;
-            stockItem.modifyPrice = item.modifyPrice;
-            stockItem.placeOrigin = item.placeOrigin;
-            stockItem.producedDate = item.producedDate;
-            stockItem.realSpecification = item.realSpecification;
-            stockItem.residueDay = item.residueDay;
-            stockItem.schoolId = item.schoolId;
-            stockItem.specification = item.specification;
-            stockItem.supplyPricing = item.supplyPricing;
-            stockItem.totalNum = item.totalNum;
-            stockItem.unit = item.unit;
-            stockItem.requirementType = item.requirementType;
-            stockItem.requirementType_dictText = item.requirementType_dictText;
-            stockItem.mealCategory = item.mealCategory;
-            stockItem.mealCategory_dictText = item.mealCategory_dictText;
-            stockItem.mealType = item.mealType;
-            stockItem.mealType_dictText = item.mealType_dictText;
-
-            return stockItem;
-          });
-
+        if (responseData.code === 200 && responseData.result && Array.isArray(responseData.result.records)) {
           if (this.pageNo === 1) {
-            this.stockItems = newItems;
+            this.stockItems = responseData.result.records;
           } else {
-            this.stockItems = [...this.stockItems, ...newItems];
+            this.stockItems = [...this.stockItems, ...responseData.result.records];
           }
-
-          this.hasMore = responseData.result.records.length >= this.pageSize;
+          this.hasMore = responseData.result.pages > this.pageNo;
         } else {
           this.handleError(responseData.message || '请求失败');
         }
