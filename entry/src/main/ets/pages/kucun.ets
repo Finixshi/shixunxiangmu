@@ -344,7 +344,7 @@ struct Kucun {
         .margin({ bottom: 8 });
       Text(`供应价：${item.modifyPrice || '未知'}元/Kg`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
       Text(`入库时间：${item.createTime || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
-      Text(`库存量：${item.totalNum || '未知'}斤`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
+      Text(`库存量：${item.totalNum || '0'}斤`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
       Text(`需求类型：${item.requirementType_dictText || '未知'}-${item.mealType_dictText || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
       Text(`餐别：${item.mealCategory_dictText || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
       Text(`供应商：${item.supplierName || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
@@ -355,7 +355,7 @@ struct Kucun {
     .borderRadius(16)
     .border({ width: 2, color: '#07C160' })
     .width('95%')
-    .margin({ top: 20, bottom: 20 })
+    .margin({ top: 20, bottom: 10 })
     .shadow({ radius: 8, color: '#07C160', offsetX: 0, offsetY: 4 });
   }
 
