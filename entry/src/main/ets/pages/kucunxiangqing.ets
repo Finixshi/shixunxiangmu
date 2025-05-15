@@ -6,21 +6,21 @@ struct kucunxiangqing {
   @State foodName: string = '';
   @State totalNum: string = '';
   @State documentNo: string = '';
-  @State operateTime: string = '';
+  @State createTime: string = '';
   @State operateAmount: string = '';
   @State operator: string = '';
-  @State supplier: string = '';
+  @State supplierName: string = '';
 
   aboutToAppear() {
     // 获取参数
     let params = router.getParams() as Record<string, string>;
     this.foodName = params.foodname || '未知商品';
-    this.totalNum = params.totalNUm || '0';
+    this.totalNum = params.totalNum || '0';
     this.documentNo = params.documentNo || '无单据号';
-    this.operateTime = params.operateTime || '未知时间';
+    this.createTime = params.operateTime || '未知时间';
     this.operateAmount = params.operateAmount || '0';
     this.operator = params.operator || '未知操作人';
-    this.supplier = params.supplier || '未知供应商';
+    this.supplierName = params.supplierName || '未知供应商';
   }
 
   build() {
@@ -94,23 +94,17 @@ struct kucunxiangqing {
       // 操作信息卡片（新增字段）
       Column() {
         Row() {
-          Text('操作时间：' + this.operateTime)
+          Text('操作时间：' + this.createTime)
             .fontSize(15)
             .margin({ bottom: 4 });
         }
-        Text('操作数量：' + this.operateAmount + '斤')
+        Text('操作数量：' + this.totalNum + '斤')
           .fontSize(15)
           .margin({ bottom: 4 });
         Text('操作人：' + this.operator)
           .fontSize(15)
           .margin({ bottom: 4 });
-        Text('单据编号：' + this.documentNo)
-          .fontSize(15)
-          .margin({ bottom: 4 });
-        Text('供应商：' + this.supplier)
-          .fontSize(15)
-          .margin({ bottom: 8 });
-        Text('采购入库,从【' + this.supplier + '】处采购入库')
+        Text('采购入库,从【' + this.supplierName + '】处采购入库')
           .width('100%')
           .backgroundColor('#3ec97c')
           .fontColor('#fff')
