@@ -356,7 +356,17 @@ struct Kucun {
     .border({ width: 2, color: '#07C160' })
     .width('95%')
     .margin({ top: 20, bottom: 10 })
+    .onClick(() => {
+      router.push({
+        url: 'pages/kucunxiangqing',
+        params: {
+          inventoryItem: item // 传递整个 item 对象
+        }
+      });
+    })
+
     .shadow({ radius: 8, color: '#07C160', offsetX: 0, offsetY: 4 });
+
   }
 
   // 切换标签页
