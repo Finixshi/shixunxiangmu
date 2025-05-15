@@ -360,10 +360,14 @@ struct Kucun {
       router.push({
         url: 'pages/kucunxiangqing',
         params: {
-          inventoryItem: item // 传递整个 item 对象
+          foodname: item.foodName || '',
+          totalNum: item.totalNum?.toString() || '0',
+          operateTime: item.createTime || '未知时间',
+          supplierName: item.supplierName || '未知供应商'
         }
       });
     })
+
 
     .shadow({ radius: 8, color: '#07C160', offsetX: 0, offsetY: 4 });
 
