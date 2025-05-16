@@ -45,7 +45,7 @@ struct Index1 {
       url: 'app.media.education_3',
       count: 0,
       text: '送货单',
-      route: 'pages/songhuo_page'
+      route: 'pages/songhuodan'
     },
     {
       url: 'app.media.home_11',
