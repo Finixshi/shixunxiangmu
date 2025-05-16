@@ -14,13 +14,13 @@ struct kucunxiangqing {
   aboutToAppear() {
     // 获取参数
     let params = router.getParams() as Record<string, string>;
-    this.foodName = params.foodname || '未知商品';
-    this.totalNum = params.totalNum || '0';
+    this.foodName = params.productName || '未知商品';
+    this.totalNum = params.stockAmount || '0';
     this.documentNo = params.documentNo || '无单据号';
     this.createTime = params.operateTime || '未知时间';
     this.operateAmount = params.operateAmount || '0';
     this.operator = params.operator || '未知操作人';
-    this.supplierName = params.supplierName || '未知供应商';
+    this.supplierName = params.supplier || '未知供应商';
   }
 
   build() {
@@ -64,7 +64,7 @@ struct kucunxiangqing {
             .fontSize(22)
             .fontWeight(FontWeight.Bold)
             .margin({ top: 12, left: 16, bottom: 8 });
-          Text('库存量：' + this.totalNum + '斤')
+          Text('库存量：' + this.totalNum )
             .fontSize(16)
             .margin({ left: 16, bottom: 16 });
         }
@@ -98,7 +98,7 @@ struct kucunxiangqing {
             .fontSize(15)
             .margin({ bottom: 4 });
         }
-        Text('操作数量：' + this.totalNum + '斤')
+        Text('操作数量：' + this.totalNum )
           .fontSize(15)
           .margin({ bottom: 4 });
         Text('操作人：' + this.operator)
