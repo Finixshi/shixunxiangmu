@@ -33,13 +33,13 @@ struct Index1 {
       url: 'app.media.education_1', // 待接单图标资源名，需替换为实际图标资源路径
       count: 6,
       text: '待接单',
-      route: 'pages/danjie_page' // 待接单页面路由，需替换为实际页面路径
+      route: 'pages/daijiedan' // 待接单页面路由，需替换为实际页面路径
     },
     {
       url: 'app.media.education_2', // 配送单图标资源名，需替换为实际图标资源路径
       count: 4,
       text: '配送单',
-      route: 'pages/peisong_page' // 配送单页面路由，需替换为实际页面路径
+      route: 'pages/peisongdangh' // 配送单页面路由，需替换为实际页面路径
     },
     {
       url: 'app.media.education_3',
