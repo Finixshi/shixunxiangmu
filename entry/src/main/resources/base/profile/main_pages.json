@@ -37,6 +37,8 @@
     "pages/ProductList",
     "pages/gongyingshangshouye",
     "pages/daijiedan",
-    "pages/tuihuodan"
+    "pages/tuihuodan",
+    "pages/songhuodan",
+    "pages/songhuodan1"
   ]
 }
