@@ -918,7 +918,6 @@ struct kucun {
                         operateTime: item.inTime,
                         operateAmount: item.amount,
                         operator: this.shuju[0].createByName,
-                        createby: item.groupName,
                         supplier: item.supplier
                       }
                     })

@@ -57,7 +57,7 @@ struct Index1 {
       url: 'app.media.home_4',
       count: 0,
       text: '新品申购',
-      route: 'pages/shengou_page'
+      route: 'pages/NewProductApply'
     }
   ];
   // 资料管理数据

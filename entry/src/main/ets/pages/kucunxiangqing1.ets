@@ -1,5 +1,7 @@
 import router from '@system.router';
 
+const demandUnitName=AppStorage.get<string>('demandUnitName')
+
 @Entry
 @Component
 struct kucunxiangqing {
@@ -10,7 +12,6 @@ struct kucunxiangqing {
   @State operateAmount: string = '';
   @State operator: string = '';
   @State supplierName: string = '';
-  @State demandUnitName: string = '';
 
   aboutToAppear() {
     // 获取参数
@@ -22,7 +23,6 @@ struct kucunxiangqing {
     this.operateAmount = params.operateAmount || '0';
     this.operator = params.operator || '未知操作人';
     this.supplierName = params.supplier || '未知供应商';
-    this.demandUnitName = params.createby || '未知学校'
   }
 
   build() {
@@ -104,7 +104,7 @@ struct kucunxiangqing {
         // 操作信息卡片（新增字段）
         Column() {
           Row() {
-            Text('操作时间：' + this.createTime)
+            Text(`操作时间: ${this.createTime}`)
               .fontSize(15)
               .margin({ bottom: 4 });
           }
@@ -154,7 +154,7 @@ struct kucunxiangqing {
         // 操作信息卡片（新增字段）
         Column() {
           Row() {
-            Text('操作时间：' + this.createTime)
+            Text(`操作时间: ${this.createTime}`)
               .fontSize(15)
               .margin({ bottom: 4 });
           }
@@ -165,7 +165,7 @@ struct kucunxiangqing {
           Text('操作人：' + this.operator)
             .fontSize(15)
             .margin({ bottom: 4 });
-          Text('供应出库,从【' + this.demandUnitName + '】处供应出库')
+          Text(`供应出库,给【${demandUnitName}】供应出库`)
             .width('100%')
             .backgroundColor('#3ec97c')
             .fontColor('#fff')
