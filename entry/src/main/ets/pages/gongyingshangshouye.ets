@@ -33,7 +33,7 @@ struct Index1 {
       url: 'app.media.education_1', // 待接单图标资源名，需替换为实际图标资源路径
       count: 6,
       text: '待接单',
-      route: 'pages/danjie_page' // 待接单页面路由，需替换为实际页面路径
+      route: 'pages/daijiedan' // 待接单页面路由，需替换为实际页面路径
     },
     {
       url: 'app.media.education_2', // 配送单图标资源名，需替换为实际图标资源路径
@@ -78,7 +78,7 @@ struct Index1 {
   @State companyPhone: string = '18991274264';
   @State receivedToken: string = ''; // 参数传递
   @State tenantId: number = 0;
-
+  @State currentTab: string = 'basic'; // 添加此行，用于管理当前选中的 tab
   onPageShow() { // 这是一个接收传递参数的方法
     // 使用接口类型断言
     const params = router.getParams() as RouteParams;
@@ -248,70 +248,77 @@ struct Index1 {
           });
 
           // 功能列表
-          List() {
-            // 基本信息
-            ListItem() {
+          // 顶部选项卡容器
+          Row() {
+            // 基本信息选项卡
+            Column() {
               Row() {
-                Stack() {
-                  Text('基本信息')
-                  Image($r('app.media.information1'))
-                    .width(15)
-                    .position({ x: 320 });
-                }
-              }
-              .onClick(() => {
-                router.pushUrl({ url: 'pages/basicInfo_page', params: { token: this.receivedToken } });
-              })
-              .margin({ left: 10 })
-              .width('95%')
-              .height(50)
-              .backgroundColor(Color.White)
-              .borderRadius({ topLeft: 10, topRight: 10 })
-              .border({ width: 1, color: Color.Gray });
-            }
+                Image($r('app.media.information1')) // 基本信息图标
+                  .width(20)
+                  .height(20)
+                  .margin({ right: 5 })
 
-            // 供应范围
-            ListItem() {
-              Row() {
-                Stack() {
-                  Text('供应范围')
-                  Image($r('app.media.information2'))
-                    .width(15)
-                    .position({ x: 320 });
-                }
+                Text("基本信息")
+                  .fontSize(16)
+                  .fontWeight(FontWeight.Normal)
+                  .fontColor('#000000')
               }
-              .onClick(() => {
-                router.pushUrl({ url: 'pages/supplyRange_page', params: { token: this.receivedToken } });
-              })
-              .margin({ left: 10 })
-              .width('95%')
-              .height(50)
-              .backgroundColor(Color.White)
-              .border({ width: 1, color: Color.Gray });
+              .justifyContent(FlexAlign.Center)
+              .padding(10)
             }
+            .height(50)
+            .width('33%')
+            .onClick(() => {
+              router.pushUrl({ url: 'pages/page' })
+            })
 
-            // 供应商品
-            ListItem() {
+            // 供应范围选项卡
+            Column() {
               Row() {
-                Stack() {
-                  Text('供应商品')
-                  Image($r('app.media.information3'))
-                    .width(15)
-                    .position({ x: 320 });
-                }
+                Image($r('app.media.information2')) // 供应范围图标
+                  .width(20)
+                  .height(20)
+                  .margin({ right: 5 })
+
+                Text("供应范围")
+                  .fontSize(16)
+                  .fontWeight(FontWeight.Normal)
+                  .fontColor('#000000')
               }
-              .onClick(() => {
-                router.pushUrl({ url: 'pages/supplyGoods_page', params: { token: this.receivedToken } });
-              })
-              .margin({ left: 10 })
-              .width('95%')
-              .height(50)
-              .backgroundColor(Color.White)
-              .border({ width: 1, color: Color.Gray });
+              .justifyContent(FlexAlign.Center)
+              .padding(10)
             }
-            .width('100%')
-            .margin({ top: 20 })
+            .height(50)
+            .width('33%')
+            .onClick(() => {
+              router.pushUrl({ url: 'pages/supplyRange_page' })
+            })
+
+            // 供应商品选项卡
+            Column() {
+              Row() {
+                Image($r('app.media.information3')) // 供应商品图标
+                  .width(20)
+                  .height(20)
+                  .margin({ right: 5 })
+
+                Text("供应商品")
+                  .fontSize(16)
+                  .fontWeight(FontWeight.Normal)
+                  .fontColor('#000000')
+              }
+              .justifyContent(FlexAlign.Center)
+              .padding(10)
+            }
+            .height(50)
+            .width('33%')
+            .onClick(() => {
+              router.pushUrl({ url: 'pages/supplyGoods_page' })
+            })
           }
+          .width('100%')
+          .border({ width: 1, color: '#EEEEEE' })
+          .margin({ top: 10 })
           // 添加功能按钮
           List() {
             // 修改个人信息
