@@ -33,8 +33,6 @@ interface InventoryDetailResponse {
   timestamp: number;
 }
 
-
-
 interface RealTimeInventoryItem {
   id: string;
   foodId: string;
@@ -56,7 +54,6 @@ interface RealTimeInventoryItem {
   requirementType_dictText: string;
   supplierId: string;
   supplierName: string; //供应商
-  // ... 你需要的其他字段
 }
 
 interface RealTimeInventoryPage {
@@ -766,8 +763,13 @@ struct kucun {
               .onClick(() => {
                 Router.push({
                   uri: 'pages/chuku',
+                  params: {
+                    token: this.token,
+                    tenantId: this.tenantId
+                  }
                 });
               })
+
               .fontColor('#a3000000')
               .backgroundColor('#6ff8f2f2')
           }
