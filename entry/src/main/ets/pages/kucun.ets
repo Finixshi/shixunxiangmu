@@ -1,516 +1,883 @@
-import router from '@ohos.router';
+import Router from '@system.router';
 import http from '@ohos.net.http';
-import promptAction from '@ohos.promptAction';
-import { BusinessError } from '@ohos.base';
+import { promptAction, router } from '@kit.ArkUI';
 
-// 商品分类接口定义
-interface JyjFoodGroup {
+interface RealTimeInventoryItem {
   id: string;
-  parentId: string;
-  groupCode: string;
+  foodId: string;
+  foodName: string;
+  groupId: string;
   groupName: string;
-  sortNumber: number;
-  forShort: string;
-  createBy: null;
-  createTime: null;
-  updateBy: null;
-  updateTime: null;
-  tenantId: string;
-  testType: null;
-  childNodes: null;
-  foodType: null;
-  itemName: null;
+  totalNum: number; //库存量
+  unit: string;
+  supplyPricing: number; //供应价
+  modifyPrice: number; //单价
+  producedDate: string; //生产日期
+  expirationDate: string;
+  mealCategory: string;
+  createTime: string; //操作时间
+  mealCategory_dictText: string; //餐别-早，午，晚
+  mealType: string;
+  mealType_dictText: string;
+  requirementType: string;
+  requirementType_dictText: string;
+  supplierId: string;
+  supplierName: string; //供应商
+  // ... 你需要的其他字段
 }
 
-// 库存项接口定义
-interface StockItem {
-  id?: string;
-  createBy?: string;
-  createTime?: string;
-  updateBy?: string;
-  updateTime?: string;
-  schoolId?: string;
-  demandUnit?: string;
-  demandUnitName?: string;
-  foodId?: string;
-  foodName?: string;
-  encoding?: string;
-  groupId?: string;
-  groupName?: string;
-  unit?: string;
-  specification?: string;
-  brandLevel?: string;
-  modifyPrice?: number;
-  supplyPricing?: number;
-  totalNum?: number;
-  totalWeight?: number;
-  storageLocation?: string;
-  supplyWay?: string;
-  supplierId?: string;
-  supplierName?: string;
-  producedDate?: string;
-  batch?: string;
-  izRemind?: string;
-  images?: string;
-
-  expirationDay?: number;
-  izConvert?: string;
-  failureTime?: string;
-  tenantId?: string;
-  requirementType?: string;
-  realSpecification?: string;
-  placeOrigin?: string;
-  izExpired?: string;
-  internationalCode?: string;
-  residueDay?: string;
-  expirationDate?: string;
-  mealType?: string;
-  mealCategory?: string;
-  accountingDate?: string;
-  requirementType_dictText?: string;
-  mealType_dictText?: string;
-  mealCategory_dictText?: string;
-}
-
-// 接口返回整体结构
-interface ApiResponse<T> {
-  code: number;
-  message: string;
-  result: T[];
-  success: boolean;
-  timestamp: number;
-}
-
-// 分页列表返回结构
-interface PageResult<T> {
-  total: number;
-  size: number;
+interface RealTimeInventoryPage {
   current: number;
   pages: number;
-  records: T[];
-  optimizeCountSql?: boolean;
-  searchCount?: boolean;
-  countId?: string;
-  maxLimit?: string;
+  records: RealTimeInventoryItem[];
+  size: number;
+  total: number;
 }
 
-// 修改后的 PageResponse 接口
-interface PageResponse<T> {
+interface RealTimeInventoryResponse {
   code: number;
   message: string;
-  result: PageResult<T>;
+  result: RealTimeInventoryPage;
   success: boolean;
   timestamp: number;
 }
 
-// 定义 SelectOption 类
-class SelectOption {
-  value: string;
-  id?: string;
-
-  constructor(value: string, id?: string) {
-    this.value = value;
-    this.id = id;
-  }
+interface FoodGroup {
+  id: string;
+  groupName: string;
+  groupCode: string;
+  parentId: string;
+  childNodes: FoodGroup[];
+  sortNumber: number;
+  createTime: string;
+  updateTime: string;
+  tenantId: string;
 }
 
-// 定义请求参数接口
-interface RequestParams {
-  pageNo: number;
-  pageSize: number;
-  foodName?: string;
-  groupId?: string;
-  izZero?: string;
-  mealCategory?: string;
+interface ApiResponse {
+  code: number;
+  message: string;
+  result: FoodGroup[];
+  success: boolean;
+  timestamp: number;
+}
+
+interface StockItem {
+  id: string;
+  name: string;
+  price: number;
+  inTime: string;
+  amount: number;
+  cTime: string;
+  needType: string;
+  mealCategory: string;
+  supplier: string;
+  productionDate: string;
+  groupName?: string;
   mealType?: string;
-  requirementType?: string;
+  mealType1?: string;
+}
+
+interface StockResponse {
+  code: number;
+  message: string;
+  result: StockItem[];
+  success: boolean;
+  timestamp: number;
+}
+
+interface kucun1 {
+  name: string;
+  price: number;
+  inTime: string;
+  amount: number;
+  needType: string;
+  mealCategory: string;
+  supplier: string;
+  productionDate: string;
+}
+
+interface RouteParamsItem {
+  token?: string;
+  relTenantIds?: number;
+}
+
+interface RouteParams {
+  params?: RouteParamsItem;
+}
+
+function convertToStockItem(item: RealTimeInventoryItem): StockItem {
+  return {
+    id: item.id,
+    name: item.foodName || '',
+    price: item.modifyPrice ?? 0,
+    inTime: item.producedDate || '暂无数据',
+    amount: item.totalNum ?? 0,
+    cTime: item.createTime || '',
+    needType: item.requirementType_dictText || '',
+    mealCategory: item.mealCategory_dictText || '',
+    supplier: item.supplierName || '',
+    productionDate: item.producedDate || '',
+    groupName: item.groupName || '',
+    mealType: item.mealType_dictText || '',
+  };
+}
+
+interface GeneratedTypeLiteralInterface_1 {
+  text: string;
+}
+
+interface StockTypeResult {
+  success: boolean;
+  result: GeneratedTypeLiteralInterface_1[];
+}
+
+interface mingxi {
+  createBy: string; //操作人
+  createTime: string; //操作时间
+  documentNo: string; //单据号
 }
 
 @Entry
 @Component
-struct Kucun {
-  @State activeTab: number = 1;
-  @State message: string = '~暂无相关数据~';
-  @State showSupplierPopup: boolean = false;
-  @State showDatePopup: boolean = false;
-  @State loading: boolean = false;
-  @State hasMore: boolean = true;
+struct kucun {
+  @State selectedCategory: string = '全部分类';
+  @State selectedStockType: string = '库存类型';
+  @State selectedMealType: string = '用餐类型';
+  @State selectedMealCategory: string = '餐别';
+  @State searchText: string = '';
+  @State categoryOptions: string[] = ['全部分类'];
+  @State stockTypeOptions: string[] = ['库存类型'];
+  @State mealTypeOptions: string[] = ['用餐类型'];
+  @State mealCategoryOptions: string[] = ['餐别'];
+  @State isLoading: boolean = false;
+  @State shishikucun: StockItem[] = [];
+  @State shishikucun0: StockItem[] = [];
+  @State token: string = '';
+  @State tenantId: number = 0;
 
-  // 商品分类选项
-  @State categoryOptions: SelectOption[] = [
-    new SelectOption('全部分类'),
-    new SelectOption('谷薯类'),
-    new SelectOption('蔬菜水果类'),
-    new SelectOption('鱼禽肉蛋类'),
-    new SelectOption('牛奶类'),
-    new SelectOption('大豆坚果类'),
-    new SelectOption('干菜调料类'),
-    new SelectOption('糕点面包类'),
-    new SelectOption('主食半成品类'),
-    new SelectOption('其他')
-  ];
-  @State stockTypeOptions: SelectOption[] = [
-    new SelectOption('全部类型'),
-    new SelectOption('学生餐'),
-    new SelectOption('教师餐')
-  ];
-  @State mealTypeOptions: SelectOption[] = [
-    new SelectOption('全部用餐类型'),
-    new SelectOption('其他'),
-    new SelectOption('营养餐')
-  ];
-  @State mealCategoryOptions: SelectOption[] = [
-    new SelectOption('全部餐别'),
-    new SelectOption('其他'),
-    new SelectOption('早餐'),
-    new SelectOption('午餐'),
-    new SelectOption('晚餐')
-  ];
+  // 添加筛选后的数据状态
+  @State filteredShishikucun: StockItem[] = [];
+  @State filteredShishikucun0: StockItem[] = [];
 
-  @State selectedCategoryValue: string = '全部分类';
-  @State selectedStockTypeValue: string = '全部类型';
-  @State selectedMealTypeValue: string = '全部用餐类型';
-  @State selectedMealCategoryValue: string = '全部餐别';
-  @State currentTabContent: string = '非零库存';
-  @State stockItems: StockItem[] = [];
-  @State token: string = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwd2QiOiIyZjg5NWM4NDI2MWFlNzJiYmUyMjVkMjllOWJhZjVjZCIsImV4cCI6MTc0NzYxOTExNiwidXNlcm5hbWUiOiIxNTUwMjkzMzY3MyJ9.Zsc8fNnV0rlF17dLSv1RpO3ecWn96FOYQ7pH9Y0JJ7Q'; // 替换为你的实际 token
-  @State tenantId: number = 10021011;
-
-  private pageNo: number = 1;
-  private readonly pageSize: number = 10;
-
-  build() {
-    Column() {
-      this.buildHeader();
-      this.buildTabs();
-      this.buildFilters();
-      this.buildContent();
+  collectNames(groups: FoodGroup[]): string[] {
+    if (!groups || groups.length === 0) {
+      return [];
     }
-    .height('100%')
-    .width('100%')
-    .backgroundColor(Color.White);
-  }
-
-  // 构建头部
-  @Builder
-  buildHeader() {
-    Row() {
-      Text('<')
-        .alignSelf(ItemAlign.Start)
-        .fontSize(30)
-        .margin({ top: 0, bottom: 10, right: 130 })
-        .onClick(() => {
-          router.back();
-        });
-
-      Text('实时库存')
-        .fontWeight(FontWeight.Bold)
-        .alignSelf(ItemAlign.Center)
-        .margin({ top: 0, bottom: 10 });
-    }
-    .width('100%');
-  }
-
-  // 构建选项卡
-  @Builder
-  buildTabs() {
-    Row() {
-      Text('非零库存')
-        .fontSize(15)
-        .fontWeight(this.activeTab === 1 ? FontWeight.Bold : FontWeight.Normal)
-        .width('50%')
-        .maxLines(1)
-        .alignSelf(ItemAlign.Center)
-        .textAlign(TextAlign.Center)
-        .onClick(() => {
-          this.switchTab(1, '非零库存');
-        });
-
-      Text('零库存')
-        .fontSize(15)
-        .fontWeight(this.activeTab === 0 ? FontWeight.Bold : FontWeight.Normal)
-        .width('50%')
-        .maxLines(1)
-        .alignSelf(ItemAlign.Center)
-        .textAlign(TextAlign.Center)
-        .onClick(() => {
-          this.switchTab(0, '零库存');
-        });
-    }
-    .width('100%')
-    .margin({ left: 10, right: 10, bottom: 20 });
-  }
-
-  // 构建筛选器
-  @Builder
-  buildFilters() {
-    Row() {
-      this.buildSelect(this.categoryOptions, this.selectedCategoryValue, (value: string) => {
-        this.selectedCategoryValue = value;
-        this.resetData();
-        this.fetchStockItems();
-      }, "25%");
-
-      this.buildSelect(this.stockTypeOptions, this.selectedStockTypeValue, (value: string) => {
-        this.selectedStockTypeValue = value;
-        this.resetData();
-        this.fetchStockItems();
-      }, "25%", 10);
-
-      this.buildSelect(this.mealTypeOptions, this.selectedMealTypeValue, (value: string) => {
-        this.selectedMealTypeValue = value;
-        this.resetData();
-        this.fetchStockItems();
-      }, "25%", 10);
-
-      this.buildSelect(this.mealCategoryOptions, this.selectedMealCategoryValue, (value: string) => {
-        this.selectedMealCategoryValue = value;
-        this.resetData();
-        this.fetchStockItems();
-      }, "25%", 10);
-    }
-    .width('90%')
-    .margin({ bottom: 20 });
-  }
-
-  // 构建选择器组件
-  @Builder
-  buildSelect(options: SelectOption[], selectedValue: string, onSelect: (value: string) => void, width: string, marginLeft: number = 0) {
-    Select(options)
-      .selected(options.findIndex(opt => opt.value === selectedValue))
-      .value(selectedValue)
-      .onSelect((index: number) => {
-        onSelect(options[index].value);
-      })
-      .alignSelf(ItemAlign.Start)
-      .width(width)
-      .fontColor('#333')
-      .backgroundColor('#FFF')
-      .borderRadius(8)
-      .border({ width: 0, color: '#DDD' })
-      .margin({ left: marginLeft })
-      .font({ size: '20px' });
-  }
-
-  // 构建内容区域
-  @Builder
-  buildContent() {
-    Scroll() {
-      Column() {
-        if (this.loading && this.pageNo === 1) {
-          LoadingProgress()
-            .width(50)
-            .height(50)
-            .margin(20);
-        } else if (this.stockItems.length === 0) {
-          Text(this.message)
-            .fontSize(16)
-            .fontWeight(FontWeight.Normal)
-            .alignSelf(ItemAlign.Center);
-        } else {
-          ForEach(this.stockItems, (item: StockItem) => {
-            this.buildStockItem(item);
-          });
-
-          if (this.hasMore) {
-            LoadingProgress()
-              .width(30)
-              .height(30)
-              .margin({ top: 10, bottom: 10 });
-          } else {
-            Text('没有更多数据了')
-              .fontSize(14)
-              .margin({ top: 10, bottom: 10 });
-          }
-        }
+    let categories: string[] = [];
+    groups.forEach(group => {
+      if (group.groupName) {
+        categories.push(group.groupName);
       }
-      .width('100%')
-      .onAppear(() => {
-        if (!this.loading && this.hasMore) {
-          this.pageNo += 1;
-          this.fetchStockItems();
-        }
-      });
-    }
-  }
-
-  // 构建库存项卡片
-  @Builder
-  buildStockItem(item: StockItem) {
-    Column() {
-      Text(item.foodName || '未知商品')
-        .fontSize(20)
-        .fontWeight(FontWeight.Bold)
-        .margin({ bottom: 8 });
-      Text(`供应价：${item.modifyPrice || '未知'}元/Kg`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
-      Text(`入库时间：${item.createTime || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
-      Text(`库存量：${item.totalNum || '0'}斤`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
-      Text(`需求类型：${item.requirementType_dictText || '未知'}-${item.mealType_dictText || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
-      Text(`餐别：${item.mealCategory_dictText || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
-      Text(`供应商：${item.supplierName || '未知'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
-      Text(`状态：${item.izExpired === '1' ? '已过期' : '正常'}`).fontSize(16).alignSelf(ItemAlign.Start).margin({ bottom: 2 });
-    }
-    .padding(16)
-    .backgroundColor('#fff')
-    .borderRadius(16)
-    .border({ width: 2, color: '#07C160' })
-    .width('95%')
-    .margin({ top: 20, bottom: 10 })
-    .onClick(() => {
-      router.push({
-        url: 'pages/kucunxiangqing',
-        params: {
-          foodname: item.foodName || '',
-          totalNum: item.totalNum?.toString() || '0',
-          operateTime: item.createTime || '未知时间',
-          supplierName: item.supplierName || '未知供应商'
-        }
-      });
-    })
-
-
-    .shadow({ radius: 8, color: '#07C160', offsetX: 0, offsetY: 4 });
-
-  }
-
-  // 切换标签页
-  private switchTab(tabIndex: number, tabContent: string) {
-    this.currentTabContent = tabContent;
-    this.activeTab = tabIndex;
-    this.resetData();
-    this.fetchStockItems();
+      if (group.childNodes && group.childNodes.length > 0) {
+        categories = categories.concat(this.collectNames(group.childNodes));
+      }
+    });
+    return categories;
   }
 
   aboutToAppear() {
-    this.fetchCategoryOptions();
-    this.fetchStockItems();
+    const params = Router.getParams() as RouteParamsItem;
+    if (params) {
+      this.token = params.token ?? '';
+      this.tenantId = params.relTenantIds ?? 0;
+
+      AppStorage.set('token', this.token);
+      AppStorage.set('tenantId', this.tenantId);
+
+      console.info('已保存 token:', this.token, 'tenantId:', this.tenantId);
+    }
+
+    this.fetchFoodCategories();
+    this.fetchDropdownOptions();
+    this.fetchStockData();
   }
 
-  resetData() {
-    this.pageNo = 1;
-    this.hasMore = true;
-    this.stockItems = [];
-    this.message = '~暂无相关数据~';
-  }
+  async fetchDetail() {}
 
-  // 查询商品分类
-  async fetchCategoryOptions() {
+  async fetchFoodCategories() {
     let httpRequest = http.createHttp();
     try {
-      const url = 'https://api.suoeryun.com/ifood/education/jyjFoodGroup/queryFoodGroupByGroupId';
-      const response = await httpRequest.request(
-        url,
-        {
-          method: http.RequestMethod.GET,
-          header: {
-            'Content-Type': 'application/json;charset=UTF-8',
-            'Accept': 'application/json, text/plain, */*',
-            'tenant-id': this.tenantId.toString(),
-            'X-Access-Token': this.token
-          }
-        }
-      );
+      this.isLoading = true;
 
-      if (response.responseCode === http.ResponseCode.OK) {
-        const responseData: ApiResponse<JyjFoodGroup> = JSON.parse(response.result as string);
-        if (responseData.code === 200 && responseData.result) {
-          // 动态更新分类选项
-          this.categoryOptions = [
-            new SelectOption('全部分类'), // 保留默认选项
-            ...responseData.result.map((group: JyjFoodGroup) => new SelectOption(group.groupName, group.id))
-          ];
-          if (this.categoryOptions.length > 1) { // 如果有分类数据，设置第一个分类为默认值
-            this.selectedCategoryValue = this.categoryOptions[1].value;
-          }
-        } else {
-          this.handleError(responseData.message || '请求失败');
-        }
+      const token = this.token;
+      const tenantId = this.tenantId;
+
+      if (!token || !tenantId) {
+        console.error('token 或 tenantId 缺失');
+        return;
+      }
+
+      const baseUrl = "https://api.suoeryun.com/ifood/education/jyjFoodGroup/queryFoodGroupByGroupId";
+      const url = baseUrl;
+
+      console.info('请求URL:', url);
+      console.info('请求Headers:', {
+        'Tenant-Id': tenantId.toString(),
+        'X-Access-Token': token,
+      });
+
+      let response = await httpRequest.request(url, {
+        method: http.RequestMethod.GET,
+        header: {
+          'Tenant-Id': tenantId.toString(),
+          'X-Access-Token': token,
+        },
+      });
+
+      const rawResult = response.result as string;
+      console.info('库存接口原始响应01:', rawResult);
+      if (rawResult.trim().startsWith('<!DOCTYPE') || rawResult.trim().startsWith('<html>')) {
+        console.error('服务器返回 HTML 页面，可能是未登录或接口错误');
+        promptAction.showToast({
+          message: '登录失效，请重新登录',
+          duration: 3000,
+        });
+        return;
+      }
+
+      const result = JSON.parse(rawResult) as ApiResponse;
+      console.info('库存接口原始响应0:', result);
+
+      if (response.responseCode === 200 && result.success && result.result) {
+        // 打印完整的 API 响应数据
+        console.info('API 返回的完整数据:', JSON.stringify(result, null, 2));
+        // Update categoryOptions with API data
+        this.categoryOptions = ['全部分类'].concat(this.collectNames(result.result));
+        console.info('更新后的分类选项:', this.categoryOptions);
       } else {
-        this.handleError('网络请求失败');
+        console.error('接口返回 success=false:', result.message);
       }
     } catch (error) {
-      const err = error as BusinessError;
-      console.error('Request failed:', err.message);
-      this.handleError('网络请求失败');
+      console.error('获取食品分类失败:', JSON.stringify(error));
     } finally {
+      this.isLoading = false;
       httpRequest.destroy();
     }
   }
 
-  // 查询库存列表
-  async fetchStockItems() {
-    this.loading = true;
+  async fetchDropdownOptions() {
     let httpRequest = http.createHttp();
     try {
-      const url = 'https://api.suoeryun.com/ifood/school/xxRealTimeInventory/list';
-      const params: RequestParams = {
-        pageNo: this.pageNo,
-        pageSize: this.pageSize,
-        izZero: this.activeTab === 0 ? '1' : '0'
-      };
+      this.isLoading = true;
+      const token = this.token;
+      const tenantId = this.tenantId;
+      if (!token || !tenantId) return;
 
-      // 添加筛选条件
-      if (this.selectedCategoryValue && this.selectedCategoryValue !== '全部分类') {
-        const selectedOption = this.categoryOptions.find(opt => opt.value === this.selectedCategoryValue);
-        if (selectedOption && selectedOption.id) {
-          params.groupId = selectedOption.id;
+      // 库存类型
+      const stockTypeUrl = "https://api.suoeryun.com/ifood/jeecg-system/sys/dictItem/getDictItemsByCode/meal_type";
+      let stockTypeResponse = await httpRequest.request(stockTypeUrl, {
+        method: http.RequestMethod.GET,
+        header: {
+          'Tenant-Id': tenantId.toString(),
+          'X-Access-Token': token,
+        },
+      });
+      if (stockTypeResponse.responseCode === 200) {
+        const stockTypeResult: StockTypeResult = JSON.parse(stockTypeResponse.result as string);
+        if (stockTypeResult.result) {
+          this.stockTypeOptions = ['库存类型'].concat(stockTypeResult.result.map(item => item.text));
         }
       }
-      if (this.selectedStockTypeValue && this.selectedStockTypeValue !== '全部类型') {
-        params.requirementType = this.selectedStockTypeValue;
-      }
-      if (this.selectedMealTypeValue && this.selectedMealTypeValue !== '全部用餐类型') {
-        params.mealType = this.selectedMealTypeValue;
-      }
-      if (this.selectedMealCategoryValue && this.selectedMealCategoryValue !== '全部餐别') {
-        params.mealCategory = this.selectedMealCategoryValue;
+
+      // 用餐类型
+      const mealTypeUrl = "https://api.suoeryun.com/ifood/jeecg-system/sys/dictItem/getDictItemsByCode/requirement_type";
+      let mealTypeResponse = await httpRequest.request(mealTypeUrl, {
+        method: http.RequestMethod.GET,
+        header: {
+          'Tenant-Id': tenantId.toString(),
+          'X-Access-Token': token,
+        },
+      });
+      if (mealTypeResponse.responseCode === 200) {
+        const mealTypeResult: StockTypeResult = JSON.parse(mealTypeResponse.result as string);
+        if (mealTypeResult.result) {
+          this.mealTypeOptions = ['用餐类型'].concat(mealTypeResult.result.map(item => item.text));
+        }
       }
 
-      const response = await httpRequest.request(
-        url,
-        {
-          method: http.RequestMethod.GET,
-          header: {
-            'Content-Type': 'application/json;charset=UTF-8',
-            'Accept': 'application/json, text/plain, */*',
-            'tenant-id': this.tenantId.toString(),
-            'X-Access-Token': this.token
-          },
-          extraData: params
+      // 餐别
+      const mealCategoryUrl = "https://api.suoeryun.com/ifood/jeecg-system/sys/dictItem/getDictItemsByCode/nutritional_Category_Settings";
+      let mealCategoryResponse = await httpRequest.request(mealCategoryUrl, {
+        method: http.RequestMethod.GET,
+        header: {
+          'Tenant-Id': tenantId.toString(),
+          'X-Access-Token': token,
+        },
+      });
+      if (mealCategoryResponse.responseCode === 200) {
+        const mealCategoryResult: StockTypeResult = JSON.parse(mealCategoryResponse.result as string);
+        if (mealCategoryResult.result) {
+          this.mealCategoryOptions = ['餐别'].concat(mealCategoryResult.result.map(item => item.text));
         }
-      );
-
-      if (response.responseCode === http.ResponseCode.OK) {
-        const responseData: PageResponse<StockItem> = JSON.parse(response.result as string);
-        if (responseData.code === 200 && responseData.result && Array.isArray(responseData.result.records)) {
-          if (this.pageNo === 1) {
-            this.stockItems = responseData.result.records;
-          } else {
-            this.stockItems = [...this.stockItems, ...responseData.result.records];
-          }
-          this.hasMore = responseData.result.pages > this.pageNo;
-        } else {
-          this.handleError(responseData.message || '请求失败');
-        }
-      } else {
-        this.handleError('网络请求失败');
       }
-    } catch (error) {
-      const err = error as BusinessError;
-      console.error('Request failed:', err.message);
-      this.handleError('网络请求失败');
     } finally {
-      this.loading = false;
+      this.isLoading = false;
       httpRequest.destroy();
     }
   }
 
-  // 处理错误
-  private handleError(message: string) {
-    this.message = message;
-    promptAction.showToast({
-      message: this.message,
-      duration: 2000
-    });
+  async fetchStockData(pageNo: number = 1, pageSize: number = 10) {
+    let httpRequest = http.createHttp();
+    try {
+      this.isLoading = true;
+
+      const token = this.token;
+      const tenantId = this.tenantId;
+
+      if (!token || !tenantId) {
+        console.error('token 或 tenantId 缺失');
+        return;
+      }
+
+      // 构建查询参数
+      const params = [
+        `pageNo=${pageNo}`,
+        `pageSize=${pageSize}`,
+        this.searchText ? `foodName=${encodeURIComponent(this.searchText)}` : '',
+        this.selectedCategory !== '全部分类' ? `groupId=${encodeURIComponent(this.selectedCategory)}` : '',
+        this.selectedMealCategory !== '餐别' ? `mealCategory=${encodeURIComponent(this.selectedMealCategory)}` : '',
+        this.selectedMealType !== '用餐类型' ? `mealType=${encodeURIComponent(this.selectedMealType)}` : '',
+        this.selectedStockType !== '库存类型' ? `requirementType=${encodeURIComponent(this.selectedStockType)}` : '',
+      // izZero=1 非零库存, izZero=0 零库存, 可根据你的tab切换传递
+      ].filter(Boolean).join('&');
+
+      const stockUrl = `https://api.suoeryun.com/ifood/school/xxRealTimeInventory/list?${params}`;
+      console.info('请求库存URL:', stockUrl);
+
+      let response = await httpRequest.request(stockUrl, {
+        method: http.RequestMethod.GET,
+        header: {
+          'Tenant-Id': tenantId.toString(),
+          'X-Access-Token': token,
+        },
+      });
+
+      const rawResult = response.result as string;
+      console.info('库存接口原始响应:', rawResult);
+
+      if (rawResult.trim().startsWith('<!DOCTYPE') || rawResult.trim().startsWith('<html>')) {
+        promptAction.showToast({ message: '登录失效，请重新登录', duration: 3000 });
+        Router.push({ uri: 'pages/login_test' });
+        return;
+      }
+
+      let result: RealTimeInventoryResponse;
+      try {
+        result = JSON.parse(rawResult) as RealTimeInventoryResponse;
+      } catch (parseError) {
+        promptAction.showToast({ message: '服务器返回数据格式错误', duration: 3000 });
+        return;
+      }
+
+      if (response.responseCode === 200 && result && result.success && result.result) {
+        // 处理分页数据
+        const records = result.result.records || [];
+        this.shishikucun = records.filter(item => item.totalNum > 0).map(item => convertToStockItem(item));
+        this.shishikucun0 = records.filter(item => item.totalNum === 0).map(item => convertToStockItem(item));
+
+        this.filterData();
+      } else {
+        promptAction.showToast({ message: result?.message || '服务器返回数据异常', duration: 3000 });
+      }
+    } catch (error) {
+      promptAction.showToast({ message: '获取库存数据失败，请稍后重试', duration: 3000 });
+    } finally {
+      this.isLoading = false;
+      httpRequest.destroy();
+    }
+  }
+
+  filterData() {
+    const filterItems = (items: StockItem[]) => {
+      return items.filter(item => {
+        if (this.selectedCategory !== '全部分类' && item.groupName !== this.selectedCategory) {
+          return false;
+        }
+
+        if (this.selectedStockType !== '库存类型' && item.needType !== this.selectedStockType) {
+          return false;
+        }
+
+        if (this.selectedMealType !== '用餐类型' && item.mealType !== this.selectedMealType) {
+          return false;
+        }
+
+        if (this.selectedMealCategory !== '餐别' && item.mealCategory !== this.selectedMealCategory) {
+          return false;
+        }
+
+        if (this.searchText && this.searchText.trim() !== '' && !item.name.toLowerCase().includes(this.searchText.toLowerCase().trim())) {
+          return false;
+        }
+
+        return true;
+      });
+    };
+
+    this.filteredShishikucun = filterItems(this.shishikucun);
+    this.filteredShishikucun0 = filterItems(this.shishikucun0);
+  }
+
+  categoryController: CustomDialogController = new CustomDialogController({
+    builder: () => this.renderDialogContent(this.categoryOptions, (value: string) => {
+      this.selectedCategory = value;
+      this.categoryController.close();
+      this.filterData();
+    }),
+    alignment: DialogAlignment.Bottom,
+    offset: { dx: 0, dy: 0 },
+    customStyle: true,
+    autoCancel: true,
+  });
+  stockTypeController: CustomDialogController = new CustomDialogController({
+    builder: () => this.renderDialogContent(this.stockTypeOptions, (value: string) => {
+      this.selectedStockType = value;
+      this.stockTypeController.close();
+      this.filterData();
+    }),
+    alignment: DialogAlignment.Bottom,
+    offset: { dx: 0, dy: 0 },
+    customStyle: true,
+    autoCancel: true,
+  });
+  mealTypeController: CustomDialogController = new CustomDialogController({
+    builder: () => this.renderDialogContent(this.mealTypeOptions, (value: string) => {
+      this.selectedMealType = value;
+      this.mealTypeController.close();
+      this.filterData();
+    }),
+    alignment: DialogAlignment.Bottom,
+    offset: { dx: 0, dy: 0 },
+    customStyle: true,
+    autoCancel: true,
+  });
+  mealCategoryController: CustomDialogController = new CustomDialogController({
+    builder: () => this.renderDialogContent(this.mealCategoryOptions, (value: string) => {
+      this.selectedMealCategory = value;
+      this.mealCategoryController.close();
+      this.filterData();
+    }),
+    alignment: DialogAlignment.Bottom,
+    offset: { dx: 0, dy: 0 },
+    customStyle: true,
+    autoCancel: true,
+  });
+
+  @Builder
+  renderDialogContent(options: string[], onSelect: (value: string) => void): void {
+    Column() {
+      Row() {
+        Text('请选择')
+          .fontSize(16)
+          .fontWeight(FontWeight.Bold)
+          .width('100%')
+          .height(50)
+          .textAlign(TextAlign.Center)
+      }
+      .width('100%')
+      .height(50)
+      .backgroundColor('#F5F5F5')
+      .justifyContent(FlexAlign.Center)
+
+      Scroll() {
+        List() {
+          ForEach(options, (option: string) => {
+            ListItem() {
+              Text(option)
+                .fontSize(16)
+                .width('100%')
+                .height(50)
+                .textAlign(TextAlign.Center)
+                .backgroundColor(Color.White)
+                .onClick(() => {
+                  onSelect(option);
+                })
+            }
+            .width('100%')
+            .height(50)
+          })
+        }
+        .width('100%')
+      }
+      .height(200)
+      .backgroundColor(Color.White)
+    }
+    .width('100%')
+    .backgroundColor(Color.White)
+    .borderRadius({ topLeft: 16, topRight: 16 })
+  }
+
+  build(): void {
+    Column() {
+      Text('<                  实时库存')
+        .fontSize(24)
+        .fontWeight(FontWeight.Bold)
+        .width('100%')
+        .textAlign(TextAlign.Start)
+        .margin({ top: 16, bottom: 16 })
+        .onClick(() => {
+          Router.back(); // 点击返回上一页
+        })
+
+
+      Tabs() {
+        TabContent() {
+          Column() {
+            Row() {
+              Column() {
+                if (this.isLoading) {
+                  LoadingProgress()
+                    .width(20)
+                    .height(20)
+                } else {
+                  Text(this.selectedCategory)
+                    .fontSize(16)
+                    .width('100%')
+                    .height(40)
+                    .textAlign(TextAlign.Center)
+                    .backgroundColor('#F5F5F5')
+                    .borderRadius(8)
+                    .onClick(() => {
+                      this.categoryController.open();
+                    })
+                }
+              }
+              .width(75)
+              .margin({ right: 8 })
+
+              Column() {
+                Text(this.selectedStockType)
+                  .fontSize(16)
+                  .width('100%')
+                  .height(40)
+                  .textAlign(TextAlign.Center)
+                  .backgroundColor('#F5F5F5')
+                  .borderRadius(8)
+                  .onClick(() => {
+                    this.stockTypeController.open();
+                  })
+              }
+              .width(75)
+              .margin({ right: 8 })
+
+              Column() {
+                Text(this.selectedMealType)
+                  .fontSize(16)
+                  .width('100%')
+                  .height(40)
+                  .textAlign(TextAlign.Center)
+                  .backgroundColor('#F5F5F5')
+                  .borderRadius(8)
+                  .onClick(() => {
+                    this.mealTypeController.open();
+                  })
+              }
+              .width(75)
+              .margin({ right: 8 })
+
+              Column() {
+                Text(this.selectedMealCategory)
+                  .fontSize(16)
+                  .width('100%')
+                  .height(40)
+                  .textAlign(TextAlign.Center)
+                  .backgroundColor('#F5F5F5')
+                  .borderRadius(8)
+                  .onClick(() => {
+                    this.mealCategoryController.open();
+                  })
+              }
+              .width(75)
+            }
+            .margin({ bottom: 8 })
+            .width('100%')
+            .justifyContent(FlexAlign.SpaceBetween)
+
+            Search({ placeholder: '搜索商品名称' as ResourceStr, value: this.searchText })
+              .onChange((value: string) => {
+                this.searchText = value;
+                this.filterData();
+              })
+              .onSubmit(() => {
+                if (this.searchText.trim()) {
+                  console.log('搜索文本:' + this.searchText);
+                  this.filterData();
+                } else {
+                  console.warn('搜索内容为空');
+                }
+              })
+              .margin({ bottom: 8 })
+            Scroll() {
+              Column() {
+                ForEach(this.filteredShishikucun, (item: StockItem) => {
+                  Column() {
+                    Row() {
+                      Text(item.name)
+                        .fontSize(20)
+                        .layoutWeight(2)
+                        .fontWeight(FontWeight.Bold)
+                        .margin({ right: 10, left: 10 })
+                      Text('生产日期: ' + item.productionDate)
+                        .fontSize(14)
+                        .layoutWeight(4)
+                        .textAlign(TextAlign.End)
+                        .fontColor('#888')
+                    }
+                    .margin({ bottom: 4 })
+
+                    Divider()
+                      .color('#ddd')
+                      .margin({ bottom: 8 })
+                    Text('供 应 价：  ' + item.price + '元/Kg ')
+                      .fontSize(16)
+                      .width('100%')
+                      .fontColor('#e57373')
+                      .margin({ bottom: 2 })
+                    Text('入库时间：   ' + item.cTime)
+                      .width('100%')
+                      .fontSize(14)
+                    Text('库  存  量：   ' + (item.amount * 2) + '斤(' + (item.amount) + 'Kg)')
+                      .width('100%')
+                      .fontSize(14)
+                    Text('需求类型：   ' + item.mealType + '  ' + item.needType)
+                      .width('100%')
+                      .fontSize(14)
+                    Text('餐       别：   ' + item.mealCategory)
+                      .width('100%')
+                      .fontSize(14)
+                    Text('供  应  商：   ' + item.supplier)
+                      .width('100%')
+                      .fontSize(14)
+                  }
+                  .margin({ left: 12, right: 12 })
+                  .onClick(() => {
+                    Router.push({
+                      uri: 'pages/kucunxiangqing',
+                      params: {
+                        productName: item.name,
+                        stockAmount: (item.amount * 2) + '斤 (' + item.amount + 'Kg)',
+                        orderNo: '',
+                        operateTime: item.cTime,
+                        operateAmount: item.amount + 'kg',
+                        operator: '',
+                        supplier: item.supplier
+                      }
+                    })
+                  })
+                  .padding(12)
+                  .width('100%')
+                  .margin({ bottom: 12 })
+                  .backgroundColor('#fff8f0')
+                  .borderRadius(12)
+                  .shadow({
+                    radius: 4,
+                    color: '#eee',
+                    offsetX: 0,
+                    offsetY: 2
+                  })
+                })
+              }
+            }
+            .height(550)
+            .margin({ bottom: 8 })
+
+            Button('去出库')
+              .height(40)
+              .width(100)
+              .position({ x: 270, y: 500 })
+              .onClick(() => {
+                Router.push({
+                  uri: 'pages/chuku',
+                });
+              })
+              .fontColor('#a3000000')
+              .backgroundColor('#6ff8f2f2')
+          }
+          .padding(0)
+          .height('100%')
+          .width('100%')
+        }
+        .tabBar('非零库存')
+
+        TabContent() {
+          Column() {
+            Row() {
+              Column() {
+                if (this.isLoading) {
+                  LoadingProgress()
+                    .width(20)
+                    .height(20)
+                } else {
+                  Text(this.selectedCategory)
+                    .fontSize(16)
+                    .width('100%')
+                    .height(40)
+                    .textAlign(TextAlign.Center)
+                    .backgroundColor('#F5F5F5')
+                    .borderRadius(8)
+                    .onClick(() => {
+                      this.categoryController.open();
+                    })
+                }
+              }
+              .width(75)
+              .margin({ right: 8 })
+
+              Column() {
+                Text(this.selectedStockType)
+                  .fontSize(16)
+                  .width('100%')
+                  .height(40)
+                  .textAlign(TextAlign.Center)
+                  .backgroundColor('#F5F5F5')
+                  .borderRadius(8)
+                  .onClick(() => {
+                    this.stockTypeController.open();
+                  })
+              }
+              .width(75)
+              .margin({ right: 8 })
+
+              Column() {
+                Text(this.selectedMealType)
+                  .fontSize(16)
+                  .width('100%')
+                  .height(40)
+                  .textAlign(TextAlign.Center)
+                  .backgroundColor('#F5F5F5')
+                  .borderRadius(8)
+                  .onClick(() => {
+                    this.mealTypeController.open();
+                  })
+              }
+              .width(75)
+              .margin({ right: 8 })
+
+              Column() {
+                Text(this.selectedMealCategory)
+                  .fontSize(16)
+                  .width('100%')
+                  .height(40)
+                  .textAlign(TextAlign.Center)
+                  .backgroundColor('#F5F5F5')
+                  .borderRadius(8)
+                  .onClick(() => {
+                    this.mealCategoryController.open();
+                  })
+              }
+              .width(75)
+            }
+            .margin({ bottom: 8 })
+            .width('100%')
+            .justifyContent(FlexAlign.SpaceBetween)
+
+            Search({ placeholder: '搜索商品名称' as ResourceStr, value: this.searchText })
+              .onChange((value: string) => {
+                this.searchText = value;
+                this.filterData();
+              })
+              .onSubmit(() => {
+                if (this.searchText.trim()) {
+                  console.log('搜索文本:' + this.searchText);
+                  this.filterData();
+                } else {
+                  console.warn('搜索内容为空');
+                }
+              })
+              .margin({ bottom: 8 })
+            Scroll() {
+              Column() {
+                ForEach(this.filteredShishikucun0, (item: StockItem) => {
+                  Column() {
+                    Row() {
+                      Text(item.name)
+                        .fontSize(20)
+                        .layoutWeight(2)
+                        .fontWeight(FontWeight.Bold)
+                        .margin({ right: 10, left: 10 })
+                      Text('生产日期: ' + item.productionDate)
+                        .fontSize(14)
+                        .layoutWeight(4)
+                        .textAlign(TextAlign.End)
+                        .fontColor('#888')
+                    }
+                    .margin({ bottom: 4 })
+
+                    Divider()
+                      .color('#ddd')
+                      .margin({ bottom: 8 })
+                    Text('供应价：   ' + item.price + '元/Kg ')
+                      .fontSize(16)
+                      .width('100%')
+                      .fontColor('#e57373')
+                      .margin({ bottom: 2 })
+                    Text('入库时间：   ' + item.cTime)
+                      .width('100%')
+                      .fontSize(14)
+                    Text('库  存  量：   ' + (item.amount * 2) + '斤(' + (item.amount) + 'Kg)')
+                      .width('100%')
+                      .fontSize(14)
+                    Text('需求类型：   ' + item.mealType + '  ' + item.needType)
+                      .width('100%')
+                      .fontSize(14)
+                    Text('餐       别：   ' + item.mealCategory)
+                      .width('100%')
+                      .fontSize(14)
+                    Text('供  应  商：   ' + item.supplier)
+                      .width('100%')
+                      .fontSize(14)
+                  }
+                  .margin({ left: 12, right: 12 })
+                  .onClick(() => {
+                    Router.push({
+                      uri: 'pages/dingdanxiangqing',
+                      params: {
+                        productName: item.name,
+                        stockAmount: item.amount + '斤 (1Kg)',
+                        orderNo: '',
+                        operateTime: item.inTime,
+                        operateAmount: item.amount,
+                        operator: '',
+                        supplier: item.supplier
+                      }
+                    })
+                  })
+                  .padding(12)
+                  .width('100%')
+                  .margin({ bottom: 12 })
+                  .backgroundColor('#fff8f0')
+                  .borderRadius(12)
+                  .shadow({
+                    radius: 4,
+                    color: '#eee',
+                    offsetX: 0,
+                    offsetY: 2
+                  })
+                })
+              }
+            }
+            .height(550)
+            .margin({ bottom: 8 })
+
+            Button('去出库')
+              .height(40)
+              .width(100)
+              .position({ x: 270, y: 500 })
+              .onClick(() => {
+                Router.push({
+                  uri: 'pages/chuku',
+                });
+              })
+              .fontColor('#a3000000')
+              .backgroundColor('#6ff8f2f2')
+          }
+          .padding(0)
+          .height('100%')
+          .width('100%')
+        }
+        .tabBar('零库存')
+      }
+    }
   }
 }

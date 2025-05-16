@@ -32,6 +32,7 @@
     "pages/peisongdangh",
     "pages/peisongdanDetailgh",
     "pages/addFoodItemsPage",
+    "pages/batchUploadReportsPage",
     "pages/CompanyInfoForm",
     "pages/SupplierProducts",
     "pages/ProductList",
