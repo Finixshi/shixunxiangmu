@@ -910,14 +910,15 @@ struct kucun {
                   .margin({ left: 12, right: 12 })
                   .onClick(() => {
                     Router.push({
-                      uri: 'pages/dingdanxiangqing',
+                      uri: 'pages/kucunxiangqing1',
                       params: {
                         productName: item.name,
                         stockAmount: item.amount + '斤 (1Kg)',
-                        orderNo: '',
+                        orderNo: this.shuju[0].documentNo,
                         operateTime: item.inTime,
                         operateAmount: item.amount,
-                        operator: '',
+                        operator: this.shuju[0].createByName,
+                        createby: item.groupName,
                         supplier: item.supplier
                       }
                     })
