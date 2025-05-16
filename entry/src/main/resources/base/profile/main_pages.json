@@ -30,6 +30,12 @@
     "pages/chenjian",
     "pages/chenjian1",
     "pages/peisongdangh",
-    "pages/peisongdanDetailgh"
+    "pages/peisongdanDetailgh",
+    "pages/addFoodItemsPage",
+    "pages/CompanyInfoForm",
+    "pages/SupplierProducts",
+    "pages/ProductList",
+    "pages/gongyingshangshouye",
+    "pages/daijiedan"
   ]
 }
