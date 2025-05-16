@@ -116,13 +116,13 @@ struct LoginPage {
           .borderRadius(8)
           .onClick(async () => {
             const result = await this.executeLogin();
-            
+
             if (result.success) {
               this.currentUser = result.userInfo!;
               this.authToken = result.token!;
-              
+
               this.handleUserRedirection(result.userInfo?.clientType);
-              
+
               promptAction.showToast({
                 message: '登录成功',
                 duration: 2000,
