@@ -71,6 +71,8 @@ struct PeisongdanDetailghPage {
   
   @State totalPrice: number = 12.96
   @State deliveryPerson: string = '请选择配送人'
+  @State showDeliveryPersonPicker: boolean = false
+  @State deliveryPersonOptions: string[] = ['张三', '李四', '王五']
   
   aboutToAppear() {
     // 获取路由参数
@@ -164,10 +166,32 @@ struct PeisongdanDetailghPage {
                   .margin({ left: 4 })
               }
               .onClick(() => {
-                // 这里应该显示配送人选择对话框
-                promptAction.showToast({
-                  message: '选择配送人功能暂未实现',
-                  duration: 2000
+                // 显示配送人选择对话框
+                promptAction.showDialog({
+                  title: '选择配送人',
+                  message: '请选择配送人',
+                  buttons: [
+                    {
+                      text: '张三',
+                      color: '#007DFF'
+                    },
+                    {
+                      text: '李四',
+                      color: '#007DFF'
+                    },
+                    {
+                      text: '王五',
+                      color: '#007DFF'
+                    }
+                  ]
+                }, (err, data) => {
+                  if (err) {
+                    console.error(`选择配送人出错: ${JSON.stringify(err)}`)
+                    return
+                  }
+                  if (data.index >= 0 && data.index < this.deliveryPersonOptions.length) {
+                    this.deliveryPerson = this.deliveryPersonOptions[data.index]
+                  }
                 })
               })
             }
@@ -249,15 +273,26 @@ struct PeisongdanDetailghPage {
                 .fontColor('#666666')
                 .width(80)
               
-              Text(this.currentFoodItem.deliveryQuantity.toString())
-                .fontSize(16)
-                .fontWeight(FontWeight.Bold)
-                .fontColor('#333333')
-                .layoutWeight(1)
+              TextInput({ text: this.currentFoodItem.deliveryQuantity.toString() })
+                .width('30%')
+                .height(40)
+                .backgroundColor('#F5F5F5')
+                .type(InputType.Number)
+                .onChange((value) => {
+                  const qty = Number(value)
+                  if (!isNaN(qty)) {
+                    this.currentFoodItem.deliveryQuantity = qty
+                    // 更新千克数量和总价
+                    this.currentFoodItem.deliveryQuantityKg = qty / 2 // 假设1斤=0.5kg
+                    this.currentFoodItem.total = this.currentFoodItem.deliveryQuantityKg * this.currentFoodItem.unitPrice
+                    this.totalPrice = this.currentFoodItem.total
+                  }
+                })
               
               Text('斤')
                 .fontSize(14)
                 .fontColor('#666666')
+                .margin({ left: 8 })
             }
             .width('100%')
             .margin({ top: 12, bottom: 12 })
@@ -270,15 +305,26 @@ struct PeisongdanDetailghPage {
                 .fontColor('#666666')
                 .width(80)
               
-              Text(this.currentFoodItem.deliveryQuantityKg.toString())
-                .fontSize(16)
-                .fontWeight(FontWeight.Bold)
-                .fontColor('#333333')
-                .layoutWeight(1)
+              TextInput({ text: this.currentFoodItem.deliveryQuantityKg.toString() })
+                .width('30%')
+                .height(40)
+                .backgroundColor('#F5F5F5')
+                .type(InputType.Number)
+                .onChange((value) => {
+                  const qty = Number(value)
+                  if (!isNaN(qty)) {
+                    this.currentFoodItem.deliveryQuantityKg = qty
+                    // 更新斤数量和总价
+                    this.currentFoodItem.deliveryQuantity = qty * 2 // 假设1kg=2斤
+                    this.currentFoodItem.total = this.currentFoodItem.deliveryQuantityKg * this.currentFoodItem.unitPrice
+                    this.totalPrice = this.currentFoodItem.total
+                  }
+                })
               
               Text('Kg')
                 .fontSize(14)
                 .fontColor('#666666')
+                .margin({ left: 8 })
             }
             .width('100%')
             .margin({ top: 12, bottom: 12 })
@@ -291,15 +337,25 @@ struct PeisongdanDetailghPage {
                 .fontColor('#666666')
                 .width(80)
               
-              Text(this.currentFoodItem.unitPrice.toString())
-                .fontSize(16)
-                .fontWeight(FontWeight.Bold)
-                .fontColor('#333333')
-                .layoutWeight(1)
+              TextInput({ text: this.currentFoodItem.unitPrice.toString() })
+                .width('30%')
+                .height(40)
+                .backgroundColor('#F5F5F5')
+                .type(InputType.Number)
+                .onChange((value) => {
+                  const price = Number(value)
+                  if (!isNaN(price)) {
+                    this.currentFoodItem.unitPrice = price
+                    // 更新总价
+                    this.currentFoodItem.total = this.currentFoodItem.deliveryQuantityKg * this.currentFoodItem.unitPrice
+                    this.totalPrice = this.currentFoodItem.total
+                  }
+                })
               
               Text('元/Kg')
                 .fontSize(14)
                 .fontColor('#666666')
+                .margin({ left: 8 })
             }
             .width('100%')
             .margin({ top: 12, bottom: 12 })
