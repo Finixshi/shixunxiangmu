@@ -51,7 +51,7 @@ struct Index1 {
       url: 'app.media.home_11',
       count: 0,
       text: '退货单',
-      route: 'pages/tuihuo_page'
+      route: 'pages/tuihuodan'
     },
     {
       url: 'app.media.home_4',

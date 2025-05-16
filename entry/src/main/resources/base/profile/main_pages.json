@@ -36,6 +36,7 @@
     "pages/SupplierProducts",
     "pages/ProductList",
     "pages/gongyingshangshouye",
-    "pages/daijiedan"
+    "pages/daijiedan",
+    "pages/tuihuodan"
   ]
 }
