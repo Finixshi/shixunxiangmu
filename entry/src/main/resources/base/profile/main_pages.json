@@ -7,6 +7,7 @@
     "pages/Calendar",
     "pages/SampleForm",
     "pages/kucun",
+    "pages/kucunxiangqing",
     "pages/chuku",
     "pages/chukudan",
     "pages/xiangqing",
@@ -29,6 +30,9 @@
     "pages/chenjian",
     "pages/chenjian1",
     "pages/peisongdangh",
-    "pages/peisongdanDetailgh"
+    "pages/peisongdanDetailgh",
+    "pages/CompanyInfoForm",
+    "pages/SupplierProducts",
+    "pages/ProductList"
   ]
 }
