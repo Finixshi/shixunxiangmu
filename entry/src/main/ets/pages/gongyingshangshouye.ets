@@ -45,7 +45,7 @@ struct Index1 {
       url: 'app.media.education_3',
       count: 0,
       text: '送货单',
-      route: 'pages/songhuo_page'
+      route: 'pages/songhuodan'
     },
     {
       url: 'app.media.home_11',
@@ -269,7 +269,7 @@ struct Index1 {
             .height(50)
             .width('33%')
             .onClick(() => {
-              router.pushUrl({ url: 'pages/page' })
+              router.pushUrl({ url: 'pages/CompanyInfoForm' })
             })
 
             // 供应范围选项卡
@@ -291,7 +291,7 @@ struct Index1 {
             .height(50)
             .width('33%')
             .onClick(() => {
-              router.pushUrl({ url: 'pages/supplyRange_page' })
+              router.pushUrl({ url: 'pages/SupplyRange' })
             })
 
             // 供应商品选项卡
@@ -313,7 +313,7 @@ struct Index1 {
             .height(50)
             .width('33%')
             .onClick(() => {
-              router.pushUrl({ url: 'pages/supplyGoods_page' })
+              router.pushUrl({ url: 'pages/SupplierProducts' })
             })
           }
           .width('100%')

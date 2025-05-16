@@ -21,6 +21,7 @@ struct SupplyRange {
           .layoutWeight(1)
           .textAlign(TextAlign.Center)
           .fontColor('#FFFFFF')
+          .margin({ left: -24 }) // 调整标题居中
         
         // 更多选项图标
         Text('...')
@@ -36,12 +37,17 @@ struct SupplyRange {
       .backgroundColor('#000000')
       
       // 网站地址
-      Text('phone.suoeryun.com')
-        .fontSize(14)
-        .fontColor('#999999')
-        .textAlign(TextAlign.Center)
-        .width('100%')
-        .padding({ top: 8, bottom: 8 })
+      Row() {
+        Text('phone.suoeryun.com')
+          .fontSize(14)
+          .fontColor('#888888')
+          .textAlign(TextAlign.Center)
+      }
+      .width('100%')
+      .justifyContent(FlexAlign.Center)
+      .backgroundColor('#f8f8f8')
+      .padding({ top: 8, bottom: 8 })
+      .border({ width: { bottom: 1 }, color: '#eeeeee' })
       
       // 学校列表
       Scroll() {
@@ -52,38 +58,41 @@ struct SupplyRange {
           // 第二个学校
           this.schoolItem('2.实训第一学校', '无', '无')
           
-          // 可以继续添加更多学校
+          // 留出底部空间
+          Blank()
+            .height(80)
         }
         .width('100%')
-        .padding({ bottom: 20 })
+        .padding({ left: 16, right: 16, bottom: 20 })
       }
       .layoutWeight(1)
       .scrollable(ScrollDirection.Vertical)
       .scrollBar(BarState.Auto)
-      .backgroundColor('#F2F2F2')
+      .backgroundColor('#F5F7FA')
       
       // 底部返回按钮
       Stack() {
         Circle()
-          .width(60)
-          .height(60)
-          .fill('#CCCCCC')
-          .opacity(0.8)
-          
+          .width(56)
+          .height(56)
+          .fill('#2D8CF0')
+        
         Image($r('app.media.zuo'))
-          .width(24)
-          .height(24)
+          .width(22)
+          .height(22)
+          .fillColor('#FFFFFF')
       }
-      .width(60)
-      .height(60)
+      .width(56)
+      .height(56)
       .position({ x: '85%', y: '85%' })
+      .shadow({ radius: 8, color: 'rgba(0, 0, 0, 0.2)', offsetX: 2, offsetY: 4 })
       .onClick(() => {
         router.back();
       })
     }
     .width('100%')
     .height('100%')
-    .backgroundColor('#F2F2F2')
+    .backgroundColor('#F5F7FA')
   }
   
   @Builder
@@ -92,41 +101,65 @@ struct SupplyRange {
       Text(name)
         .fontSize(18)
         .fontWeight(FontWeight.Medium)
-        .margin({ top: 16, bottom: 10 })
+        .margin({ top: 16, bottom: 16 })
         .alignSelf(ItemAlign.Start)
+        .fontColor('#333333')
+      
+      // 分隔线
+      Divider()
+        .strokeWidth(1)
+        .color('#f2f2f2')
+        .margin({ bottom: 16 })
       
       Row() {
-        Text('库    管：')
-          .fontSize(16)
-          .fontColor('#666666')
-          .width(100)
+        Row() {
+          // 使用文本代替图标
+          Text('📦')
+            .fontSize(16)
+            .margin({ right: 8 })
+          
+          Text('库    管：')
+            .fontSize(16)
+            .fontColor('#666666')
+        }
+        .width(100)
         
         Text(manager)
           .fontSize(16)
-          .fontColor('#666666')
+          .fontColor('#333333')
+          .fontWeight(FontWeight.Normal)
       }
       .width('100%')
-      .margin({ bottom: 8 })
+      .margin({ bottom: 16 })
       .alignItems(VerticalAlign.Center)
       
       Row() {
-        Text('联系方式：')
-          .fontSize(16)
-          .fontColor('#666666')
-          .width(100)
+        Row() {
+          // 使用文本代替图标
+          Text('📱')
+            .fontSize(16)
+            .margin({ right: 8 })
+          
+          Text('联系方式：')
+            .fontSize(16)
+            .fontColor('#666666')
+        }
+        .width(100)
         
         Text(contact)
           .fontSize(16)
-          .fontColor('#666666')
+          .fontColor('#333333')
+          .fontWeight(FontWeight.Normal)
       }
       .width('100%')
       .margin({ bottom: 16 })
       .alignItems(VerticalAlign.Center)
     }
-    .width('95%')
-    .padding({ left: 20, right: 20 })
+    .width('100%')
+    .padding({ left: 20, right: 20, top: 5, bottom: 5 })
     .backgroundColor(Color.White)
-    .borderRadius(8)
-    .margin({ top: 10 })
+    .borderRadius(10)
+    .margin({ top: 16 })
+    .shadow({ radius: 6, color: 'rgba(0, 0, 0, 0.06)', offsetX: 0, offsetY: 2 })
   }
 } 
