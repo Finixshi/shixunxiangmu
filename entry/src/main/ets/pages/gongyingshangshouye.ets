@@ -3,10 +3,12 @@ import http from '@ohos.net.http';
 import { promptAction } from '@kit.ArkUI';
 import { PrintExtensionAbility } from '@kit.BasicServicesKit';
 
-// 定义路由参数接口
+// 扩展路由参数接口，新增姓名和手机号字段
 interface RouteParams {
   token?: string;
   relTenantIds?: number;
+  name?: string;  // 新增：姓名
+  phone?: string; // 新增：手机号
 }
 
 // 定义订单管理项接口
@@ -79,19 +81,15 @@ struct Index1 {
   @State receivedToken: string = ''; // 参数传递
   @State tenantId: number = 0;
   @State currentTab: string = 'basic'; // 添加此行，用于管理当前选中的 tab
-  onPageShow() { // 这是一个接收传递参数的方法
-    // 使用接口类型断言
+  onPageShow() {
     const params = router.getParams() as RouteParams;
-    console.log('eee', params?.token); // 打印接收到的参数
-    console.log('gggg', params?.relTenantIds); //  打印接收到的参数
-
-    // 安全取值
-    if (params?.token) {
-      this.receivedToken = params.token;
-    }
-
-    if (params?.relTenantIds) {
-      this.tenantId = params.relTenantIds;
+    if (params) {
+      // 原有参数处理（不变）
+      if (params.token) this.receivedToken = params.token;
+      if (params.relTenantIds) this.tenantId = params.relTenantIds;
+      // 新增：更新公司名称和电话
+      if (params.name) this.companyName = params.name;
+      if (params.phone) this.companyPhone = params.phone;
     }
   }
 
@@ -107,25 +105,26 @@ struct Index1 {
             }
             .aspectRatio(2.1)
             .borderRadius(10)
-            .margin({
-              left: 10,
-              right: 10,
-            })
+            .margin({ left: 10, right: 10 })
+            .width('100%')
+            .height(200);
 
             Row() {
               Image($r('app.media.notice'))
                 .height(25)
-                .layoutWeight(1)
-              Text()
+                .layoutWeight(1);
+              Text('滚动通知：点击查看更多通知')
                 .height(50)
                 .layoutWeight(4.5)
                 .animation({ duration: 3000 })
+                .maxLines(1)
+                .textOverflow({ overflow: TextOverflow.Ellipsis });
+
             }
             .width('100%')
             .height(60)
-            .padding({
-              left: 10,
-            })
+            .padding({ left: 10 })
+            .backgroundColor(Color.White);
 
             // 订单管理标题
             Text('订单管理')
@@ -235,17 +234,19 @@ struct Index1 {
               .layoutWeight(1)
               .borderRadius(50);
             Column() {
-              Text(this.companyName)
-                .fontSize(20);
-              Text(this.companyPhone)
-                .fontSize(14);
+              Text(this.companyName) // 动态显示姓名
+                .fontSize(20)
+                .fontWeight(FontWeight.Bold);
+              Text(this.companyPhone) // 动态显示手机号
+                .fontSize(14)
+                .fontColor('#666666');
             }
-            .layoutWeight(2.4);
+            .layoutWeight(2.4)
+            .margin({ left: 16 });
           }
           .width('100%')
-          .padding({
-            left: 20
-          });
+          .padding({ top: 20, left: 20 })
+          .backgroundColor(Color.White);
 
           // 功能列表
           // 顶部选项卡容器
@@ -319,115 +320,122 @@ struct Index1 {
           .width('100%')
           .border({ width: 1, color: '#EEEEEE' })
           .margin({ top: 10 })
+          .backgroundColor(Color.White);
           // 添加功能按钮
           List() {
             // 修改个人信息
             ListItem() {
               Row() {
-                Stack() {
+                Column() {
                   Text('修改个人信息')
-                  Image($r('app.media.right_icon_black'))
-                    .width(15)
-                    .position({x:320})
+                    .fontSize(16)
+                    .textAlign(TextAlign.End);
                 }
+                .layoutWeight(1);
+                Image($r('app.media.right_icon_black'))
+                  .width(15)
+                  .margin({ right: 10 });
               }
-              .onClick(() => {
-                router.pushUrl({ url: 'pages/xiugaigerenxinxi', params: { token: this.receivedToken } })
-              })
-              .margin({left:10})
-              .width('95%')
+              .onClick(() => router.pushUrl({ url: 'pages/modify_info', params: { token: this.receivedToken } }))
+              .margin({ left: 10, right: 10 })
               .height(50)
               .backgroundColor(Color.White)
-              .borderRadius({topLeft:10,topRight:10})
-              .border({width:1,color:Color.Gray})
+              .border({ width: 1, color: Color.Gray })
+              .borderRadius(10);
             }
+
 
             // 修改密码
             ListItem() {
               Row() {
-                Stack() {
+                Column() {
                   Text('修改密码')
-                  Image($r('app.media.right_icon_black'))
-                    .width(15)
-                    .position({x:320})
+                    .fontSize(16)
+                    .textAlign(TextAlign.End);
                 }
+                .layoutWeight(1);
+                Image($r('app.media.right_icon_black'))
+                  .width(15)
+                  .margin({ right: 10 });
               }
-              .onClick(() => {
-                router.pushUrl({ url: 'pages/xiugaimima', params: { token: this.receivedToken } })
-              })
-              .margin({left:10})
-              .width('95%')
+              .onClick(() => router.pushUrl({ url: 'pages/xiugaimima', params: { token: this.receivedToken } }))
+              .margin({ left: 10, right: 10 })
               .height(50)
               .backgroundColor(Color.White)
-              .border({width:1,color:Color.Gray})
+              .border({ width: 1, color: Color.Gray })
+              .borderRadius(10);
             }
 
             // 解绑微信
             ListItem() {
               Row() {
-                Stack() {
+                Column() {
                   Text('解绑微信')
-                  Image($r('app.media.right_icon_black'))
-                    .width(15)
-                    .position({x:320})
+                    .fontSize(16)
+                    .textAlign(TextAlign.End);
                 }
+                .layoutWeight(1);
+                Image($r('app.media.right_icon_black'))
+                  .width(15)
+                  .margin({ right: 10 });
               }
-              .onClick(() => {
-                router.pushUrl({ url: 'pages/editProfile', params: { token: this.receivedToken } })
-              })
-              .margin({left:10})
-              .width('95%')
+              .onClick(() => router.pushUrl({ url: 'pages/editProfile', params: { token: this.receivedToken } }))
+              .margin({ left: 10, right: 10 })
               .height(50)
               .backgroundColor(Color.White)
-              .border({width:1,color:Color.Gray})
+              .border({ width: 1, color: Color.Gray })
+              .borderRadius(10);
             }
 
             // 常见问题解答
             ListItem() {
               Row() {
-                Stack() {
+                Column() {
                   Text('常见问题解答')
-                  Image($r('app.media.right_icon_black'))
-                    .width(15)
-                    .position({x:320})
+                    .fontSize(16)
+                    .textAlign(TextAlign.End);
                 }
+                .layoutWeight(1);
+                Image($r('app.media.right_icon_black'))
+                  .width(15)
+                  .margin({ right: 10 });
               }
-              .onClick(() => {
-                router.pushUrl({ url: 'pages/changjianwentijieda', params: { token: this.receivedToken } })
-              })
-              .margin({left:10})
-              .width('95%')
+              .onClick(() => router.pushUrl({ url: 'pages/changjianwentijieda', params: { token: this.receivedToken } }))
+              .margin({ left: 10, right: 10 })
               .height(50)
               .backgroundColor(Color.White)
-              .border({width:1,color:Color.Gray})
+              .border({ width: 1, color: Color.Gray })
+              .borderRadius(10);
             }
 
             // 退出登录
             ListItem() {
               Row() {
-                Stack() {
+                Column() {
                   Text('退出登录')
-                  Image($r('app.media.right_icon_black'))
-                    .width(15)
-                    .position({x:320})
+                    .fontSize(16)
+                    .textAlign(TextAlign.End);
                 }
+                .layoutWeight(1);
+                Image($r('app.media.right_icon_black'))
+                  .width(15)
+                  .margin({ right: 10 });
               }
-              .onClick(() => {
-                router.back({ url: 'pages/login', params: { token: this.receivedToken } })
-              })
-              .margin({left:10})
-              .width('95%')
+              .onClick(() => router.back({ url: 'pages/login', params: { token: this.receivedToken } }))
+              .margin({ left: 10, right: 10 })
               .height(50)
               .backgroundColor(Color.White)
-              .borderRadius({bottomLeft:10,bottomRight:10})
-              .border({width:1,color:Color.Gray})
+              .border({ width: 1, color: Color.Gray })
+              .borderRadius(10);
             }
           }
         }
+        .width('100%')
+        .height('100%')
+        .backgroundColor('rgba(241,241,241,0.9)');
       }
-      .tabBar('我的')
-      .backgroundColor('rgba(241,241,241,0.9)')
+      .tabBar('我的');
     }
-    .barPosition(BarPosition.End)
+    .barPosition(BarPosition.End);
   }
 }

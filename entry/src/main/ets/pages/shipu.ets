@@ -132,9 +132,9 @@ struct Shipu {
 
   // 选项定义
   private mealTypes: SelectOption[] = [
-    new SelectOption('早点'),
+    new SelectOption('早餐'),
     new SelectOption('午餐'),
-    new SelectOption('晚点'),
+    new SelectOption('晚餐'),
     new SelectOption('其他')
   ]
 

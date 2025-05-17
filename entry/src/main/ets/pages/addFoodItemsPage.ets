@@ -13,6 +13,11 @@ interface FoodItem {
   isNew: boolean // 是否是新品
 }
 
+// 操作菜单结果接口
+interface ActionMenuResult {
+  index: number
+}
+
 @Entry
 @Component
 struct AddFoodItemsPage {
@@ -71,10 +76,7 @@ struct AddFoodItemsPage {
           .fontColor('#FFFFFF')
           .margin({ left: 16 })
           .onClick(() => {
-            promptAction.showToast({
-              message: '请点击下方确定按钮选择并返回',
-              duration: 2000
-            })
+            router.back()
           })
         
         Text('配送单添加食材')
@@ -107,17 +109,48 @@ struct AddFoodItemsPage {
       
       // 搜索和分类区域
       Row() {
-        Text('全部分类')
-          .fontSize(16)
-          .fontColor('#333333')
-          .margin({ left: 16 })
-        
-        Text('▼')  // 用下箭头符号替代arrow_down
-          .width(16)
-          .height(16)
-          .fontSize(14)
-          .fontColor('#333333')
-          .margin({ left: 4 })
+        Row() {
+          Text('全部分类')
+            .fontSize(16)
+            .fontColor('#333333')
+            .margin({ left: 16 })
+          
+          Text('▼')  
+            .width(16)
+            .height(16)
+            .fontSize(14)
+            .fontColor('#333333')
+            .margin({ left: 4 })
+        }
+        .onClick(() => {
+          promptAction.showActionMenu({
+            title: '选择食材分类',
+            buttons: [
+              { text: '全部分类', color: '#333333' },
+              { text: '谷薯类/蔬菜水果类', color: '#333333' },
+              { text: '鱼禽肉蛋类/牛奶类', color: '#333333' },
+              { text: '大豆坚果/干菜调料', color: '#333333' },
+              { text: '糕点面包/主食半成品', color: '#333333' },
+              { text: '其他', color: '#333333' }
+            ]
+          })
+          .then((result: ActionMenuResult) => {
+            // 根据选择结果筛选对应类别的食材
+            let category = '';
+            switch(result.index) {
+              case 0: category = '全部分类'; break;
+              case 1: category = '谷薯类/蔬菜水果类'; break;
+              case 2: category = '鱼禽肉蛋类/牛奶类'; break;
+              case 3: category = '大豆坚果/干菜调料'; break;
+              case 4: category = '糕点面包/主食半成品'; break;
+              case 5: category = '其他'; break;
+            }
+            console.info(`用户选择了分类: ${category}`)
+          })
+          .catch((err: Error) => {
+            console.error(`分类选择出错: ${err}`)
+          })
+        })
         
         // 搜索框
         Row() {

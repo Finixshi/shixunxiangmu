@@ -7,48 +7,32 @@ struct SupplyRange {
     Column() {
       // 顶部导航栏
       Row() {
-        Image($r('app.media.zuo'))
-          .width(24)
-          .height(24)
-          .margin({ left: 16 })
-          .onClick(() => {
-            router.back();
-          })
-        
         Text('供应范围')
           .fontSize(20)
           .fontWeight(FontWeight.Medium)
           .layoutWeight(1)
           .textAlign(TextAlign.Center)
           .fontColor('#FFFFFF')
-          .margin({ left: -24 }) // 调整标题居中
-        
-        // 更多选项图标
+          .margin({ left: 40 })
         Text('...')
           .fontSize(24)
           .fontWeight(FontWeight.Bold)
           .width(24)
-          .height(24)
+          .height(30)
           .margin({ right: 16 })
           .fontColor('#FFFFFF')
+        Image($r('app.media.zuo'))
+          .width(24)
+          .height(24)
+          .position({ x: '8%', y: '30%' })
+          .onClick(() => {
+            router.back();
+          })
       }
       .width('100%')
       .height(56)
       .backgroundColor('#000000')
-      
-      // 网站地址
-      Row() {
-        Text('phone.suoeryun.com')
-          .fontSize(14)
-          .fontColor('#888888')
-          .textAlign(TextAlign.Center)
-      }
-      .width('100%')
-      .justifyContent(FlexAlign.Center)
-      .backgroundColor('#f8f8f8')
-      .padding({ top: 8, bottom: 8 })
-      .border({ width: { bottom: 1 }, color: '#eeeeee' })
-      
+
       // 学校列表
       Scroll() {
         Column() {
@@ -76,7 +60,7 @@ struct SupplyRange {
           .width(56)
           .height(56)
           .fill('#2D8CF0')
-        
+
         Image($r('app.media.zuo'))
           .width(22)
           .height(22)
