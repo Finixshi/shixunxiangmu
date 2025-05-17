@@ -1,27 +1,21 @@
 import { router } from '@kit.ArkUI';
-
 import prompt from '@ohos.prompt';
-
-export let name: string;
-export let phone: string;
-export let email: string;
 
 @Entry
 @Component
 struct LoginPage {
-  @StorageLink('name') name: string = ''
-  @StorageLink('phonenumber') phonenumber: string = ''
-  @StorageLink('email') email: string = ''
-  @StorageLink('gender') gender: string = '男'
-  @State sexGender: string = '男'
-  @State nameError: string = ''
-  @State phoneError: string = ''
-  @State emailError: string = ''
+  @State name: string = '';
+  @State phonenumber: string = '';
+  @State email: string = '';
+  @State gender: string = '男';
+  @State sexGender: string = '男';
+  @State nameError: string = '';
+  @State phoneError: string = '';
+  @State emailError: string = '';
 
-  // 验证表单
+  // 表单验证
   validateForm(): boolean {
     let isValid = true;
-
     // 验证昵称
     if (this.name.trim() === '') {
       this.nameError = '昵称不能为空';
@@ -29,7 +23,6 @@ struct LoginPage {
     } else {
       this.nameError = '';
     }
-
     // 验证手机号
     const phoneRegex = /^1\d{10}$/;
     if (this.phonenumber.trim() === '') {
@@ -41,8 +34,7 @@ struct LoginPage {
     } else {
       this.phoneError = '';
     }
-
-    // 验证邮箱
+    // 验证邮箱（可选，此处保留但不强制）
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (this.email.trim() === '') {
       this.emailError = '邮箱不能为空';
@@ -53,42 +45,53 @@ struct LoginPage {
     } else {
       this.emailError = '';
     }
-
     return isValid;
   }
 
   build() {
-    Column({ space: 20 }) {
+    Column() {
+      // 返回按钮 - 新增组件
+      Row() {
+        Text("<")
+          .width(24)
+          .height(24)
+          .fontSize(24)
+          .margin({ left: 15, top: 25 })
+          .onClick(() => router.back()) // 返回上一页
+      }
+      .width('100%')
+      .height(70)
+      .justifyContent(FlexAlign.Start)
 
-      // 登录表单区域
+      // 原有内容包裹在新的Column中
       Column({ space: 20 }) {
+        // 头像
         Column() {
-          // 头像
           Image($r('app.media.avatar'))
             .width(80)
             .height(80)
             .borderRadius(50)
-            .margin({ top: 20 })
+            .margin({ top: 20 });
         }
         .width('100%')
         .height(100)
         .justifyContent(FlexAlign.Center)
-        .alignItems(HorizontalAlign.Center)
+        .alignItems(HorizontalAlign.Center);
 
-        // 昵称
+        // 昵称输入
         Column() {
           Row() {
             Text('昵称:')
               .fontWeight(FontWeight.Medium)
               .width(100)
-              .padding(10)
+              .padding(10);
             TextInput({
               placeholder: '请输入昵称',
+              text: this.name
             })
               .backgroundColor(Color.White)
-              .fontFamily('Microsoft YaHei')
               .onChange((value: string) => {
-                this.name = value
+                this.name = value;
                 if (value.trim() === '') {
                   this.nameError = '昵称不能为空';
                 } else {
@@ -97,68 +100,62 @@ struct LoginPage {
               })
               .width('100%')
               .padding(10)
-              .borderRadius(20)
+              .borderRadius(20);
           }
           if (this.nameError) {
             Text(this.nameError)
               .fontSize(12)
               .fontColor(Color.Red)
-              .margin({ left: 110 })
+              .margin({ left: 110 });
           }
         }
-        .border({
-          width: { bottom: 1 },
-          color: { bottom: 0xe0e0e0 },
-          style: BorderStyle.Solid
-        })
+        .border({ width: { bottom: 1 }, color: { bottom: 0xe0e0e0 }, style: BorderStyle.Solid });
 
-        // 性别--默认选中男
+        // 性别选择
         Row() {
-          Text(' 性别:')
+          Text('性别:')
             .fontFamily('Microsoft YaHei')
             .width(100)
             .padding(5)
-            .fontWeight(FontWeight.Medium)
-          // 单选按钮组
+            .fontWeight(FontWeight.Medium);
           Row() {
             Text('男')
-              .fontWeight(FontWeight.Medium)
+              .fontWeight(FontWeight.Medium);
             Radio({ value: '男', group: "genderGroup" })
               .checked(this.sexGender === '男')
               .onChange((isChecked: boolean) => {
-                if (isChecked) this.gender = '男'
+                if (isChecked) this.gender = '男';
               })
-              .margin({ right: 20 })
-
+              .margin({ right: 20 });
             Text('女')
-              .fontWeight(FontWeight.Medium)
+              .fontWeight(FontWeight.Medium);
             Radio({ value: '女', group: "genderGroup" })
               .checked(this.gender === '女')
               .onChange((isChecked: boolean) => {
-                if (isChecked) this.gender = '女'
-              })
+                if (isChecked) this.gender = '女';
+              });
           }
           .width(100)
           .padding(10)
-          .borderRadius(20)
+          .borderRadius(20);
         }
         .width('100%')
-        .margin(5)
+        .margin(5);
 
-        // 邮箱
+        // 邮箱输入（可选）
         Column() {
           Row() {
             Text('邮箱:')
               .fontWeight(FontWeight.Medium)
               .width(100)
-              .padding(10)
+              .padding(10);
             TextInput({
               placeholder: '请输入邮箱',
+              text: this.email
             })
               .backgroundColor(Color.White)
-              .fontFamily('Microsoft YaHei')
               .onChange((value: string) => {
-                this.email = value
+                this.email = value;
                 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
                 if (value.trim() === '') {
                   this.emailError = '邮箱不能为空';
@@ -170,35 +167,31 @@ struct LoginPage {
               })
               .width('100%')
               .padding(10)
-              .borderRadius(20)
+              .borderRadius(20);
           }
           if (this.emailError) {
             Text(this.emailError)
               .fontSize(12)
               .fontColor(Color.Red)
-              .margin({ left: 110 })
+              .margin({ left: 110 });
           }
         }
-        .border({
-          width: { bottom: 1 },
-          color: { bottom: 0xe0e0e0 },
-          style: BorderStyle.Solid
-        })
+        .border({ width: { bottom: 1 }, color: { bottom: 0xe0e0e0 }, style: BorderStyle.Solid });
 
-        // 手机号
+        // 手机号输入
         Column() {
           Row() {
             Text('手机号:')
               .fontWeight(FontWeight.Medium)
               .width(100)
-              .padding(10)
+              .padding(10);
             TextInput({
               placeholder: '请输入手机号',
+              text: this.phonenumber
             })
               .backgroundColor(Color.White)
-              .fontFamily('Microsoft YaHei')
               .onChange((value: string) => {
-                this.phonenumber = value
+                this.phonenumber = value;
                 const phoneRegex = /^1\d{10}$/;
                 if (value.trim() === '') {
                   this.phoneError = '手机号不能为空';
@@ -210,21 +203,18 @@ struct LoginPage {
               })
               .width('100%')
               .padding(10)
-              .borderRadius(20)
+              .borderRadius(20);
           }
           if (this.phoneError) {
             Text(this.phoneError)
               .fontSize(12)
               .fontColor(Color.Red)
-              .margin({ left: 110 })
+              .margin({ left: 110 });
           }
         }
-        .border({
-          width: { bottom: 1 },
-          color: { bottom: 0xe0e0e0 },
-          style: BorderStyle.Solid
-        })
+        .border({ width: { bottom: 1 }, color: { bottom: 0xe0e0e0 }, style: BorderStyle.Solid });
 
+        // 完成按钮
         Button('完成')
           .width(200)
           .height(45)
@@ -236,17 +226,12 @@ struct LoginPage {
           .borderRadius(20)
           .onClick(() => {
             if (this.validateForm()) {
-              name = this.name;
-              phone = this.phonenumber;
-              email = this.email;
-
+              // 跳转至主界面并传递姓名和手机号
               router.pushUrl({
-                url: 'pages/gongyingshangshouye',
+                url: 'pages/Index1', // 主界面路由，需与项目配置一致
                 params: {
                   name: this.name,
-                  phone: this.phonenumber,
-                  email: this.email,
-                  gender: this.gender
+                  phone: this.phonenumber
                 }
               });
             } else {
@@ -255,11 +240,13 @@ struct LoginPage {
                 duration: 2000
               });
             }
-          })
+          });
       }
+      .width('100%')
+      .height('100%')
+      .alignItems(HorizontalAlign.Center);
     }
     .width('100%')
     .height('100%')
-    .alignItems(HorizontalAlign.Center);
   }
 }
