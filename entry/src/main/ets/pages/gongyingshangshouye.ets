@@ -332,7 +332,7 @@ struct Index1 {
                 }
               }
               .onClick(() => {
-                router.pushUrl({ url: 'pages/xiugaigerenxinxi', params: { token: this.receivedToken } })
+                router.pushUrl({ url: 'pages/modify_info', params: { token: this.receivedToken } })
               })
               .margin({left:10})
               .width('95%')
