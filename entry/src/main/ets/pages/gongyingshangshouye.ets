@@ -45,19 +45,19 @@ struct Index1 {
       url: 'app.media.education_3',
       count: 0,
       text: '送货单',
-      route: 'pages/songhuo_page'
+      route: 'pages/songhuodan'
     },
     {
       url: 'app.media.home_11',
       count: 0,
       text: '退货单',
-      route: 'pages/tuihuo_page'
+      route: 'pages/tuihuodan'
     },
     {
       url: 'app.media.home_4',
       count: 0,
       text: '新品申购',
-      route: 'pages/shengou_page'
+      route: 'pages/NewProductApply'
     }
   ];
   // 资料管理数据
@@ -269,7 +269,7 @@ struct Index1 {
             .height(50)
             .width('33%')
             .onClick(() => {
-              router.pushUrl({ url: 'pages/page' })
+              router.pushUrl({ url: 'pages/CompanyInfoForm' })
             })
 
             // 供应范围选项卡
@@ -291,7 +291,7 @@ struct Index1 {
             .height(50)
             .width('33%')
             .onClick(() => {
-              router.pushUrl({ url: 'pages/supplyRange_page' })
+              router.pushUrl({ url: 'pages/SupplyRange' })
             })
 
             // 供应商品选项卡
@@ -313,7 +313,7 @@ struct Index1 {
             .height(50)
             .width('33%')
             .onClick(() => {
-              router.pushUrl({ url: 'pages/supplyGoods_page' })
+              router.pushUrl({ url: 'pages/SupplierProducts' })
             })
           }
           .width('100%')

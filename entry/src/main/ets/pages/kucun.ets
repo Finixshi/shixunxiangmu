@@ -2,6 +2,37 @@ import Router from '@system.router';
 import http from '@ohos.net.http';
 import { promptAction, router } from '@kit.ArkUI';
 
+interface InventoryDetailItem {
+  id: string;
+  inventoryId: string;
+  beforeNum: number;
+  afterNum: number;
+  createBy: string;
+  createByName: string;
+  createTime: string;
+  demandUnit: string;
+  demandUnitName: string;
+  detailType: string;
+  digest: string;
+  documentNo: string;
+  modifyPrice: number;
+  num: number;
+  placeOrigin: string;
+  realSpecification: string;
+  supplierId: string;
+  supplierName: string;
+  supplyPricing: number;
+  unit: string;
+}
+
+interface InventoryDetailResponse {
+  code: number;
+  message: string;
+  result: InventoryDetailItem[]; // 使用定义好的 interface
+  success: boolean;
+  timestamp: number;
+}
+
 interface RealTimeInventoryItem {
   id: string;
   foodId: string;
@@ -22,8 +53,7 @@ interface RealTimeInventoryItem {
   requirementType: string;
   requirementType_dictText: string;
   supplierId: string;
-  supplierName: string; //供应商
-  // ... 你需要的其他字段
+  supplierName: string;
 }
 
 interface RealTimeInventoryPage {
@@ -153,6 +183,7 @@ struct kucun {
   @State isLoading: boolean = false;
   @State shishikucun: StockItem[] = [];
   @State shishikucun0: StockItem[] = [];
+  @State shuju: InventoryDetailItem[] = []
   @State token: string = '';
   @State tenantId: number = 0;
 
@@ -385,6 +416,49 @@ struct kucun {
     } finally {
       this.isLoading = false;
       httpRequest.destroy();
+    }
+  }
+
+  onPageShow(): void {
+    this.Information()
+    console.log('qqqqqqqq')
+  }
+  async Information(): Promise<void> {
+    try {
+      const httpRequest = http.createHttp();
+      // const params: Record<string, string> = router.getParams() as Record<string, string>;
+      //const id: string = this.wId
+      const response = await httpRequest.request(
+        "https://api.suoeryun.com/ifood/school/xxRealTimeInventory/queryInventoryDetail",
+        {
+          method: http.RequestMethod.GET,
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'Tenant-Id': this.tenantId.toString(),
+            'X-Access-Token': this.token,
+          },
+          extraData: { inventoryId:'1922545448660860929' }
+        }
+      );
+
+      if (response.responseCode === 200) {
+        const result: InventoryDetailResponse = JSON.parse(response.result as string);
+        if (result.success) {
+          this.shuju = result.result;
+          console.log('hfggdfgdf')
+          console.log(this.shuju[0].id)
+          // this.zongji = this.shuju.planningFoodList.reduce((acc, item) => acc + (item.money), 0);
+        } else {
+          console.log('接口返回失败');
+        }
+      } else {
+        console.log('请求失败');
+      }
+    } catch (err) {
+      console.log('网络错误');
+      console.error('Error fetching supply data:', err);
+    } finally {
+      this.isLoading = false;
     }
   }
 
@@ -657,10 +731,10 @@ struct kucun {
                       params: {
                         productName: item.name,
                         stockAmount: (item.amount * 2) + '斤 (' + item.amount + 'Kg)',
-                        orderNo: '',
+                        orderNo: this.shuju[0].documentNo,
                         operateTime: item.cTime,
                         operateAmount: item.amount + 'kg',
-                        operator: '',
+                        operator: this.shuju[0].createByName,
                         supplier: item.supplier
                       }
                     })
@@ -689,8 +763,13 @@ struct kucun {
               .onClick(() => {
                 Router.push({
                   uri: 'pages/chuku',
+                  params: {
+                    token: this.token,
+                    tenantId: this.tenantId
+                  }
                 });
               })
+
               .fontColor('#a3000000')
               .backgroundColor('#6ff8f2f2')
           }
@@ -831,14 +910,14 @@ struct kucun {
                   .margin({ left: 12, right: 12 })
                   .onClick(() => {
                     Router.push({
-                      uri: 'pages/dingdanxiangqing',
+                      uri: 'pages/kucunxiangqing1',
                       params: {
                         productName: item.name,
                         stockAmount: item.amount + '斤 (1Kg)',
-                        orderNo: '',
-                        operateTime: item.inTime,
+                        orderNo: this.shuju[0].documentNo,
+                        operateTime: item.cTime,
                         operateAmount: item.amount,
-                        operator: '',
+                        operator: this.shuju[0].createByName,
                         supplier: item.supplier
                       }
                     })

@@ -16,7 +16,7 @@ struct kucunxiangqing {
     let params = router.getParams() as Record<string, string>;
     this.foodName = params.productName || '未知商品';
     this.totalNum = params.stockAmount || '0';
-    this.documentNo = params.documentNo || '无单据号';
+    this.documentNo = params.orderNo || '无单据号';
     this.createTime = params.operateTime || '未知时间';
     this.operateAmount = params.operateAmount || '0';
     this.operator = params.operator || '未知操作人';
