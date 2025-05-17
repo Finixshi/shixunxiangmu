@@ -53,7 +53,7 @@ interface RealTimeInventoryItem {
   requirementType: string;
   requirementType_dictText: string;
   supplierId: string;
-  supplierName: string; //供应商
+  supplierName: string;
 }
 
 interface RealTimeInventoryPage {
@@ -915,7 +915,7 @@ struct kucun {
                         productName: item.name,
                         stockAmount: item.amount + '斤 (1Kg)',
                         orderNo: this.shuju[0].documentNo,
-                        operateTime: item.inTime,
+                        operateTime: item.cTime,
                         operateAmount: item.amount,
                         operator: this.shuju[0].createByName,
                         supplier: item.supplier

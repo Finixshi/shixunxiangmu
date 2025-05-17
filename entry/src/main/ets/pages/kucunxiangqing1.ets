@@ -4,7 +4,7 @@ const demandUnitName=AppStorage.get<string>('demandUnitName')
 
 @Entry
 @Component
-struct kucunxiangqing {
+struct kucunxiangqing1 {
   @State foodName: string = '';
   @State totalNum: string = '';
   @State documentNo: string = '';
@@ -104,7 +104,7 @@ struct kucunxiangqing {
         // 操作信息卡片（新增字段）
         Column() {
           Row() {
-            Text(`操作时间: ${this.createTime}`)
+            Text('操作时间：' + this.createTime)
               .fontSize(15)
               .margin({ bottom: 4 });
           }
@@ -154,7 +154,7 @@ struct kucunxiangqing {
         // 操作信息卡片（新增字段）
         Column() {
           Row() {
-            Text(`操作时间: ${this.createTime}`)
+            Text('操作时间：' + this.createTime)
               .fontSize(15)
               .margin({ bottom: 4 });
           }
@@ -165,7 +165,7 @@ struct kucunxiangqing {
           Text('操作人：' + this.operator)
             .fontSize(15)
             .margin({ bottom: 4 });
-          Text(`供应出库,给【${demandUnitName}】供应出库`)
+          Text(`供应出库,给【实训第一学校餐厅】供应出库`)
             .width('100%')
             .backgroundColor('#3ec97c')
             .fontColor('#fff')
