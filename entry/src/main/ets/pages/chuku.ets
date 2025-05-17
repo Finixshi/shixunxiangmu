@@ -259,7 +259,6 @@ struct PurchaseInventory {
               .border({ width: 2, color: '#07C160' })
               .width('95%')
               .margin({ top: 20, bottom: 20 })
-              .shadow({ radius: 8, color: '#07C160', offsetX: 0, offsetY: 4 })
               .onClick(() => {
                 router.pushUrl({
                   url: 'pages/xiangqing',
