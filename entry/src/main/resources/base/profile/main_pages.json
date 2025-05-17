@@ -42,6 +42,7 @@
     "pages/songhuodan1",
     "pages/SupplyRange",
     "pages/NewProductApply",
-    "pages/CreateNewProduct"
+    "pages/CreateNewProduct",
+    "pages/kucunxiangqing1"
   ]
 }

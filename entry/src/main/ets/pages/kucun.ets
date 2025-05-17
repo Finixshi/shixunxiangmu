@@ -946,8 +946,13 @@ struct kucun {
               .onClick(() => {
                 Router.push({
                   uri: 'pages/chuku',
+                  params: {
+                    token: this.token,
+                    tenantId: this.tenantId
+                  }
                 });
               })
+
               .fontColor('#a3000000')
               .backgroundColor('#6ff8f2f2')
           }
