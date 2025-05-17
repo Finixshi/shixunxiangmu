@@ -397,9 +397,9 @@ struct PeisongdanDetailghPage {
               .borderRadius(4)
               .padding({ left: 16, right: 16, top: 8, bottom: 8 })
               .onClick(() => {
-                promptAction.showToast({
-                  message: '批量添加检验报告功能暂未实现',
-                  duration: 2000
+                // 跳转到添加食材页面
+                router.pushUrl({
+                  url: 'pages/addFoodItemsPage'
                 })
               })
           }
