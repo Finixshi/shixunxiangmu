@@ -399,7 +399,7 @@ struct CalendarPage {
               .fontColor('#666666')
           }
           .padding(12)
-          .backgroundColor('#FFFFFF')
+          .backgroundColor('#ffffffff')
           .borderRadius(8)
           .margin({ bottom: 8 })
           .onClick(async () => {

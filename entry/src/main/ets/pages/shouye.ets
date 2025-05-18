@@ -35,7 +35,7 @@ struct Index1 {
   ];
   @State image1:cuku[]=[
     {url1:'app.media.gongyingchuku',count1:0,text1:'供应出库',route1:'pages/chuku' },
-    {url1:'app.media.caigouruku',count1:0,text1:'采购入库',route1:'pages/ruku'},
+    {url1:'app.media.shishikucun',count1:0,text1:'实时库存',route1:'pages/kucun'},
   ]
 
 
@@ -319,7 +319,7 @@ struct Index1 {
                 }
               }
               .onClick(() => {
-                router.pushUrl({ url: 'pages/page1', params: { token: this.receivedToken } })
+                router.back({ url: 'pages/login', params: { token: this.receivedToken } })
               })
               .margin({left:10})
               .width('95%')
