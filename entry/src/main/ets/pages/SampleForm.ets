@@ -27,10 +27,11 @@ struct SampleForm {
     weight: '',
     staff: '',
     disposalTime: '',
-    images: [],
-    cabinetImages: [],
+    images: ["https://admin.suoeryun.com/pcUpload/1917474932601933825_1745996623568.png"],
+    cabinetImages: ["https://admin.suoeryun.com/pcUpload/1917474946438942721_1745996626850.png"],
     notes: ''
   }
+  @State isSubmitting: boolean = false
 
   private isEditMode: boolean = false
   private editIndex: number = -1
@@ -67,6 +68,14 @@ struct SampleForm {
       this.isEditMode = true
       this.editIndex = params.editIndex ?? -1
       this.formData = JSON.parse(JSON.stringify(params.editSample))
+      
+      // 确保编辑模式下也有默认图片
+      if (!this.formData.images || this.formData.images.length === 0) {
+        this.formData.images = ["https://admin.suoeryun.com/pcUpload/1917474932601933825_1745996623568.png"]
+      }
+      if (!this.formData.cabinetImages || this.formData.cabinetImages.length === 0) {
+        this.formData.cabinetImages = ["https://admin.suoeryun.com/pcUpload/1917474946438942721_1745996626850.png"]
+      }
     } else if (params?.selectedDate) {
       this.formData.date = params.selectedDate
     } else {
@@ -127,6 +136,87 @@ struct SampleForm {
     }
 
     return true
+  }
+
+  @Builder
+  SubmitButton() {
+    Button(this.isEditMode ? '保存' : '提交')
+      .width('90%')
+      .height(48)
+      .fontSize(16)
+      .fontColor('#FFFFFF')
+      .backgroundColor('#00C853')
+      .margin({ top: 16, bottom: 16 })
+      .enabled(!this.isSubmitting)
+      .onClick(async () => {
+        if (this.validateForm()) {
+          this.isSubmitting = true
+          try {
+            // 确保图片URL已设置
+            if (this.formData.images.length === 0) {
+              this.formData.images = ["https://admin.suoeryun.com/pcUpload/1917474932601933825_1745996623568.png"]
+            }
+            if (this.formData.cabinetImages.length === 0) {
+              this.formData.cabinetImages = ["https://admin.suoeryun.com/pcUpload/1917474946438942721_1745996626850.png"]
+            }
+
+            let success = false
+            if (this.isEditMode) {
+              // 先调用API，然后更新本地存储
+              await this.sampleService.updateSample(this.formData, this.editIndex)
+              success = true
+            } else {
+              // 先调用API，然后保存到本地存储
+              await this.sampleService.saveSample(this.formData)
+              success = true
+            }
+
+            if (success) {
+              await promptAction.showToast({
+                message: this.isEditMode ? '保存成功' : '提交成功',
+                duration: 2000
+              })
+              router.back()
+            } else {
+              await promptAction.showToast({
+                message: this.isEditMode ? '保存失败，请检查网络连接' : '提交失败，请检查网络连接',
+                duration: 2000
+              })
+            }
+          } catch (error) {
+            console.error('提交/保存留样失败:', error)
+            await promptAction.showToast({
+              message: this.isEditMode ? '保存失败，请重试' : '提交失败，请重试',
+              duration: 2000
+            })
+          } finally {
+            this.isSubmitting = false
+          }
+        }
+      })
+  }
+
+  @Builder
+  ImageDisplayArea(title: string, isForCabinet: boolean = false) {
+    Column() {
+      this.FormHeader(title)
+      Row() {
+        // 显示图片
+        Image(isForCabinet ? 
+          "https://admin.suoeryun.com/pcUpload/1917474946438942721_1745996626850.png" : 
+          "https://admin.suoeryun.com/pcUpload/1917474932601933825_1745996623568.png")
+          .width(200)
+          .height(150)
+          .objectFit(ImageFit.Cover)
+      }
+      .width('100%')
+      .padding(16)
+      .justifyContent(FlexAlign.Center)
+    }
+    .width('100%')
+    .padding(16)
+    .backgroundColor('#FFFFFF')
+    .margin({ top: 12 })
   }
 
   build() {
@@ -190,7 +280,7 @@ struct SampleForm {
             .onClick(() => {
               DatePickerDialog.show({
                 selected: new Date(this.formData.date),
-                onAccept: (value) => {
+                onAccept: (value: DatePickerResult) => {
                   const date = value.year + '-' +
                   String(value.month).padStart(2, '0') + '-' +
                   String(value.day).padStart(2, '0')
@@ -329,20 +419,22 @@ struct SampleForm {
             .onClick(() => {
               DatePickerDialog.show({
                 selected: new Date(),
-                onAccept: (value) => {
-                  // 先选择日期
-                  const date = `${value.year}-${String(value.month).padStart(2, '0')}-${String(value.day).padStart(2, '0')}`
+                onAccept: (value: DatePickerResult) => {
+                  // 先选择日期，确保month不是undefined
+                  if (value.year !== undefined && value.month !== undefined && value.day !== undefined) {
+                    const date = `${value.year}-${String(value.month + 1).padStart(2, '0')}-${String(value.day).padStart(2, '0')}`
 
-                  // 然后显示时间选择器
-                  TimePickerDialog.show({
-                    selected: new Date(),
-                    useMilitaryTime: true, // 使用24小时制
-                    onAccept: (time) => {
-                      const hours = String(time.hour).padStart(2, '0')
-                      const minutes = String(time.minute).padStart(2, '0')
-                      this.formData.disposalTime = `${date} ${hours}:${minutes}`
-                    }
-                  })
+                    // 然后显示时间选择器
+                    TimePickerDialog.show({
+                      selected: new Date(),
+                      useMilitaryTime: true, // 使用24小时制
+                      onAccept: (time: TimePickerResult) => {
+                        const hours = String(time.hour).padStart(2, '0')
+                        const minutes = String(time.minute).padStart(2, '0')
+                        this.formData.disposalTime = `${date} ${hours}:${minutes}`
+                      }
+                    })
+                  }
                 }
               })
             })
@@ -352,30 +444,9 @@ struct SampleForm {
           .backgroundColor('#FFFFFF')
           .margin({ bottom: 1 })
 
-          // 图片上传区域
-          Column() {
-            this.FormHeader('上传留样图片')
-            Row() {
-              ForEach([1, 2, 3], () => {
-                Column() {
-                  Text('+')
-                    .fontSize(40)
-                    .fontColor('#999999')
-                }
-                .width(100)
-                .height(100)
-                .margin(8)
-                .backgroundColor('#F5F5F5')
-                .justifyContent(FlexAlign.Center)
-              })
-            }
-            .width('100%')
-            .padding(16)
-          }
-          .width('100%')
-          .padding(16)
-          .backgroundColor('#FFFFFF')
-          .margin({ top: 12 })
+          // 使用简化的图片显示组件
+          this.ImageDisplayArea('留样图片')
+          this.ImageDisplayArea('留样柜图片', true)
 
           // 备注
           Column() {
@@ -400,39 +471,8 @@ struct SampleForm {
       .layoutWeight(1)
       .backgroundColor('#F5F5F5')
 
-      // 提交按钮
-      Button(this.isEditMode ? '保存' : '提交')
-        .width('90%')
-        .height(48)
-        .fontSize(16)
-        .fontColor('#FFFFFF')
-        .backgroundColor('#00C853')
-        .margin({ top: 16, bottom: 16 })
-        .onClick(async () => {
-          if (this.validateForm()) {
-            try {
-              if (this.isEditMode) {
-                await this.sampleService.updateSample(this.formData, this.editIndex)
-                await promptAction.showToast({
-                  message: '保存成功',
-                  duration: 2000
-                })
-              } else {
-                await this.sampleService.saveSample(this.formData)
-                await promptAction.showToast({
-                  message: '提交成功',
-                  duration: 2000
-                })
-              }
-              router.back()
-            } catch (error) {
-              await promptAction.showToast({
-                message: this.isEditMode ? '保存失败，请重试' : '提交失败，请重试',
-                duration: 2000
-              })
-            }
-          }
-        })
+      // 使用提交按钮组件
+      this.SubmitButton()
     }
     .width('100%')
     .height('100%')

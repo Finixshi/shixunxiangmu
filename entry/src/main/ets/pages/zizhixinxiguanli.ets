@@ -28,10 +28,10 @@ struct QualificationInfo {
   @State showError: boolean = false;
 
   validateForm(): boolean {
-    if (!this.formData.qualificationName || 
-        !this.formData.issueDate || 
-        !this.formData.qualificationType || 
-        !this.formData.issuingAuthority) {
+    if (!this.formData.qualificationName ||
+      !this.formData.issueDate ||
+      !this.formData.qualificationType ||
+      !this.formData.issuingAuthority) {
       this.showError = true;
       return false;
     }
@@ -54,6 +54,47 @@ struct QualificationInfo {
       console.error(`Failed to pick image: ${errMsg}`);
     }
   }
+  @State selectedUnit: string = '';
+  @State currentDate: Date = new Date()
+  @State selectedDate: string = '请选择发证时间'
+  @State selectDate: Date = new Date()
+  private getThisWeekDates(): Array<Date> {
+    const start = new Date(this.currentDate)
+    start.setDate(start.getDate() - start.getDay() + 1) // 周一
+
+    const dates: Date[] = []
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(start)
+      d.setDate(start.getDate() + i)
+      dates.push(d)
+    }
+    return dates
+  }
+
+  private showDateDialog() {
+    DatePickerDialog.show({
+      start: new Date('2000-1-1'),
+      end: new Date('2100-1-1'),
+      selected: this.selectDate,
+      onAccept: (value: DatePickerResult) => {
+        // 使用可选链和默认值保证安全性
+        const year = value.year?? new Date().getFullYear()
+        const month = value.month?? new Date().getMonth()
+        const day = value.day?? new Date().getDate()
+
+        // 不需要再减1
+        this.selectDate = new Date(year, month, day)
+        this.selectedDate = `${year}-${(month + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`
+      }
+    })
+  }
+  private Qualification = [
+    '营业执照',
+    '食品经营许可证',
+    '食品生产许可证',
+    '质检报告',
+    '其他'
+  ];
 
   build() {
     Column() {
@@ -80,35 +121,40 @@ struct QualificationInfo {
           // Form fields
           Column() {
             Text('资质名称 *')
+              .width('100%')
               .fontSize(16)
               .fontColor('#333333')
               .alignSelf(ItemAlign.Start)
               .margin({ top: 16, bottom: 8 })
-            
+
             TextInput({ placeholder: '请输入资质名称' })
               .width('100%')
               .height(48)
               .backgroundColor('#F5F5F5')
-              .type(InputType.Normal)
-              .inputFilter('^[\u4e00-\u9fa5a-zA-Z0-9_]+$')
               .onChange((value: string): void => {
                 this.formData.qualificationName = value;
               })
-
             Text('发证时间 *')
               .fontSize(16)
               .fontColor('#333333')
               .alignSelf(ItemAlign.Start)
-              .margin({ top: 16, bottom: 8 })
+              .margin({ top: 10, bottom: 8 })
 
-            TextInput({ placeholder: '请选择发证时间' })
-              .width('100%')
-              .height(48)
-              .backgroundColor('#F5F5F5')
-              .type(InputType.Normal)
-              .onChange((value: string): void => {
-                this.formData.issueDate = value;
-              })
+
+            Row({ space: 10 }) {
+              Select([])
+                .value(this.selectedDate)
+                .onClick(() => {
+                  this.showDateDialog()
+                })
+                .margin(10)
+                .width('90%')
+                .height(70)
+                .font({ size: 20 })
+            }
+            .justifyContent(FlexAlign.Center)
+            .padding({ bottom: 20 })
+
 
             Text('资质类型 *')
               .fontSize(16)
@@ -116,15 +162,18 @@ struct QualificationInfo {
               .alignSelf(ItemAlign.Start)
               .margin({ top: 16, bottom: 8 })
 
-            TextInput({ placeholder: '请选择资质类型' })
-              .width('100%')
-              .height(48)
-              .backgroundColor('#F5F5F5')
-              .type(InputType.Normal)
-              .inputFilter('^[\u4e00-\u9fa5a-zA-Z0-9_]+$')
-              .onChange((value: string): void => {
-                this.formData.qualificationType = value;
-              })
+
+            Row() {
+              Text("请选择类型")
+              Select(this.Qualification.map<SelectOption>((item: string) => ({ value: item })))
+                .value('请选择')
+                .value(this.selectedUnit)
+                .onSelect((index: number) => {
+                  this.selectedUnit = this.Qualification[index];
+                })
+                .margin(10)
+                .width('70%')
+            }
 
             Text('发证机构 *')
               .fontSize(16)
@@ -136,8 +185,6 @@ struct QualificationInfo {
               .width('100%')
               .height(48)
               .backgroundColor('#F5F5F5')
-              .type(InputType.Normal)
-              .inputFilter('^[\u4e00-\u9fa5a-zA-Z0-9_]+$')
               .onChange((value: string): void => {
                 this.formData.issuingAuthority = value;
               })
@@ -180,61 +227,21 @@ struct QualificationInfo {
               .width('100%')
               .height(50)
               .backgroundColor('#F5F5F5')
-              .inputFilter('^[\u4e00-\u9fa5a-zA-Z0-9_\n\r]+$')
               .onChange((value: string): void => {
                 this.formData.remarks = value;
               })
 
-            Text('上传资质图片 *')
-              .fontSize(16)
-              .fontColor('#333333')
-              .alignSelf(ItemAlign.Start)
-              .margin({ top: 16, bottom: 8 })
 
-            Column() {
-              if (this.formData.imagePath) {
-                Image(this.formData.imagePath)
-                  .width(50)
-                  .height(50)
-                  .objectFit(ImageFit.Cover)
-              } else {
-                Button() {
-                  Row() {
-                    Image($r('app.media.upload'))
-                      .width(10)
-                      .height(10)
-                    Text('上传资质图片')
-                      .fontSize(16)
-                      .margin({ left: 8 })
-                  }
-                }
-                .type(ButtonType.Normal)
-                .onClick(() => {
-                  void this.selectImage();
-                })
-              }
-            }
-            .width('100%')
-            .height(50)
-            .backgroundColor('#F5F5F5')
-            .justifyContent(FlexAlign.Center)
-            .margin({ bottom: 24 })
 
-            if (this.showError) {
-              Text('请填写必填项')
-                .fontSize(14)
-                .fontColor(Color.Red)
-                .margin({ bottom: 16 })
-            }
 
             Button('提交')
               .width('100%')
               .height(48)
               .backgroundColor('#4CAF50')
               .fontColor(Color.White)
-              .onClick((): void => {
+              .onClick(()=> {
                 if (this.validateForm()) {
-                  router.pushUrl({
+                  router.back({
                     url: 'pages/daishenpiliebiao'
                   });
                 }
