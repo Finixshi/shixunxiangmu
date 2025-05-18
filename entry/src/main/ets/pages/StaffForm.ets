@@ -348,9 +348,11 @@ struct StaffForm {
                   .height(120)
                 } else {
                   Column() {
-                    Image($r('app.media.upload'))
+                    Text('⬆')
                       .width(40)
                       .height(40)
+                      .fontSize(40)
+                      .fontColor('#999999')
                       .margin({ bottom: 8 })
                     Text('上传照片')
                       .fontSize(14)
