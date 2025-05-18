@@ -42,16 +42,10 @@ interface KitchenStaff {
 @Entry
 @Component
 struct Chenjian1Page {
-  @State private failedCount: number = 0
   @State private loading: boolean = false
-  @State private totalCount: number = 0
   @State private checkRecords: CheckRecord[] = []
-  @State private checkedCount: number = 0
-  @State private uncheckedCount: number = 0
   @State staffList: KitchenStaff[] = []
   private context = getContext(this) as common.UIAbilityContext
-  @State private currentPage: number = 1 // 当前页码
-  @State private pageSize: number = 10 // 每页数量
   private async fetchCheckRecords(): Promise<void> {
     if (this.loading) return
     this.loading = true
@@ -75,7 +69,6 @@ struct Chenjian1Page {
         const jsonData: ApiResponse = JSON.parse(response.result)
         if (jsonData.success) {
           this.checkRecords = jsonData.result.records
-          //this.totalCount = jsonData.result.total
           console.log('666')
         } else {
           promptAction.showToast({ message: jsonData.message || '获取数据失败' })
