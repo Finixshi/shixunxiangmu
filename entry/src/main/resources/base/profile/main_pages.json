@@ -6,9 +6,11 @@
     "pages/StaffForm",
     "pages/Calendar",
     "pages/SampleForm",
-    "pages/ruku",
+    "pages/kucun",
+    "pages/kucunxiangqing",
     "pages/chuku",
     "pages/chukudan",
+    "pages/xiangqing",
     "pages/jiacaidan",
     "pages/shouye",
     "pages/jinricaipin",
@@ -22,14 +24,28 @@
     "pages/changjianwentijieda",
     "pages/uploadPlan",
     "pages/uploadPlan_2",
-
+    "pages/uploadPlan_3",
+    "pages/buliangjilu",
     "pages/peicanjilu",
     "pages/shangchuanpeican",
-
-
     "pages/chenjian",
     "pages/chenjian1",
-    "pages/daishenpiliebiao",
-    "pages/zizhixinxiguanli"
+    "pages/peisongdangh",
+    "pages/peisongdanDetailgh",
+    "pages/addFoodItemsPage",
+    "pages/batchUploadReportsPage",
+    "pages/CompanyInfoForm",
+    "pages/SupplierProducts",
+    "pages/ProductList",
+    "pages/gongyingshangshouye",
+    "pages/daijiedan",
+    "pages/tuihuodan",
+    "pages/songhuodan",
+    "pages/modify_info",
+    "pages/songhuodan1",
+    "pages/SupplyRange",
+    "pages/NewProductApply",
+    "pages/CreateNewProduct",
+    "pages/kucunxiangqing1"
   ]
 }
