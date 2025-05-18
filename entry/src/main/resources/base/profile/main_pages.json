@@ -24,7 +24,6 @@
     "pages/changjianwentijieda",
     "pages/uploadPlan",
     "pages/uploadPlan_2",
-    "pages/uploadPlan_3",
     "pages/buliangjilu",
     "pages/peicanjilu",
     "pages/shangchuanpeican",
@@ -46,6 +45,7 @@
     "pages/SupplyRange",
     "pages/NewProductApply",
     "pages/CreateNewProduct",
+    "pages/daishenpiliebiao",
     "pages/kucunxiangqing1"
   ]
 }

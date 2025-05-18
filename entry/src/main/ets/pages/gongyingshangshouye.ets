@@ -72,7 +72,7 @@ struct Index1 {
     {
       url: 'app.media.education_6',
       text: '资质信息',
-      route: 'pages/zizhi_page'
+      route: 'pages/daishenpiliebiao'
     }
   ];
   // 公司信息

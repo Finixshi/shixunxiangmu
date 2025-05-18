@@ -227,8 +227,8 @@ struct LoginPage {
           .onClick(() => {
             if (this.validateForm()) {
               // 跳转至主界面并传递姓名和手机号
-              router.pushUrl({
-                url: 'pages/Index1', // 主界面路由，需与项目配置一致
+              router.back({
+                url: 'pages/gongyingshangshouye', // 主界面路由，需与项目配置一致
                 params: {
                   name: this.name,
                   phone: this.phonenumber
