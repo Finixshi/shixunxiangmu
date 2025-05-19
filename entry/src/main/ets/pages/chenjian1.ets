@@ -45,6 +45,8 @@ struct Chenjian1Page {
   @State private loading: boolean = false
   @State private checkRecords: CheckRecord[] = []
   @State staffList: KitchenStaff[] = []
+  @State private tenantId: string =''
+  private token: string = '' // 用于存储token
   private context = getContext(this) as common.UIAbilityContext
   private async fetchCheckRecords(): Promise<void> {
     if (this.loading) return
@@ -114,7 +116,11 @@ struct Chenjian1Page {
           .onClick(() => {
             try {
               router.pushUrl({
-                url: 'pages/chenjian'
+                url: 'pages/chenjian',
+                params: {
+                  token: this.token,
+                  tenantId: this.tenantId
+                }
               })
             } catch (error) {
               console.error('路由跳转失败：', error)
