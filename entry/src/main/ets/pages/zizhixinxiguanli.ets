@@ -100,9 +100,10 @@ struct QualificationInfo {
     Column() {
       // Header with back button
       Row() {
-        Image($r('app.media.back'))
+        Text('<')
           .width(24)
           .height(24)
+          .fontSize(24)
           .margin({ left: 16 })
           .onClick((): void => {
             router.back();

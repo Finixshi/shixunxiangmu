@@ -1,9 +1,8 @@
 {
   "src": [
     "pages/login",
-    "pages/houqin",
-    "pages/StaffList",
-    "pages/StaffForm",
+    "pages/kitchenStaff",
+    "pages/EditStaff",
     "pages/Calendar",
     "pages/SampleForm",
     "pages/kucun",
@@ -16,7 +15,7 @@
     "pages/jinricaipin",
     "pages/shipu",
     "pages/KitchenStaffList",
-    "pages/StaffEditor",
+    "pages/addStaff",
     "pages/xiugaigerenxinxi",
     "pages/xiugaimima",
     "pages/rukuyanshou",
@@ -45,8 +44,9 @@
     "pages/SupplyRange",
     "pages/NewProductApply",
     "pages/CreateNewProduct",
-    "pages/kucunxiangqing1",
     "pages/daishenpiliebiao",
-    "pages/zizhixinxiguanli"
+    "pages/detail",
+    "pages/zizhixinxiguanli",
+    "pages/kucunxiangqing1"
   ]
 }

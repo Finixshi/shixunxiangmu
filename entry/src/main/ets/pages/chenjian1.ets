@@ -1,6 +1,31 @@
 import { router } from '@kit.ArkUI'
 import preferences from '@ohos.data.preferences'
 import common from '@ohos.app.ability.common'
+import http from '@ohos.net.http'
+import { promptAction } from '@kit.ArkUI'
+interface ApiResponse {
+  code: number;
+  message: string;
+  result: PageResponse;
+  success: boolean;
+  timestamp: number;
+}
+interface PageResponse {
+  records: CheckRecord[];
+  total: number;
+  size: number;
+  current: number;
+  pages: number;
+}
+interface CheckRecord {
+  userName: string;//姓名
+  type_dictText: string;//状态
+  position: string;//人员岗位
+  healthStartTime: string;//发证日期
+  healthEndTime: string; //到期时间
+  unitName: string;//单位name
+
+}
 
 // 定义后厨人员接口
 interface KitchenStaff {
@@ -17,14 +42,50 @@ interface KitchenStaff {
 @Entry
 @Component
 struct Chenjian1Page {
+  @State private loading: boolean = false
+  @State private checkRecords: CheckRecord[] = []
   @State staffList: KitchenStaff[] = []
   private context = getContext(this) as common.UIAbilityContext
+  private async fetchCheckRecords(): Promise<void> {
+    if (this.loading) return
+    this.loading = true
 
+    try {
+      const httpRequest = http.createHttp()
+      const response = await httpRequest.request(
+        'https://api.suoeryun.com/ifood//jeecg-school/school/xxUnitUser/list',
+        {
+          method: http.RequestMethod.GET,
+          header: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-Access-Token': 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJwd2QiOiI5NzJiNzBjMWQwNGQ3YTY0ZGFjYzUwYTY3MzkyOWRlZSIsImV4cCI6MTc0ODE2NDg0NSwidXNlcm5hbWUiOiIxODk5MTI3NDI2MSJ9.R6N5Ij8O70nK2uQ2uiuMWjp5VemhndeHLvA8tixV6EA'
+          },
+          extraData: {
+          }
+        }
+      )
+
+      if (response.responseCode === 200 && typeof response.result === 'string') {
+        const jsonData: ApiResponse = JSON.parse(response.result)
+        if (jsonData.success) {
+          this.checkRecords = jsonData.result.records
+          console.log('666')
+        } else {
+          promptAction.showToast({ message: jsonData.message || '获取数据失败' })
+        }
+      }
+    } catch (error) {
+      console.error('获取晨检记录失败:', error)
+      promptAction.showToast({ message: '获取晨检记录失败' })
+    } finally {
+      this.loading = false
+    }
+  }
   aboutToAppear() {
     this.getStaffList()
   }
-
   onPageShow() {
+    this.fetchCheckRecords()
     this.getStaffList()
   }
 
@@ -61,7 +122,7 @@ struct Chenjian1Page {
           })
         Text('未晨检人员')
           .fontSize(18)
-          .fontColor('#ff000000')
+          .fontColor('#ff020101')
           .margin({ left: 85 })
       }
       .width('100%')
@@ -86,29 +147,29 @@ struct Chenjian1Page {
         } else {
           // 有数据时显示列表
           List() {
-            ForEach(this.staffList, (staff: KitchenStaff) => {
+            ForEach(this.checkRecords, (staff: CheckRecord) => {
               ListItem() {
                 Column() {
                   Row() {
-                    Text('姓    名：')
-                      .fontSize(16)
-                      .fontColor('#666')
-                    Text(staff.name)
-                      .fontSize(16)
+                    Text(staff.userName)
+                      .fontSize(30)
                       .fontColor('#333')
                     Blank()
-                    Text(staff.status)
-                      .fontSize(14)
-                      .fontColor(staff.status === '在职' ? '#4CAF50' : '#FF5722')
-                      .backgroundColor(staff.status === '在职' ? '#E8F5E9' : '#FBE9E7')
-                      .borderRadius(4)
-                      .padding({ left: 8, right: 8, top: 2, bottom: 2 })
                   }
                   .width('100%')
                   .padding({ top: 5, bottom: 5 })
-
                   Row() {
-                    Text('职    位：')
+                    Text('人员状态：')
+                      .fontSize(16)
+                      .fontColor('#666')
+                    Text(staff.type_dictText)
+                      .fontSize(16)
+                      .fontColor('#333')
+                  }
+                  .width('100%')
+                  .padding({ top: 5, bottom: 5 })
+                  Row() {
+                    Text('人员岗位：')
                       .fontSize(16)
                       .fontColor('#666')
                     Text(staff.position)
@@ -119,10 +180,10 @@ struct Chenjian1Page {
                   .padding({ top: 5, bottom: 5 })
 
                   Row() {
-                    Text('联系电话：')
+                    Text('发证日期：')
                       .fontSize(16)
                       .fontColor('#666')
-                    Text(staff.phone)
+                    Text(staff.healthStartTime)
                       .fontSize(16)
                       .fontColor('#333')
                   }
@@ -130,10 +191,10 @@ struct Chenjian1Page {
                   .padding({ top: 5, bottom: 5 })
 
                   Row() {
-                    Text('健康证号：')
+                    Text('到期日期：')
                       .fontSize(16)
                       .fontColor('#666')
-                    Text(staff.certificate)
+                    Text(staff.healthEndTime)
                       .fontSize(16)
                       .fontColor('#333')
                   }
@@ -141,24 +202,16 @@ struct Chenjian1Page {
                   .padding({ top: 5, bottom: 5 })
 
                   Row() {
-                    Text('证件有效期：')
+                    Text('所属单位：')
                       .fontSize(16)
                       .fontColor('#666')
-                    Text(staff.certExpiry)
+                    Text(staff.unitName)
                       .fontSize(16)
                       .fontColor('#333')
                   }
                   .width('100%')
                   .padding({ top: 5, bottom: 5 })
 
-                  Row() {
-                    Text('入职日期：')
-                      .fontSize(16)
-                      .fontColor('#666')
-                    Text(staff.joinDate)
-                      .fontSize(16)
-                      .fontColor('#333')
-                  }
                   .width('100%')
                   .padding({ top: 5, bottom: 5 })
                 }
