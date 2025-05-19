@@ -28,7 +28,7 @@ struct Index1 {
   @State image: ImageCount[] = [
     { url: 'app.media.shangbaojihua', count: 0, text: '上报计划' ,route:'pages/uploadPlan'},
     { url: 'app.media.jinricaipin', count: 0, text: '今日菜品' ,route:'pages/jinricaipin'},
-    { url: 'app.media.houchurenyuan', count: 0, text: '后厨人员',route:'pages/KitchenStaffList' },
+    { url: 'app.media.houchurenyuan', count: 0, text: '后厨人员',route:'pages/kitchenStaff' },
     { url: 'app.media.meiriliuyang', count: 0, text: '每日留样' ,route:'pages/Calendar'},
     { url: 'app.media.chenjianjilu', count: 0, text: '晨检记录' ,route:'pages/chenjian'},
     { url: 'app.media.peicanjilu', count: 0, text: '陪餐记录' ,route:'pages/peicanjilu'},
@@ -216,7 +216,7 @@ struct Index1 {
             Column() {
               Text('实训第二学校')
                 .fontSize(20)
-              Text('人15502933673')
+              Text('人18991274261')
             }
             .layoutWeight(2.4)
           }
