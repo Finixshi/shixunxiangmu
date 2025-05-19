@@ -216,7 +216,7 @@ struct Index1 {
             Column() {
               Text('实训第二学校')
                 .fontSize(20)
-              Text('人15502933673')
+              Text('人18991274261')
             }
             .layoutWeight(2.4)
           }
