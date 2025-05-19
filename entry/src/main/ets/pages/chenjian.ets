@@ -89,6 +89,7 @@ struct CalendarPage {
   @State private loading: boolean = false // 加载状态
   @State private currentPage: number = 1 // 当前页码
   @State private pageSize: number = 10 // 每页数量
+  @State private tenantId: string =''
   private token: string = '' // 用于存储token
   private context = getContext(this) as common.UIAbilityContext
 
@@ -120,6 +121,7 @@ struct CalendarPage {
     try {
       const prefer: preferences.Preferences = await preferences.getPreferences(this.context, 'myPreferences')
       this.token = await prefer.get('token', '') as string
+      this.tenantId = await prefer.get('tenantId', '') as string
       if (this.token) {
         this.fetchCheckRecords()
       }
@@ -271,7 +273,11 @@ struct CalendarPage {
         .onClick(() => {
           try {
             router.pushUrl({
-              url: 'pages/shouye'
+              url: 'pages/shouye',
+              params: {
+                token: this.token,
+                tenantId: this.tenantId
+              }
             })
           } catch (error) {
             console.error('路由跳转失败：', error)
