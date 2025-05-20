@@ -1,8 +1,10 @@
 import router from '@ohos.router';
 import http from '@ohos.net.http';
 import { promptAction } from '@kit.ArkUI';
-//账号18991274261密码lwjy123456
-//账号18991274264密码123456
+//账号18991274261
+//密码lwjy123456
+//账号18991274264
+//密码123456
 // 接口类型定义
 interface UserInfo {
   id: string;
